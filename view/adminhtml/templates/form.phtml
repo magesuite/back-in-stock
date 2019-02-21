@@ -1,0 +1,24 @@
+<?php
+/** @var \MageSuite\BackInStock\Block\Adminhtml\Notification\Form $block */
+$product = $block->getProduct();
+$stores = $block->getStores();
+?>
+<div id="backinstock-notify-manually-modal">
+    <form method="post" id="backinstock-notify-manually-form" action="<?php echo $block->getUrl('backinstock/notification/manual') ?>">
+        <input type="hidden" name="product_id" id="product_id" value="<?php echo $product->getId() ?>"/>
+        <fieldset class="admin__fieldset">
+            <?php foreach($stores as $store):?>
+                <div class="admin__field">
+                    <label class="admin__field-label" for="message[<?php echo $store['store_id'];?>]"><span><?php echo __(sprintf('Message for store %s', $store['name'])) ;?></span></label>
+                    <div class="admin__field-control">
+                        <textarea class="admin__control-text" name="message[<?php echo $store['store_id'];?>]" id="message" rows="10"></textarea>
+                        <div class="admin__field-note">
+                            <span><?php echo __('Please write message which will be sent to all customers which requested back in stock notification.') ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach;?>
+        </fieldset>
+        <input type="hidden" name="form_key" value="<?php echo $block->getFormKey() ?>"/>
+    </form>
+</div>

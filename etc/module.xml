@@ -2,8 +2,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Module/etc/module.xsd">
     <module name="MageSuite_BackInStock" setup_version="1.0.0">
         <sequence>
-            <module name="Magento_ProductAlert"/>
             <module name="Magento_Customer"/>
+            <module name="Magento_ProductAlert"/>
+            <module name="Magento_Catalog"/>
+            <module name="Magento_Store"/>
         </sequence>
     </module>
 </config>

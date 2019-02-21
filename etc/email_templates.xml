@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="back_in_stock_email_configuration_confirmation_email_template" label="Back In Stock Confirmation" file="confirmation.html" type="html" module="MageSuite_BackInStock" area="frontend"/>
+    <template id="back_in_stock_email_configuration_automatic_notification_email_template" label="Back In Stock Template" file="automatic_notification.html" type="html" module="MageSuite_BackInStock" area="frontend"/>
+    <template id="back_in_stock_email_configuration_manual_notification_email_template" label="Back In Stock Manual Notification" file="manual_notification.html" type="html" module="MageSuite_BackInStock" area="adminhtml"/>
+</config>

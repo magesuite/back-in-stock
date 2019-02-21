@@ -1,0 +1,10 @@
+<?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */?>
+<div class="product alert <?= $block->getHtmlClass() ?>">
+    <form action="<?php echo $block->getActionUrl();?>" method="post">
+        <p><?php echo __('Please enter email to be notified when product is back in sale');?></p>
+        <label for="email"><?php echo __('Email Address');?></label>
+        <input type="hidden" name="product_id" id="product_id" value="<?php echo $block->getProductId();?>"/>
+        <input title="<?php echo __('Email Address');?>" type="text" name="email" id="email" value="<?php echo $block->getCustomerEmail() ;?>"/>
+        <input type="submit" class="button" value="<?php echo __('Notify Me');?>"/>
+    </form>
+</div>
