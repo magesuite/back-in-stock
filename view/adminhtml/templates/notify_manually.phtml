@@ -1,0 +1,63 @@
+<script>
+    function openNotifyManuallyModal(productId, url) {
+        require(
+            ['jquery', 'Magento_Ui/js/modal/modal'],
+            function ($, modal) {
+                var options = {
+                    type: 'slide',
+                    responsive: true,
+                    innerScroll: true,
+                    title: $.mage.__('Notify Manually'),
+                    buttons: [{
+                        text: $.mage.__('Send'),
+                        class: 'action-primary',
+                        click: function () {
+                            resetValidationErrors($);
+
+                            $.post({
+                                showLoader: true,
+                                url: $("#backinstock-notify-manually-form").attr('action'),
+                                data: $("#backinstock-notify-manually-form").serialize(),
+                                success: function (response) {
+                                    if (response.success) {
+                                        location.reload();
+                                        return;
+                                    }
+
+                                    $('body').notification('clear').notification('add', {
+                                        error: true,
+                                        message: response.errorMessage,
+                                        insertMethod: function (message) {
+                                            var $wrapper = $('<div/>').html(message);
+                                            $('.page-main-actions').after($wrapper);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }]
+                };
+
+                var formUrl = url;
+
+                $.get({
+                    url: formUrl,
+                    showLoader: true
+                }).success(
+                    function (data) {
+                        $('#backinstock-notify-manually-modal').remove();
+
+                        modal(options, data);
+
+                        $('#backinstock-notify-manually-modal').modal('openModal');
+                    }
+                );
+            }
+        );
+    }
+
+    function resetValidationErrors($) {
+        $('.admin__field-error').remove();
+        $('.admin__field').removeClass('_error');
+    }
+</script>

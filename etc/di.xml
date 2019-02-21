@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface"
+                type="MageSuite\BackInStock\Model\BackInStockSubscriptionRepository" />
+    <preference for="MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface"
+                type="MageSuite\BackInStock\Model\BackInStockSubscription" />
+
+    <preference for="MageSuite\BackInStock\Api\NotificationRepositoryInterface"
+                type="MageSuite\BackInStock\Model\NotificationRepository" />
+    <preference for="MageSuite\BackInStock\Api\Data\NotificationInterface"
+                type="MageSuite\BackInStock\Model\Notification" />
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="entity_listing_data_source1" xsi:type="string">MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">back_in_stock_subscription_entity</argument>
+            <argument name="resourceModel" xsi:type="string">MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription</argument>
+        </arguments>
+    </virtualType>
+</config>

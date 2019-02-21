@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <back_in_stock>
+            <general>
+                <enabled>0</enabled>
+            </general>
+            <email_configuration>
+                <sender_email>general</sender_email>
+                <confirmation_email_template>back_in_stock_email_configuration_confirmation_email_template</confirmation_email_template>
+                <automatic_notification_email_template>back_in_stock_email_configuration_automatic_notification_email_template</automatic_notification_email_template>
+                <manual_notification_email_template>back_in_stock_email_configuration_manual_notification_email_template</manual_notification_email_template>
+            </email_configuration>
+            <cron>
+                <cron_schedule>* * * * *</cron_schedule>
+            </cron>
+        </back_in_stock>
+    </default>
+</config>

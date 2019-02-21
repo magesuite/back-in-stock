@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="send_back_in_stock_notification_from_queue" instance="MageSuite\BackInStock\Cron\SendNotificationsFromQueue" method="execute">
+            <config_path>back_in_stock/cron/cron_schedule</config_path>
+        </job>
+    </group>
+</config>
