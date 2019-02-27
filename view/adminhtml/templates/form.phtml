@@ -6,7 +6,17 @@ $stores = $block->getStores();
 <div id="backinstock-notify-manually-modal">
     <form method="post" id="backinstock-notify-manually-form" action="<?php echo $block->getUrl('backinstock/notification/manual') ?>">
         <input type="hidden" name="product_id" id="product_id" value="<?php echo $product->getId() ?>"/>
+        <input type="hidden" name="preview_action" id="preview_action" value="<?php echo $block->getUrl('backinstock/notification/preview') ?>"/>
         <fieldset class="admin__fieldset">
+            <div class="admin__field">
+                <label class="admin__field-label" for="preview_email_address"><span><?php echo __('Email Address') ;?></span></label>
+                <div class="admin__field-control">
+                    <input class="admin__control-text" name="preview_email_address" id="preview_email_address"/>
+                    <div class="admin__field-note">
+                        <span><?php echo __('Please type email addess to which notification preview will be sent.') ?></span>
+                    </div>
+                </div>
+            </div>
             <?php foreach($stores as $store):?>
                 <div class="admin__field">
                     <label class="admin__field-label" for="message[<?php echo $store['store_id'];?>]"><span><?php echo __(sprintf('Message for store %s', $store['name'])) ;?></span></label>
