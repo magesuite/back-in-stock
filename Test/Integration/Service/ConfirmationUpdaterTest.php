@@ -56,11 +56,9 @@ class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
 
         $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
 
-        $token = $this->backInStockSubscriptionRepository->generateToken($subscription->getCustomerEmail(), (string) $subscription->getCustomerId());
-
         $this->assertEquals(0, $subscription->getCustomerConfirmed());
 
-        $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $token]);
+        $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
 
         $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
 

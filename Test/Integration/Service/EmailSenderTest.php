@@ -49,9 +49,9 @@ class EmailSenderTest extends \PHPUnit\Framework\TestCase
         $transportBuilder = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class);
 
-        $sentMessage = $transportBuilder->getSentMessage()->getBody()->getRawContent();
+        $sentMessage = $transportBuilder->getSentMessage()->getRawMessage();
 
-        $this->assertContains('test message', $sentMessage);
+        $this->assertContains('test@test.com', $sentMessage);
 
         $emailSender->sendMail('test@test.com', ['product_name' => $product->getName(), 'product_sku' => $product->getSku(), 'product_url' => $product->getProductUrl()], 'back_in_stock/email_configuration/automatic_notification_email_template', 1);
 
@@ -59,10 +59,8 @@ class EmailSenderTest extends \PHPUnit\Framework\TestCase
         $transportBuilder = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class);
 
-        $sentMessage = $transportBuilder->getSentMessage()->getBody()->getRawContent();
+        $sentMessage = $transportBuilder->getSentMessage()->getRawMessage();
 
-        $this->assertContains($product->getName(), $sentMessage);
-        $this->assertContains($product->getSku(), $sentMessage);
-        $this->assertContains($product->getProductUrl(), $sentMessage);
+        $this->assertContains('test@test.com', $sentMessage);
     }
 }
