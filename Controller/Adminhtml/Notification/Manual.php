@@ -37,7 +37,10 @@ class Manual extends \Magento\Backend\App\Action
 
         if ($data) {
             try {
-                foreach ($data['message'] as $storeId => $message) {
+                foreach ($data['messages'] as $storeId => $message) {
+                    if(empty($message)){
+                        continue;
+                    }
                     $this->notificationQueueCreator->addNotificationsToQueue((int) $data['product_id'], $storeId,\MageSuite\BackInStock\Service\NotificationQueueSender::MANUAL_NOTIFICATION, $message);
                 }
 

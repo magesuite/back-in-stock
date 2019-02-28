@@ -10,7 +10,7 @@ class Preview extends \Magento\Backend\App\Action
     /**
      * @var \MageSuite\BackInStock\Service\PreviewNotificationSender
      */
-    private $previewNotificationSender;
+    protected $previewNotificationSender;
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
@@ -36,7 +36,10 @@ class Preview extends \Magento\Backend\App\Action
 
         if ($data) {
             try {
-                foreach ($data['message'] as $storeId => $message) {
+                foreach ($data['messages'] as $storeId => $message) {
+                    if(empty($message)){
+                        continue;
+                    }
                     $this->previewNotificationSender->sendPreview($data['preview_email_address'], $storeId, $message);
                 }
 
