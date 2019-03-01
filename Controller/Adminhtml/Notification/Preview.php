@@ -1,28 +1,27 @@
 <?php
 namespace MageSuite\BackInStock\Controller\Adminhtml\Notification;
 
-class Manual extends \Magento\Backend\App\Action
+class Preview extends \Magento\Backend\App\Action
 {
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */
     protected $resultJsonFactory;
     /**
-     * @var \MageSuite\BackInStock\Service\NotificationQueueCreator
+     * @var \MageSuite\BackInStock\Service\PreviewNotificationSender
      */
-    protected $notificationQueueCreator;
-
+    protected $previewNotificationSender;
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \MageSuite\BackInStock\Service\NotificationQueueCreator $notificationQueueCreator
+        \MageSuite\BackInStock\Service\PreviewNotificationSender $previewNotificationSender
     )
     {
         parent::__construct($context);
 
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->notificationQueueCreator = $notificationQueueCreator;
+        $this->previewNotificationSender = $previewNotificationSender;
     }
 
     /**
@@ -41,12 +40,13 @@ class Manual extends \Magento\Backend\App\Action
                     if(empty($message)){
                         continue;
                     }
-                    $this->notificationQueueCreator->addNotificationsToQueue((int) $data['product_id'], $storeId,\MageSuite\BackInStock\Service\NotificationQueueSender::MANUAL_NOTIFICATION, $message);
+                    $this->previewNotificationSender->sendPreview($data['preview_email_address'], $storeId, $message);
                 }
 
-                $this->messageManager->addSuccessMessage(__('Customers have been notified.'));
-
-                $result->setData(['success' => true]);
+                $result->setData([
+                    'success' => true,
+                    'successMessage' => __('Preview emails has been sent to provided email address.')
+                ]);
             } catch (\Exception $e) {
 
                 $result->setData([

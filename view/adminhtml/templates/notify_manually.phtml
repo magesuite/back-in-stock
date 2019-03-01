@@ -8,34 +8,72 @@
                     responsive: true,
                     innerScroll: true,
                     title: $.mage.__('Notify Manually'),
-                    buttons: [{
-                        text: $.mage.__('Send'),
-                        class: 'action-primary',
-                        click: function () {
-                            resetValidationErrors($);
+                    buttons: [
+                        {
+                            text: $.mage.__('Send'),
+                            class: 'action-primary',
+                            click: function () {
+                                resetValidationErrors($);
 
-                            $.post({
-                                showLoader: true,
-                                url: $("#backinstock-notify-manually-form").attr('action'),
-                                data: $("#backinstock-notify-manually-form").serialize(),
-                                success: function (response) {
-                                    if (response.success) {
-                                        location.reload();
-                                        return;
-                                    }
-
-                                    $('body').notification('clear').notification('add', {
-                                        error: true,
-                                        message: response.errorMessage,
-                                        insertMethod: function (message) {
-                                            var $wrapper = $('<div/>').html(message);
-                                            $('.page-main-actions').after($wrapper);
+                                $.post({
+                                    showLoader: true,
+                                    url: $("#backinstock-notify-manually-form").attr('action'),
+                                    data: $("#backinstock-notify-manually-form").serialize(),
+                                    success: function (response) {
+                                        if (response.success) {
+                                            location.reload();
+                                            return;
                                         }
-                                    });
-                                }
-                            });
+
+                                        $('body').notification('clear').notification('add', {
+                                            error: true,
+                                            message: response.errorMessage,
+                                            insertMethod: function (message) {
+                                                var $wrapper = $('<div/>').html(message);
+                                                $('.page-main-actions').after($wrapper);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: $.mage.__('Send Preview Email'),
+                            class: 'action-secondary',
+                            click: function () {
+                                resetValidationErrors($);
+
+                                $.post({
+                                    showLoader: true,
+                                    url: $("#preview_action").attr('value'),
+                                    data: $("#backinstock-notify-manually-form").serialize(),
+                                    success: function (response) {
+                                        if (response.success) {
+                                            $('body').notification('clear').notification('add', {
+                                                error: false,
+                                                message: response.successMessage,
+                                                insertMethod: function (message) {
+                                                    var $wrapper = $('<div/>').html(message);
+                                                    $('.page-main-actions').after($wrapper);
+                                                }
+                                            });
+                                            return;
+                                        } else {
+                                            $('body').notification('clear').notification('add', {
+                                                error: true,
+                                                message: response.errorMessage,
+                                                insertMethod: function (message) {
+                                                    var $wrapper = $('<div/>').html(message);
+                                                    $('.page-main-actions').after($wrapper);
+                                                }
+                                            });
+                                            return;
+                                        }
+                                    }
+                                });
+                            }
                         }
-                    }]
+                    ]
                 };
 
                 var formUrl = url;
