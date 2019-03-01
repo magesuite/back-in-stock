@@ -7,7 +7,7 @@ class ProductName extends \MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\T
     /**
      * @param $columnId
      * @param $entityId
-     * @return mixed|string
+     * @return mixed
      */
     public function getColumnValue($columnId, $entityId)
     {

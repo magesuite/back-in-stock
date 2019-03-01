@@ -52,16 +52,16 @@ class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
 
-        $this->addColumn('store_id', ['header' => __('Store'), 'index' => 'store_id']);
+        $this->addColumn('store_id', ['header' => __('Store ID'), 'index' => 'store_id']);
 
-        $this->addColumn('add_date', ['header' => __('Subscribe Date'), 'index' => 'add_date', 'type' => 'date']);
+        $this->addColumn('add_date', ['header' => __('Subscription Date'), 'index' => 'add_date', 'type' => 'date']);
 
         $this->addColumn(
             'send_date',
-            ['header' => __('Last Notified'), 'index' => 'send_date', 'type' => 'date']
+            ['header' => __('Last Notification Date'), 'index' => 'send_date', 'type' => 'date']
         );
 
-        $this->addColumn('send_count', ['header' => __('Send Count'), 'index' => 'send_count']);
+        $this->addColumn('send_count', ['header' => __('Amount of Notifications Sent'), 'index' => 'send_count']);
 
         return parent::_prepareColumns();
     }

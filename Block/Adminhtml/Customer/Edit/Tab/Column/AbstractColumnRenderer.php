@@ -28,7 +28,7 @@ abstract class AbstractColumnRenderer extends \Magento\Backend\Block\Widget\Grid
 
     /**
      * @param \Magento\Framework\DataObject $row
-     * @return mixed|string
+     * @return mixed
      */
     public function render(\Magento\Framework\DataObject $row)
     {
@@ -52,7 +52,7 @@ abstract class AbstractColumnRenderer extends \Magento\Backend\Block\Widget\Grid
     /**
      * @param $columnId
      * @param $entityId
-     * @return mixed|string
+     * @return mixed
      */
     abstract public function getColumnValue($columnId, $entityId);
 }

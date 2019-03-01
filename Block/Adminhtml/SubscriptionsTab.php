@@ -8,7 +8,7 @@ class SubscriptionsTab extends \Magento\Ui\Component\Layout\Tabs\TabWrapper impl
      *
      * @var \Magento\Framework\Registry
      */
-    protected $coreRegistry = null;
+    protected $coreRegistry;
 
     /**
      * @var bool
