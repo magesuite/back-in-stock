@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceContainer name="alert.urls">
-            <block class="MageSuite\BackInStock\Block\Product\View\Stock" name="productalert.stock" as="productalert_stock" template="MageSuite_BackInStock::product/subscription_form.phtml">
+        <referenceContainer name="product.info.main">
+            <block class="MageSuite\BackInStock\Block\Product\View\Stock" name="productalert.stock" as="productalert_stock" template="MageSuite_BackInStock::product/subscription_form.phtml" after="product.info.price">
                 <action method="setHtmlClass">
                     <argument name="value" xsi:type="string">stock</argument>
                 </action>
