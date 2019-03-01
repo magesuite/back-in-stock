@@ -1,13 +1,13 @@
 <?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */?>
-<form class="form cs-product-subscription-form <?= $block->getHtmlClass() ?>" action="<?php echo $block->getActionUrl();?>" method="post">
+<form class="form cs-product-stock-subscription <?= $block->getHtmlClass() ?>" action="<?php echo $block->getActionUrl();?>" method="post">
     <fieldset class="fieldset">
-        <div class="field cs-product-subscription-form__field">
-            <label class="label cs-product-subscription-form__label" for="email"><?php echo __('Please enter email to subscribe for stock alert');?></label>
+        <div class="field cs-product-stock-subscription__field">
+            <label class="label cs-product-stock-subscription__label" for="email"><?php echo __('Please enter email to subscribe for stock alert');?></label>
             <input type="hidden" name="product_id" id="product_id" value="<?php echo $block->getProductId();?>"/>
-            <div class="cs-product-subscription-form__input-wrapper">
-                <input class="input-text cs-product-subscription-form__input" title="<?php echo __('Email Address');?>" type="text" name="email" id="email" value="<?php echo $block->getCustomerEmail() ;?>"/>
+            <div class="cs-product-stock-subscription__input-wrapper">
+                <input class="input-text cs-product-stock-subscription__input" title="<?php echo __('Email Address');?>" type="text" name="email" id="email" value="<?php echo $block->getCustomerEmail() ;?>"/>
             </div>
-            <button type="submit" class="action submit primary cs-product-subscription-form__submit"><?php echo __('Notify Me');?></button>
+            <button type="submit" class="action submit primary cs-product-stock-subscription__submit"><?php echo __('Notify Me');?></button>
         </div>
     </fieldset>
 </form>
