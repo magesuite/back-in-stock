@@ -102,7 +102,7 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
      */
     protected function canShowTab()
     {
-        return $this->configuration->isModuleEnabled();
+        return $this->configuration->isModuleEnabled() && $this->getProductId();
     }
 
     protected function getBackInStockFieldset()
@@ -150,7 +150,11 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
     {
         $params = $this->request->getParams();
 
-        return $params['id'];
+        if(isset($params['id'])){
+            return $params['id'];
+        }
+
+        return null;
     }
 
     protected function getStoreId()
