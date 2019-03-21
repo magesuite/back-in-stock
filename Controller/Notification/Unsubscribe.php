@@ -34,7 +34,7 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
         $resultRedirect->setPath($url);
 
         try {
-            $subscription = $this->backInStockSubscriptionRepository->getById($params['notification_id']);
+            $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
 
             if(!$this->validateToken($subscription->getToken(), $params['token'])){
                 throw new \Exception(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
