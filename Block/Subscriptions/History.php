@@ -76,7 +76,7 @@ class History extends \Magento\Framework\View\Element\Template
 
     public function getUnsubscribeUrl($notification)
     {
-        return $this->getUrl('backinstock/notification/unsubscribe', ['notification_id' => $notification->getId(), 'token' => $notification->getToken()]);
+        return $this->getUrl('backinstock/notification/unsubscribe', ['id' => $notification->getId(), 'token' => $notification->getToken()]);
     }
 
     public function getBackUrl()
