@@ -1,5 +1,5 @@
 <?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */?>
-<form class="form cs-product-stock-subscription <?= $block->getHtmlClass() ?>" 
+<form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?>" 
     novalidate
     action="<?php echo $block->getActionUrl();?>" 
     method="post"
@@ -12,7 +12,10 @@
                 <div class="cs-product-stock-subscription__input-wrapper">
                     <input class="input-text cs-product-stock-subscription__input" data-validate="{required:true, 'validate-email':true}" placeholder="<?php echo __('Email Address');?>" title="<?php echo __('Email Address');?>" type="text" name="email" id="email" value="<?php echo $block->getCustomerEmail() ;?>"/>
                 </div>
-                <button type="submit" class="action submit primary cs-product-stock-subscription__submit"><?php echo __('Notify Me');?></button>
+                <button type="submit" class="action submit primary cs-product-stock-subscription__submit">
+                    <span class="cs-product-stock-subscription__submit-label"><?php echo __('Notify Me');?></span>
+                    <?= $block->getChildHtml('product.backinstock.subscription.icon'); ?>
+                </button>
         </div>
     </fieldset>
 </form>
