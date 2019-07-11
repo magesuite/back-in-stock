@@ -25,23 +25,23 @@ class AddNotificationsToQueueAfterStockUpdate implements \Magento\Framework\Even
     protected $getSalableQuantityDataBySku;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
-    protected $registry;
+    protected $productRepository;
 
     public function __construct(
         \MageSuite\BackInStock\Service\NotificationQueueCreator $notificationQueueCreator,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\BackInStock\Helper\Configuration $configuration,
         \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku $getSalableQuantityDataBySku,
-        \Magento\Framework\Registry $registry
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     )
     {
         $this->notificationQueueCreator = $notificationQueueCreator;
         $this->storeManager = $storeManager;
         $this->configuration = $configuration;
         $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
-        $this->registry = $registry;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -56,8 +56,12 @@ class AddNotificationsToQueueAfterStockUpdate implements \Magento\Framework\Even
         $itemData = $observer->getItem()->getData();
         $itemOrigData = $observer->getItem()->getOrigData();
 
-        $sku = $this->registry->registry('current_product')->getSku();
-        $stockInfo = $this->getSalableQuantityDataBySku->execute($sku);
+        if(!isset($itemData['product_id'])){
+            return;
+        }
+
+        $product = $this->productRepository->getById($itemData['product_id']);
+        $stockInfo = $this->getSalableQuantityDataBySku->execute($product->getSku());
 
         if(!isset($stockInfo[0]) || $stockInfo[0]['qty'] < 1){
             return;
