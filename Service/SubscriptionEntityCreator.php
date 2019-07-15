@@ -94,7 +94,7 @@ class SubscriptionEntityCreator
 
         $this->setTemplateParams($subscription, $product);
 
-        $this->sendConfirmationRequest($params['email'], $this->templateParams, self::CONFIRMATION_EMAIL_CONFIG_PATH, $storeId);
+        $this->sendConfirmationRequest($params['email'], $this->templateParams, self::CONFIRMATION_EMAIL_CONFIG_PATH, $storeId, $customerId);
 
         $this->messageManager->addSuccessMessage(__('Alert subscription has been saved. You will receive email with confirmation.'));
     }
@@ -108,7 +108,7 @@ class SubscriptionEntityCreator
         return $this->customer;
     }
 
-    public function sendConfirmationRequest($email, $params, $templateConfigPath, $storeId)
+    public function sendConfirmationRequest($email, $params, $templateConfigPath, $storeId, $customerId)
     {
         $this->emailSender->sendMail($email, $params, $templateConfigPath, $storeId);
     }
