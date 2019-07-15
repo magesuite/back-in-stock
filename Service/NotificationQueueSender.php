@@ -55,7 +55,7 @@ class NotificationQueueSender
 
         /** @var \MageSuite\BackInStock\Model\Notification $notification */
         foreach ($notificationCollection as $notification) {
-            $this->emailSender->sendMail($notification->getCustomerEmail(), $this->getTemplateParams($notification), $this->getEmailTemplateId($notification->getNotificationType()), $notification->getStoreId());
+            $this->emailSender->sendMail($notification->getCustomerEmail(), $this->getTemplateParams($notification), $this->getEmailTemplateId($notification->getNotificationType()), $notification->getStoreId(), $notification->getCustomerId());
 
             $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
 
