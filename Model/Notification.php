@@ -33,7 +33,7 @@ class Notification extends \Magento\Framework\Model\AbstractModel implements \Ma
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getCustomerEmail()
     {
@@ -47,6 +47,25 @@ class Notification extends \Magento\Framework\Model\AbstractModel implements \Ma
     public function setCustomerEmail($customerEmail)
     {
         $this->setData('customer_email', $customerEmail);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerId()
+    {
+        return $this->getData('customer_id');
+    }
+
+    /**
+     * @param int $customerId
+     * @return \MageSuite\BackInStock\Model\Notification
+     */
+    public function setCustomerId($customerId)
+    {
+        $this->setData('customer_id', $customerId);
 
         return $this;
     }

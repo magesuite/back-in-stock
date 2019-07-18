@@ -39,6 +39,17 @@ interface NotificationInterface
     public function setCustomerEmail($customerEmail);
 
     /**
+     * @return int
+     */
+    public function getCustomerId();
+
+    /**
+     * @param int $customerId
+     * @return \MageSuite\BackInStock\Model\Notification
+     */
+    public function setCustomerId($customerId);
+
+    /**
      * @return string
      */
     public function getStoreId();
