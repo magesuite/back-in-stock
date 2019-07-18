@@ -40,6 +40,7 @@ class NotificationQueueCreator
                 ->setNotificationType($notificationType)
                 ->setProductId((int) $notification->getProductId())
                 ->setStoreId($storeId)
+                ->setCustomerId($notification->getCustomerId())
                 ->setMessage($message);
 
             $this->notificationRepository->save($notificationEntity);
