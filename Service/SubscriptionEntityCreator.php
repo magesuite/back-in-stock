@@ -110,7 +110,7 @@ class SubscriptionEntityCreator
 
     public function sendConfirmationRequest($email, $params, $templateConfigPath, $storeId, $customerId)
     {
-        $this->emailSender->sendMail($email, $params, $templateConfigPath, $storeId);
+        $this->emailSender->sendMail($email, $params, $templateConfigPath, $storeId, $customerId);
     }
 
     public function setTemplateParams($subscription, $product)
