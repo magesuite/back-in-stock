@@ -61,6 +61,11 @@ class AddNotificationsToQueueAfterStockUpdate implements \Magento\Framework\Even
         }
 
         $product = $this->productRepository->getById($itemData['product_id']);
+
+        if($product->getTypeId() != \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE){
+            return;
+        }
+
         $stockInfo = $this->getSalableQuantityDataBySku->execute($product->getSku());
 
         if(!isset($stockInfo[0]) || $stockInfo[0]['qty'] < 1){
