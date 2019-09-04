@@ -35,11 +35,15 @@ class Confirm extends \Magento\Framework\App\Action\Action
     {
         $params = $this->_request->getParams();
 
+        $resultRedirect = $this->resultRedirectFactory->create();
+        $url = $this->_redirect->getRefererUrl();
+        $resultRedirect->setPath($url);
+
         try {
             $this->confirmationUpdater->update($params);
         } catch (\Exception $e) {
-            return $this->_redirect('/');
+            return $resultRedirect;
         }
-        return $this->_redirect('/');
+        return $resultRedirect;
     }
 }
