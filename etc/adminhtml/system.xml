@@ -15,6 +15,11 @@
                     <source_model>\Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Enables back to stock notification functionality.</comment>
                 </field>
+                <field id="remove_subscription_after_send_notification" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatic remove subscription</label>
+                    <source_model>\Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enables automatic removing subscription after send email notification.</comment>
+                </field>
             </group>
             <group id="email_configuration" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Email Configuration</label>

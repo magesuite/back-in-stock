@@ -27,6 +27,8 @@ class SendNotificationsFromQueue
         if (!$this->configuration->isModuleEnabled()) {
             return;
         }
-        $this->notificationQueueSender->send();
+        $automaticRemoveSubscription = $this->configuration->isRemoveSubscriptionAfterSendNotification();
+
+        $this->notificationQueueSender->send($automaticRemoveSubscription);
     }
 }

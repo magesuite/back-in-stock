@@ -4,6 +4,7 @@
         <back_in_stock>
             <general>
                 <enabled>0</enabled>
+                <remove_subscription_after_send_notification>0</remove_subscription_after_send_notification>
             </general>
             <email_configuration>
                 <sender_email>general</sender_email>
