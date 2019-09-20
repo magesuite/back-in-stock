@@ -4,6 +4,7 @@ namespace MageSuite\BackInStock\Helper;
 class Configuration
 {
     const MODULE_ENABLED_CONFIG_PATH = 'back_in_stock/general/enabled';
+    const AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH = 'back_in_stock/general/remove_subscription_after_send_notification';
     const SENDER_TYPE_CONFIG_PATH = 'back_in_stock/email_configuration/sender_email';
     const SENDER_NAME_CONFIG_PATH = 'trans_email/ident_%s/name';
     const SENDER_EMAIL_CONFIG_PATH = 'trans_email/ident_%s/email';
@@ -29,12 +30,17 @@ class Configuration
 
     public function isModuleEnabled()
     {
-        return (bool) $this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH);
+        return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH);
+    }
+
+    public function isRemoveSubscriptionAfterSendNotification()
+    {
+        return (bool)$this->getConfigValue(self::AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH);
     }
 
     public function canDisplaySubscriptionForm($product, $storeId)
     {
-        return (bool) $this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH, $storeId) && $product && !$product->isAvailable();
+        return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH, $storeId) && $product && !$product->isAvailable();
     }
 
     public function getEmailTemplateId($templateConfigPath, $storeId)
