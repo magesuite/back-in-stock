@@ -1,4 +1,4 @@
-<!--@subject {{trans "Products back in stock alert"}} @-->
+<!--@subject {{trans "Products back in stock subscription confirmation"}} @-->
 <!--@vars {
 "var alertGrid|raw":"Alert Data Grid",
 "var customerName":"Customer Name",
@@ -8,11 +8,22 @@
 
 {{template config_path="design/email/header_template"}}
 
-<p class="greeting">{{trans "%name," name=$customerName}}</p>
-{{var alertGrid|raw}}
-
-{{var email|raw}}
-{{var confirm_url|raw}}
-{{var unsubscribe_url|raw}}
+<table>
+    <tr class="email-summary">
+        <td>
+            <p class="greeting">{{trans "Hello, %name" name=$customerName}}</p>
+            <p>{{trans "You have subscribed with your e-mail address" }}</p>
+            <p>{{var email|raw}} {{trans "to back-in-stock notifications."}}</p>
+            <p>
+                {{trans "Please click following link to confirm your subscription:"}}
+                {{var confirm_url|raw}}
+            </p>
+            <p>
+                {{trans "Please click following link if you wish to decline the subscription:"}}
+                {{var unsubscribe_url|raw}}
+            </p>
+        </td>
+    </tr>
+</table>
 
 {{template config_path="design/email/footer_template"}}
