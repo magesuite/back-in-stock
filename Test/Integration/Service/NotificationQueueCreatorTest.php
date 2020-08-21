@@ -24,7 +24,7 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
      */
     protected $notificationCollection;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 

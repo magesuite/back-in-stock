@@ -27,7 +27,7 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected $subscription;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

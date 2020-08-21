@@ -17,7 +17,7 @@ class PreviewNotificationSenderTest extends \PHPUnit\Framework\TestCase
      */
     protected $emailSender;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
