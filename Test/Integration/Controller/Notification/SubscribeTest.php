@@ -22,7 +22,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected $subscriptionRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

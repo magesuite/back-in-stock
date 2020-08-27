@@ -17,7 +17,7 @@ class PreviewNotificationSenderTest extends \PHPUnit\Framework\TestCase
      */
     protected $emailSender;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
@@ -37,7 +37,9 @@ class PreviewNotificationSenderTest extends \PHPUnit\Framework\TestCase
 
         $sentMessage = $transportBuilder->getSentMessage()->getRawMessage();
 
-        $this->assertContains('test@preview.com', $sentMessage);
+        $assertContains = method_exists($this, 'assertStringContainsString') ? 'assertStringContainsString' : 'assertContains';
+
+        $this->$assertContains('test@preview.com', $sentMessage);
     }
 
 }
