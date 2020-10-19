@@ -1,0 +1,45 @@
+"Product ID",Artikelnummer
+"There are no customers for this alert.","Es sind keine Kunden für diese Warnung vorhanden."
+"Customer ID",Kunden-ID
+Email,E-Mail
+"Subscribe Date",Anmeldedatum
+"Last Notified","Zuletzt benachrichtigt"
+"Send Count","Anzahl abschicken"
+"My Back In Stock Notifications","Meine Wieder verfügbar Benachrichtigungen"
+"Correctly unsubscribed from back in stock notification.","Erfolgreich für Benachrichtigungen abgemeldet."
+"Back in stock subscription has been confirmed.","Erfolgreich für Benachrichtigungen angemeldet."
+"Invalid email address.","Die E-Mail Adresse ist nicht gültig."
+"You have already subscribed for a back-to-stock notification for this product.","Sie haben sich bereits für Benachrichtigungen für diesen Artikel angemeldet."
+"Alert subscription has been saved. You will receive email with confirmation.","Sie haben sich für eine Benachrichtigung angemeldet. Sie erhalten eine E-Mail mit einer Bestätigung."
+Sent,Gesendet
+"Email Address",E-Mailadresse
+"Please enter email to subscribe for stock alert","Bitte geben Sie Ihre E-Mail Adresse ein, um sich für Verfügbarkeitsbenachrichtigungen einzuschreiben"
+"Notify Me",Einschreiben
+SKU,Artikelnummer
+"Request Date",Datum
+"Stock Status",Lagerbestand
+Action,Aktion
+"In Stock","Auf Lager"
+"Out of Stock","Nicht lieferbar"
+Actions,Aktionen
+Delete,Löschen
+Unsubscribe,Abbestellen
+"You have no back in stock subscriptions yet.","Sie haben sich noch für keine Benachrichtigungen angemeldet."
+"%store_name - product back in stock notification","%store_name - Produkt wieder auf Lager Benachrichtigung"
+"Hello, %name","Hallo, %name"
+"The product you have subscribed for is back in stock:","Das Produkt, das Sie abonniert haben, ist wieder auf Lager:"
+"Please click the following link to purchase the product:","Bitte klicken Sie auf folgenden Link, um zum Produkt zu gelangen:"
+"%store_name - product back in stock subscription confirmation","%store_name - Produkt wieder auf Lager Abonnementbestätigung"
+"You have subscribed with your e-mail address","Sie haben mit Ihrer E-Mail-Adresse"
+"to back-in-stock notifications.","Back-in-Stock-Benachrichtigungen abonniert."
+"Please click following link to confirm your subscription:","Bitte klicken Sie auf den folgenden Link, um Ihr Abonnement zu bestätigen:"
+"Please click following link if you wish to decline the subscription:","Bitte klicken Sie auf den folgenden Link, wenn Sie das Abonnement ablehnen möchten:"
+"%store_name - product back in stock alert","%store_name - Produkt wieder auf Lager Alarm"
+Send,Senden
+General,Allgemein
+Enabled,Aktiviert
+"Email Sender",E-Mail-Absender
+"Confirmation Email Template","Vorlage für Bestätigung-E-Mail"
+"Customer Email",Kunden-E-Mail
+Product,Produkt
+"Add Date","Datum hinzufügen"

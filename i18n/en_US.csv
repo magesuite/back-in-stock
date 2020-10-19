@@ -1,0 +1,80 @@
+"There are no subscriptions for this customer.","There are no subscriptions for this customer."
+"Product ID","Product ID"
+"Store ID","Store ID"
+"Subscription Date","Subscription Date"
+"Last Notification Date","Last Notification Date"
+"Amount of Notifications Sent","Amount of Notifications Sent"
+"There are no customers for this alert.","There are no customers for this alert."
+"Customer ID","Customer ID"
+Email,Email
+"Subscribe Date","Subscribe Date"
+"Last Notified","Last Notified"
+"Send Count","Send Count"
+"Back In Stock Subscriptions","Back In Stock Subscriptions"
+"Back In Stock","Back In Stock"
+"Customers have been notified.","Customers have been notified."
+"Error occured while sending notifications.","Error occured while sending notifications."
+"Preview emails has been sent to provided email address.","Preview emails has been sent to provided email address."
+"Your session expired, please login again.","Your session expired, please login again."
+"My Back In Stock Notifications","My Back In Stock Notifications"
+"Something went wrong while processing unsubscribe. Please contact store owner.","Something went wrong while processing unsubscribe. Please contact store owner."
+"Correctly unsubscribed from back in stock notification.","Correctly unsubscribed from back in stock notification."
+"Back in stock subscription with id ""%1"" does not exist.","Back in stock subscription with id ""%1"" does not exist."
+"Could not save this entity: %1","Could not save this entity: %1"
+"Could not delete this entity: %1","Could not delete this entity: %1"
+"Notification with id ""%1"" does not exist.","Notification with id ""%1"" does not exist."
+"Missing required arguments in request URL.","Missing required arguments in request URL."
+"Something went wrong while confirming your subscription. Please contact store owner.","Something went wrong while confirming your subscription. Please contact store owner."
+"This subscription request has been already confirmed.","This subscription request has been already confirmed."
+"Back in stock subscription has been confirmed.","Back in stock subscription has been confirmed."
+"Invalid email address.","Invalid email address."
+"You have already subscribed for a back-to-stock notification for this product.","You have already subscribed for a back-to-stock notification for this product."
+"Alert subscription has been saved. You will receive email with confirmation.","Alert subscription has been saved. You will receive email with confirmation."
+Sent,Sent
+"Not sent","Not sent"
+"Email Address","Email Address"
+"Please type email addess to which notification preview will be sent.","Please type email addess to which notification preview will be sent."
+"Please write message which will be sent to all customers which requested back in stock notification. If you leave it empty message won't be sent.","Please write message which will be sent to all customers which requested back in stock notification. If you leave it empty message won't be sent."
+"Please enter email to subscribe for stock alert","Please enter email to subscribe for stock alert"
+"Notify Me","Notify Me"
+"Notification requests","Notification requests"
+SKU,SKU
+Name,Name
+"Request Date","Request Date"
+"Stock Status","Stock Status"
+Action,Action
+"In Stock","In Stock"
+"Out of Stock","Out of Stock"
+Actions,Actions
+Delete,Delete
+Unsubscribe,Unsubscribe
+"You have no back in stock subscriptions yet.","You have no back in stock subscriptions yet."
+"%store_name - product back in stock notification","%store_name - product back in stock notification"
+"Hello, %name","Hello, %name"
+"The product you have subscribed for is back in stock:","The product you have subscribed for is back in stock:"
+"Please click the following link to purchase the product:","Please click the following link to purchase the product:"
+"%store_name - product back in stock subscription confirmation","%store_name - product back in stock subscription confirmation"
+"You have subscribed with your e-mail address","You have subscribed with your e-mail address"
+"to back-in-stock notifications.","to back-in-stock notifications."
+"Please click following link to confirm your subscription:","Please click following link to confirm your subscription:"
+"Please click following link if you wish to decline the subscription:","Please click following link if you wish to decline the subscription:"
+"%store_name - product back in stock alert","%store_name - product back in stock alert"
+"Notify Manually","Notify Manually"
+Send,Send
+"Send Preview Email","Send Preview Email"
+MageSuite,MageSuite
+General,General
+Enabled,Enabled
+"Automatic remove subscription","Automatic remove subscription"
+"Email Configuration","Email Configuration"
+"Email Sender","Email Sender"
+"Confirmation Email Template","Confirmation Email Template"
+"Automatic Notification Email Template","Automatic Notification Email Template"
+"Manual Notification Email Template","Manual Notification Email Template"
+"Cron Settings","Cron Settings"
+"Cron Schedule","Cron Schedule"
+Id,Id
+"Customer Email","Customer Email"
+Product,Product
+"Add Date","Add Date"
+Status,Status

@@ -1,0 +1,28 @@
+"Product ID","ID prodotto"
+"There are no customers for this alert.","Non ci sono clienti per questo avviso."
+"Customer ID","ID cliente"
+Email,Email
+"Subscribe Date","Data di iscrizione"
+"Last Notified","Notificato ultima volta"
+"Send Count","Invia totale"
+Sent,Inviato
+"Email Address","Indirizzo Email"
+SKU,SKU
+Name,Nome
+"Stock Status","Status inventario"
+Action,Azione
+"In Stock",Disponibile
+"Out of Stock","Non Disponibile"
+Actions,Azioni
+Delete,Elimina
+Unsubscribe,"Annulla Iscrizione"
+Send,Invio
+General,Generale
+Enabled,Abilitato
+"Email Sender","Mittente email"
+"Confirmation Email Template","Template Email conferma"
+Id,Id
+"Customer Email","Email cliente"
+Product,Prodotto
+"Add Date","Aggiungi data"
+Status,Status
