@@ -5,10 +5,6 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
 {
     protected $customer = null;
     /**
-     * @var \Magento\Customer\Model\SessionFactory
-     */
-    protected $customerSession;
-    /**
      * @var \Magento\Framework\UrlInterface
      */
     protected $urlBuilder;
@@ -23,12 +19,10 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
         \Magento\ProductAlert\Helper\Data $helper,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\Helper\PostHelper $coreHelper,
-        \Magento\Customer\Model\SessionFactory $customerSession,
         \Magento\Framework\UrlInterface $urlBuilder,
         \MageSuite\BackInStock\Helper\Configuration $configuration
     ) {
         parent::__construct($context, $helper, $registry, $coreHelper);
-        $this->customerSession = $customerSession;
         $this->urlBuilder = $urlBuilder;
         $this->configuration = $configuration;
     }
@@ -48,15 +42,6 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
             $this->setSignupUrl($this->_helper->getSaveUrl('stock'));
         }
         return parent::setTemplate($template);
-    }
-
-    public function getCustomerEmail()
-    {
-        $customerSession = $this->customerSession->create();
-        if (!$customerSession->isLoggedIn()) {
-            return '';
-        }
-        return $customerSession->getCustomerData()->getEmail();
     }
 
     public function getActionUrl()
