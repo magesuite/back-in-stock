@@ -1,7 +1,7 @@
 <?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */?>
-<form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?>" 
+<form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?>"
     novalidate
-    action="<?php echo $block->getActionUrl();?>" 
+    action="<?php echo $block->getActionUrl();?>"
     method="post"
     data-mage-init='{"validation": {"errorClass": "mage-error"}}'
     >
@@ -10,7 +10,7 @@
             <label class="label cs-product-stock-subscription__label" for="email"><?php echo __('Please enter email to subscribe for stock alert');?></label>
                 <input type="hidden" name="product_id" id="product_id" value="<?php echo $block->getProductId();?>"/>
                 <div class="cs-product-stock-subscription__input-wrapper">
-                    <input class="input-text cs-product-stock-subscription__input" data-validate="{required:true, 'validate-email':true}" placeholder="<?php echo __('Email Address');?>" title="<?php echo __('Email Address');?>" type="text" name="email" id="email" value="<?php echo $block->getCustomerEmail() ;?>"/>
+                    <input class="input-text cs-product-stock-subscription__input" data-validate="{required:true, 'validate-email':true}" placeholder="<?php echo __('Email Address');?>" title="<?php echo __('Email Address');?>" type="text" name="email" id="email"/>
                 </div>
                 <button type="submit" class="action submit primary cs-product-stock-subscription__submit">
                     <span class="cs-product-stock-subscription__submit-label"><?php echo __('Notify Me');?></span>
