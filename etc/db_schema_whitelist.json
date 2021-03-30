@@ -1,0 +1,40 @@
+{
+    "back_in_stock_subscription_entity": {
+        "column": {
+            "id": true,
+            "customer_id": true,
+            "customer_email": true,
+            "product_id": true,
+            "parent_product_id": true,
+            "store_id": true,
+            "add_date": true,
+            "send_date": true,
+            "send_count": true,
+            "was_notification_sent": true,
+            "customer_confirmed": true,
+            "token": true,
+            "notification_channel": true
+        },
+        "index": {
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_PRODUCT_ID": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTT_PRD_ID_CAT_PRD_ENTT_ENTT_ID": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_STORE_ID_STORE_STORE_ID": true
+        }
+    },
+    "back_in_stock_notification_queue": {
+        "column": {
+            "id": true,
+            "subscription_id": true,
+            "notification_type": true,
+            "message": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_1F83656A5D0C1E64DDE378345C443EBA": true
+        }
+    }
+}

@@ -2,6 +2,9 @@
   "name": "creativestyle/magesuite-back-in-stock",
   "description": "Back In Stock",
   "type": "magento2-module",
+  "require": {
+      "creativestyle/magesuite-queue": "1.0.0"
+  },
   "autoload": {
     "files": [
       "registration.php"

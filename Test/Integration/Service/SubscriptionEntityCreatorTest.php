@@ -19,7 +19,7 @@ class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
     protected $notificationQueueCreator;
 
     /**
-     * @var \MageSuite\BackInStock\Service\NotificationQueueSender
+     * @var \MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender
      */
     protected $notificationQueueSender;
 
@@ -44,7 +44,7 @@ class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
 
         $this->subscriptionEntityCreator = $this->objectManager->create(\MageSuite\BackInStock\Service\SubscriptionEntityCreator::class);
         $this->notificationQueueCreator = $this->objectManager->create(\MageSuite\BackInStock\Service\NotificationQueueCreator::class);
-        $this->notificationQueueSender = $this->objectManager->create(\MageSuite\BackInStock\Service\NotificationQueueSender::class);
+        $this->notificationQueueSender = $this->objectManager->create(\MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender::class);
         $this->notificationCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory::class);
         $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->subscriptionCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection::class);
@@ -60,7 +60,7 @@ class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
 
-        $this->subscriptionEntityCreator->subscribe(['product_id' => $product->getId(), 'email' => 'test_email@test.com']);
+        $this->subscriptionEntityCreator->subscribe(['notification_channel' => 'email', 'product' => $product->getId(), 'email' => 'test_email@test.com']);
 
         $subscriptionCollection = $this->subscriptionCollection
             ->addFieldToFilter('product_id', ['eq' => $product->getId()])

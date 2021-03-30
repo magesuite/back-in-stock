@@ -3,8 +3,59 @@ namespace MageSuite\BackInStock\Model\ResourceModel;
 
 class BackInStockSubscription extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
+    const TABLE_NAME = 'back_in_stock_subscription_entity';
+
+    /**
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface
+     */
+    protected $connection;
+
+    /*
+     * @var \Magento\Framework\EntityManager\MetadataPool
+     */
+    protected $metadataPool;
+
+    protected $productEntityLinkField;
+
+    public function __construct(
+        \Magento\Framework\Model\ResourceModel\Db\Context $context,
+        \Magento\Framework\App\ResourceConnection $resource,
+        \Magento\Framework\EntityManager\MetadataPool $metadataPool
+    ) {
+        parent::__construct($context);
+
+        $this->connection = $resource->getConnection();
+        $this->metadataPool = $metadataPool;
+    }
+
     public function _construct()
     {
-        $this->_init('back_in_stock_subscription_entity', 'id');
+        $this->_init(self::TABLE_NAME, 'id');
     }
+
+    public function getSubscriptionsBySkus($skus)
+    {
+        $tableName = $this->connection->getTableName($this->getMainTable());
+
+        $query = $this->connection
+            ->select()
+            ->from(['s' => $tableName], 's.*')
+            ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 's.product_id = e.' . $this->getProductEntityLinkField(), 'e.sku')
+            ->where('e.sku IN (?)', $skus)
+            ->where('s.customer_confirmed = ?', 1);
+
+        return $this->connection->fetchAll($query);
+    }
+
+    protected function getProductEntityLinkField()
+    {
+        if (!$this->productEntityLinkField) {
+            $this->productEntityLinkField = $this->metadataPool
+                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+                ->getLinkField();
+        }
+
+        return $this->productEntityLinkField;
+    }
+
 }

@@ -40,10 +40,10 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     public function testItSubscribeCorrectly()
     {
         $product = $this->productRepository->get('simple');
-        $this->getRequest()->setParams(['product_id' => $product->getId(), 'email' => 'subscribe_test@test.com']);
+        $this->getRequest()->setParams(['notification_channel' => 'email', 'product' => $product->getId(), 'email' => 'subscribe_test@test.com']);
 
         $this->dispatch('backinstock/notification/subscribe');
 
-        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 0, 'subscribe_test@test.com', 1));
+        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'subscribe_test@test.com', 1));
     }
 }

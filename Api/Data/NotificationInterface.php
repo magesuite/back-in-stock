@@ -3,6 +3,9 @@ namespace MageSuite\BackInStock\Api\Data;
 
 interface NotificationInterface
 {
+    const SUBSCRIPTION_ID = 'subscription_id';
+    const NOTIFICATION_TYPE = 'notification_type';
+    const MESSAGE = 'message';
     const AUTOMATIC_NOTIFICATION_TEMPLATE = 'back_in_stock/email_configuration/automatic_notification_email_template';
     const MANUAL_NOTIFICATION_TEMPLATE = 'back_in_stock/email_configuration/manual_notification_email_template';
     /**
@@ -26,50 +29,6 @@ interface NotificationInterface
      * @return \MageSuite\BackInStock\Model\Notification
      */
     public function setSubscriptionId($id);
-
-    /**
-     * @return string
-     */
-    public function getCustomerEmail();
-
-    /**
-     * @param string $customerEmail
-     * @return \MageSuite\BackInStock\Model\Notification
-     */
-    public function setCustomerEmail($customerEmail);
-
-    /**
-     * @return int
-     */
-    public function getCustomerId();
-
-    /**
-     * @param int $customerId
-     * @return \MageSuite\BackInStock\Model\Notification
-     */
-    public function setCustomerId($customerId);
-
-    /**
-     * @return string
-     */
-    public function getStoreId();
-
-    /**
-     * @param string $storeId
-     * @return \MageSuite\BackInStock\Model\Notification
-     */
-    public function setStoreId($storeId);
-
-    /**
-     * @return string
-     */
-    public function getProductId();
-
-    /**
-     * @param string $productId
-     * @return \MageSuite\BackInStock\Model\Notification
-     */
-    public function setProductId($productId);
 
     /**
      * @return string

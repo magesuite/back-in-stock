@@ -24,12 +24,12 @@ interface BackInStockSubscriptionRepositoryInterface
 
     /**
      * @param string|int $productId
-     * @param string|int $customerId
-     * @param string $email
+     * @param string|int $identifyByField
+     * @param string $identifyByValue
      * @param string $storeId
      * @return mixed
      */
-    public function subscriptionExist($productId, $customerId, $email, $storeId);
+    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId);
 
     /**
      * @param $email

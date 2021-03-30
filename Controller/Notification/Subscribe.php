@@ -1,47 +1,57 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Notification;
 
 class Subscribe extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var \Magento\Framework\Controller\Result\JsonFactory
      */
-    protected $pageFactory;
+    protected $jsonResultFactory;
+
     /**
      * @var \MageSuite\BackInStock\Service\SubscriptionEntityCreator
      */
-    private $subscriptionEntityCreator;
+    protected $subscriptionEntityCreator;
 
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $pageFactory,
+        \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
         \MageSuite\BackInStock\Service\SubscriptionEntityCreator $subscriptionEntityCreator
     )
     {
-        $this->pageFactory = $pageFactory;
         parent::__construct($context);
 
         $this->subscriptionEntityCreator = $subscriptionEntityCreator;
+        $this->jsonResultFactory = $jsonResultFactory;
     }
 
     public function execute()
     {
         $params = $this->_request->getParams();
 
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $url = $this->_redirect->getRefererUrl();
-        $resultRedirect->setPath($url);
+        $jsonResult = $this->jsonResultFactory->create();
 
         try {
             $this->subscriptionEntityCreator->subscribe($params);
         } catch (\Magento\Framework\Exception\AlreadyExistsException $e) {
-            $this->messageManager->addNoticeMessage($e->getMessage());
-            return $resultRedirect;
+            return $jsonResult->setData([
+                'success' => false,
+                'message' => __('Subscription already exist.')
+            ]);
         } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
-            return $resultRedirect;
+            return $jsonResult
+                ->setHttpResponseCode(500)
+                ->setData([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
         }
-        return $resultRedirect;
+
+        return $jsonResult->setData([
+            'success' => true,
+            'message' => __('Subscription has been saved. We will notify you when product is back in stock.')
+        ]);
     }
 }

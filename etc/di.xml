@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface"
-                type="MageSuite\BackInStock\Model\BackInStockSubscriptionRepository" />
-    <preference for="MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface"
-                type="MageSuite\BackInStock\Model\BackInStockSubscription" />
+    <preference for="MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface" type="MageSuite\BackInStock\Model\BackInStockSubscriptionRepository" />
+    <preference for="MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface" type="MageSuite\BackInStock\Model\BackInStockSubscription" />
 
-    <preference for="MageSuite\BackInStock\Api\NotificationRepositoryInterface"
-                type="MageSuite\BackInStock\Model\NotificationRepository" />
-    <preference for="MageSuite\BackInStock\Api\Data\NotificationInterface"
-                type="MageSuite\BackInStock\Model\Notification" />
+    <preference for="MageSuite\BackInStock\Api\NotificationRepositoryInterface" type="MageSuite\BackInStock\Model\NotificationRepository" />
+    <preference for="MageSuite\BackInStock\Api\Data\NotificationInterface" type="MageSuite\BackInStock\Model\Notification" />
+
+    <preference for="MageSuite\BackInStock\Api\Data\IsProductSalableResultInterface" type="MageSuite\BackInStock\Model\IsProductSalableResult" />
+    <preference for="MageSuite\BackInStock\Api\AreProductsSalableInterface" type="MageSuite\BackInStock\Model\AreProductsSalable" />
+
+    <preference for="MageSuite\BackInStock\Api\NotificationProductDataResolverInterface" type="MageSuite\BackInStock\Service\NotificationProductDataResolver" />
 
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
@@ -17,10 +18,40 @@
             </argument>
         </arguments>
     </type>
+
     <virtualType name="MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">back_in_stock_subscription_entity</argument>
             <argument name="resourceModel" xsi:type="string">MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription</argument>
         </arguments>
     </virtualType>
+
+    <type name="Magento\Inventory\Model\SourceItem\Command\SourceItemsSave">
+        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave\AddBackInStockItemsToQueue" sortOrder="1" />
+    </type>
+
+    <type name="MageSuite\BackInStock\Service\SubscriptionEntityCreator">
+        <arguments>
+            <argument name="creatorsByChannel" xsi:type="array">
+                <item name="email" xsi:type="object">MageSuite\BackInStock\Service\Subscription\Channel\Email\EmailSubscriptionCreator</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="MageSuite\BackInStock\Service\NotificationQueueSender">
+        <arguments>
+            <argument name="sendersByChannel" xsi:type="array">
+                <item name="email" xsi:type="object">MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="MageSuite\BackInStock\Model\NotificationProductDataResolverPool">
+        <arguments>
+            <argument name="productDataResolvers" xsi:type="array">
+                <item name="configurable" xsi:type="object">MageSuite\BackInStock\Model\NotificationProductDataResolver\Configurable</item>
+                <item name="simple" xsi:type="object">MageSuite\BackInStock\Model\NotificationProductDataResolver\Simple</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

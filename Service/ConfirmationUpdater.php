@@ -10,7 +10,7 @@ class ConfirmationUpdater
     /**
      * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
      */
-    private $backInStockSubscriptionRepository;
+    protected $backInStockSubscriptionRepository;
 
 
     public function __construct(

@@ -60,12 +60,12 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $subscription = $this->subscriptionRepository->save($subscription);
 
-        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 0, 'test@unsubscribe.com', 1));
+        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test@unsubscribe.com', 1));
 
         $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $token]);
 
         $this->dispatch('backinstock/notification/unsubscribe');
 
-        $this->assertFalse($this->subscriptionRepository->subscriptionExist($product->getId(), 0, 'test@unsubscribe.com', 1));
+        $this->assertFalse($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test@unsubscribe.com', 1));
     }
 }

@@ -44,24 +44,25 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
 
-        $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION,  'test message');
+        $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION, 'test message');
 
         $notificationCollection = $this->notificationCollection;
 
         $this->assertEquals(10, $notificationCollection->getSize());
 
         foreach ($notificationCollection as $notification){
-            $this->assertEquals($product->getId(), $notification->getProductId());
             $this->assertEquals('automatic_notification', $notification->getNotificationType());
             $this->assertEquals('test message', $notification->getMessage());
         }
     }
 
-    public static function loadSubscriptions() {
+    public static function loadSubscriptions()
+    {
         include __DIR__.'/../../_files/subscriptions.php';
     }
 
-    public static function loadSubscriptionsCustomerConfirmed() {
+    public static function loadSubscriptionsCustomerConfirmed()
+    {
         include __DIR__.'/../../_files/subscriptions_confirmed_customer.php';
     }
 }

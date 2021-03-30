@@ -64,19 +64,13 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return true;
     }
 
-    public function subscriptionExist($productId, $customerId, $email, $storeId)
+    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId)
     {
-
         $collection = $this->subscriptionCollectionFactory->create();
 
         $collection->addFieldToFilter('product_id', ['eq' => $productId]);
         $collection->addFieldToFilter('store_id', ['eq' => $storeId]);
-
-        if($customerId){
-            $collection->addFieldToFilter('customer_id', ['eq' => $customerId]);
-        } else {
-            $collection->addFieldToFilter('customer_email', ['eq' => $email]);
-        }
+        $collection->addFieldToFilter($identifyByField, ['eq' => $identifyByValue]);
 
         if($collection->getSize()){
             return true;
