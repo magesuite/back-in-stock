@@ -60,7 +60,7 @@ class ConfirmTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $subscription = $this->subscriptionRepository->save($subscription);
 
-        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 0, 'test@confirm.com', 1));
+        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test@confirm.com', 1));
 
         $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $token]);
 

@@ -2,7 +2,14 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="product.info.main">
-            <block class="MageSuite\BackInStock\Block\Product\View\Stock" name="product.backinstock.subscription" template="MageSuite_BackInStock::product/subscription_form.phtml" after="product.info.price" />
+            <block class="MageSuite\BackInStock\Block\Product\View\Stock" name="product.backinstock.subscription" template="MageSuite_BackInStock::product/subscription_form.phtml" after="product.info.price">
+                <arguments>
+                    <argument name="email_label" xsi:type="string" translate="true">Please enter email to subscribe for stock alert</argument>
+                    <argument name="submit_label" xsi:type="string" translate="true">Notify me by e-mail</argument>
+                    <argument name="loader_icon_path" xsi:type="string">images/spinner.svg</argument>
+                </arguments>
+                <container name="product.backinstock.subscription.hotspot.aboveemail" />
+            </block>
         </referenceContainer>
     </body>
 </page>

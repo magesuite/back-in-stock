@@ -8,10 +8,12 @@ class Configuration
     const SENDER_TYPE_CONFIG_PATH = 'back_in_stock/email_configuration/sender_email';
     const SENDER_NAME_CONFIG_PATH = 'trans_email/ident_%s/name';
     const SENDER_EMAIL_CONFIG_PATH = 'trans_email/ident_%s/email';
+    const CONFIRMATION_EMAIL_CONFIG_PATH = 'back_in_stock/email_configuration/confirmation_email_template';
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    private $scopeConfig;
+    protected $scopeConfig;
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -40,7 +42,7 @@ class Configuration
 
     public function canDisplaySubscriptionForm($product, $storeId)
     {
-        return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH, $storeId) && $product && !$product->isAvailable();
+        return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH, $storeId);
     }
 
     public function getEmailTemplateId($templateConfigPath, $storeId)

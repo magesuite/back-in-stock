@@ -7,16 +7,6 @@ class NotificationQueueSender
     const MANUAL_NOTIFICATION = 'manual_notification';
     const AUTOMATIC_NOTIFICATION = 'automatic_notification';
 
-    protected $notificationTypeMap = [
-        self::MANUAL_NOTIFICATION => \MageSuite\BackInStock\Api\Data\NotificationInterface::MANUAL_NOTIFICATION_TEMPLATE,
-        self::AUTOMATIC_NOTIFICATION => \MageSuite\BackInStock\Api\Data\NotificationInterface::AUTOMATIC_NOTIFICATION_TEMPLATE,
-    ];
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
     /**
      * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
      */
@@ -33,23 +23,23 @@ class NotificationQueueSender
     protected $notificationCollectionFactory;
 
     /**
-     * @var EmailSender
+     * @var array
      */
-    protected $emailSender;
+    protected $sendersByChannel;
 
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
         \MageSuite\BackInStock\Api\NotificationRepositoryInterface $notificationRepository,
         \MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory $notificationCollectionFactory,
-        \MageSuite\BackInStock\Service\EmailSender $emailSender
+        $sendersByChannel = []
     )
     {
         $this->productRepository = $productRepository;
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
         $this->notificationRepository = $notificationRepository;
         $this->notificationCollectionFactory = $notificationCollectionFactory;
-        $this->emailSender = $emailSender;
+        $this->sendersByChannel = $sendersByChannel;
     }
 
     public function send($automaticRemoveSubscription = false)
@@ -58,9 +48,15 @@ class NotificationQueueSender
 
         /** @var \MageSuite\BackInStock\Model\Notification $notification */
         foreach ($notificationCollection as $notification) {
-            $this->emailSender->sendMail($notification->getCustomerEmail(), $this->getTemplateParams($notification), $this->getEmailTemplateId($notification->getNotificationType()), $notification->getStoreId(), $notification->getCustomerId());
-
             $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
+
+            $channel = $subscription->getNotificationChannel();
+
+            if(!isset($this->sendersByChannel[$channel])) {
+                continue;
+            }
+
+            $this->sendersByChannel[$channel]->send($notification, $subscription);
 
             if ($automaticRemoveSubscription) {
                 $this->backInStockSubscriptionRepository->delete($subscription);
@@ -77,52 +73,5 @@ class NotificationQueueSender
         }
 
         return $this;
-    }
-
-    public function getEmailTemplateId($notificationType)
-    {
-        $notificationTypeMap = $this->notificationTypeMap;
-
-        return $notificationTypeMap[$notificationType];
-    }
-
-    public function getTemplateParams($notification)
-    {
-
-        if ($notification->getNotificationType() == self::MANUAL_NOTIFICATION) {
-            return $this->getManualNotificationParams($notification);
-        }
-
-        if ($notification->getNotificationType() == self::AUTOMATIC_NOTIFICATION) {
-            return $this->getAutomaticNotificationParams($notification);
-        }
-
-        return [];
-    }
-
-    /**
-     * @param $notification \MageSuite\BackInStock\Model\Notification
-     * @return array
-     */
-    public function getManualNotificationParams($notification)
-    {
-        return [
-            'notification_message' => $notification->getMessage()
-        ];
-    }
-
-    /**
-     * @param $notification \MageSuite\BackInStock\Model\Notification
-     * @return array
-     */
-    public function getAutomaticNotificationParams($notification)
-    {
-        $product = $this->productRepository->getById($notification->getProductId(), false, $notification->getStoreId());
-
-        return [
-            'product_name' => $product->getName(),
-            'product_sku' => $product->getSku(),
-            'product_url' => $product->getProductUrl()
-        ];
     }
 }

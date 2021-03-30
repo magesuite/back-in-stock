@@ -11,7 +11,7 @@ class SendNotificationsFromQueue
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
-    private $configuration;
+    protected $configuration;
 
     public function __construct(
         \MageSuite\BackInStock\Service\NotificationQueueSender $notificationQueueSender,
@@ -27,6 +27,7 @@ class SendNotificationsFromQueue
         if (!$this->configuration->isModuleEnabled()) {
             return;
         }
+
         $automaticRemoveSubscription = $this->configuration->isRemoveSubscriptionAfterSendNotification();
 
         $this->notificationQueueSender->send($automaticRemoveSubscription);

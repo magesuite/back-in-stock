@@ -80,6 +80,25 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
     /**
      * @return string
      */
+    public function getParentProductId()
+    {
+        return $this->getData('parent_product_id');
+    }
+
+    /**
+     * @param string $parentProductId
+     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
+     */
+    public function setParentProductId($parentProductId)
+    {
+        $this->setData('parent_product_id', $parentProductId);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getStoreId()
     {
         return $this->getData('store_id');
@@ -208,5 +227,21 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         $this->setData('token', $token);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNotificationChannel()
+    {
+        return $this->getData('notification_channel');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setNotificationChannel($channel)
+    {
+        return $this->setData('notification_channel', $channel);
     }
 }

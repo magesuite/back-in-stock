@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.backinstock.subscription">
+            <arguments>
+                <argument name="additional_css_classes" xsi:type="string">cs-product-stock-subscription--hidden</argument>
+                <argument name="is_product_configurable" xsi:type="boolean">true</argument>
+                <argument name="email_label" xsi:type="string" translate="true">E-mail notifications</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceContainer name="product.backinstock.subscription.hotspot.aboveemail">
+            <container name="product.backinstock.subscription.configurables.introduction" htmlTag="div" htmlClass="cs-product-stock-subscription__introduction">
+                <block class="Magento\Framework\View\Element\Text" name="product.backinstock.subscription.configurables.introduction.text">
+                    <arguments>
+                        <argument translate="true" name="text" xsi:type="string">This option is currently out of stock. You can subscribe for stock alert below to get notified once it's back in our shop.</argument>
+                    </arguments>
+                </block>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

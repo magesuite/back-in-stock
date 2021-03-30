@@ -34,6 +34,16 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      */
     protected $notificationQueueSender;
 
+    /**
+     * @var \MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender
+     */
+    protected $emailNotificationSender;
+
+    /**
+     * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
+     */
+    protected $backInStockSubscriptionRepository;
+
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
@@ -43,6 +53,8 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
         $this->notificationCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory::class);
         $this->subscriptionCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection::class);
         $this->notificationQueueSender = $this->objectManager->create(\MageSuite\BackInStock\Service\NotificationQueueSender::class);
+        $this->emailNotificationSender = $this->objectManager->create(\MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender::class);
+        $this->backInStockSubscriptionRepository = $this->objectManager->create(\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface::class);
     }
 
     /**
@@ -119,12 +131,14 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(10, $notificationCollection->getSize());
 
-        $notificationQueueSender = $this->notificationQueueSender;
+        $emailNotificationSender = $this->emailNotificationSender;
 
         foreach ($notificationCollection as $notification) {
-            $this->assertEquals('back_in_stock/email_configuration/automatic_notification_email_template', $notificationQueueSender->getEmailTemplateId($notification->getNotificationType()));
+            $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
 
-            $emailParams = $notificationQueueSender->getTemplateParams($notification);
+            $this->assertEquals('back_in_stock/email_configuration/automatic_notification_email_template', $emailNotificationSender->getEmailTemplateId($notification->getNotificationType()));
+
+            $emailParams = $emailNotificationSender->getTemplateParams($notification, $subscription);
 
             $this->assertEquals('Simple Product', $emailParams['product_name']);
             $this->assertEquals('simple', $emailParams['product_sku']);
@@ -149,12 +163,14 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(10, $notificationCollection->getSize());
 
-        $notificationQueueSender = $this->notificationQueueSender;
+        $emailNotificationSender = $this->emailNotificationSender;
 
         foreach ($notificationCollection as $notification) {
-            $this->assertEquals('back_in_stock/email_configuration/manual_notification_email_template', $notificationQueueSender->getEmailTemplateId($notification->getNotificationType()));
+            $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
 
-            $emailParams = $notificationQueueSender->getTemplateParams($notification);
+            $this->assertEquals('back_in_stock/email_configuration/manual_notification_email_template', $emailNotificationSender->getEmailTemplateId($notification->getNotificationType()));
+
+            $emailParams = $emailNotificationSender->getTemplateParams($notification, $subscription);
 
             $this->assertEquals('test message', $emailParams['notification_message']);
         }

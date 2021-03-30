@@ -29,26 +29,22 @@ class NotificationQueueCreator
 
     public function addNotificationsToQueue($productId, $storeId = \Magento\Store\Model\Store::DEFAULT_STORE_ID, $notificationType = '', $message = '')
     {
-        $notificationCollection = $this->getPreparedNotificationCollection($productId, $storeId);
+        $subscriptionCollection = $this->getSubscriptions($productId, $storeId);
 
-        foreach ($notificationCollection as $notification) {
-            $notificationEntity = $this->notificationFactory->create();
+        foreach ($subscriptionCollection as $subscription) {
+            $notification = $this->notificationFactory->create();
 
-            $notificationEntity
-                ->setSubscriptionId($notification->getId())
-                ->setCustomerEmail($notification->getCustomerEmail())
+            $notification
+                ->setSubscriptionId($subscription->getId())
                 ->setNotificationType($notificationType)
-                ->setProductId((int) $notification->getProductId())
-                ->setStoreId($storeId)
-                ->setCustomerId($notification->getCustomerId())
                 ->setMessage($message);
 
-            $this->notificationRepository->save($notificationEntity);
+            $this->notificationRepository->save($notification);
         }
 
     }
 
-    public function getPreparedNotificationCollection($productId, $storeId)
+    public function getSubscriptions($productId, $storeId)
     {
         $collection = $this->subscriptionCollectionFactory->create();
 
