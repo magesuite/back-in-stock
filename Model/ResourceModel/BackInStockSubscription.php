@@ -10,22 +10,13 @@ class BackInStockSubscription extends \Magento\Framework\Model\ResourceModel\Db\
      */
     protected $connection;
 
-    /*
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
-    protected $productEntityLinkField;
-
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
-        \Magento\Framework\App\ResourceConnection $resource,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool
+        \Magento\Framework\App\ResourceConnection $resource
     ) {
         parent::__construct($context);
 
         $this->connection = $resource->getConnection();
-        $this->metadataPool = $metadataPool;
     }
 
     public function _construct()
@@ -40,22 +31,10 @@ class BackInStockSubscription extends \Magento\Framework\Model\ResourceModel\Db\
         $query = $this->connection
             ->select()
             ->from(['s' => $tableName], 's.*')
-            ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 's.product_id = e.' . $this->getProductEntityLinkField(), 'e.sku')
+            ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 's.product_id = e.entity_id', 'e.sku')
             ->where('e.sku IN (?)', $skus)
             ->where('s.customer_confirmed = ?', 1);
 
         return $this->connection->fetchAll($query);
     }
-
-    protected function getProductEntityLinkField()
-    {
-        if (!$this->productEntityLinkField) {
-            $this->productEntityLinkField = $this->metadataPool
-                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
-                ->getLinkField();
-        }
-
-        return $this->productEntityLinkField;
-    }
-
 }

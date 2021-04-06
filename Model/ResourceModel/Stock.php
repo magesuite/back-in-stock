@@ -8,25 +8,16 @@ class Stock
      */
     protected $connection;
 
-    /*
-     * @var \Magento\Framework\EntityManager\MetadataPool
-     */
-    protected $metadataPool;
-
     /**
      * @var \Magento\InventoryIndexer\Model\StockIndexTableNameResolverInterface
      */
     protected $stockIndexTableNameResolver;
 
-    protected $productEntityLinkField;
-
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         \Magento\InventoryIndexer\Model\StockIndexTableNameResolverInterface $stockIndexTableNameResolver
     ) {
         $this->connection = $resourceConnection->getConnection();
-        $this->metadataPool = $metadataPool;
         $this->stockIndexTableNameResolver = $stockIndexTableNameResolver;
     }
 
@@ -126,21 +117,10 @@ class Stock
         $query = $this->connection
             ->select()
             ->from(['stock_item' => $this->connection->getTableName('cataloginventory_stock_item')], ['e.sku', 'stock_item.min_sale_qty'])
-            ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 'stock_item.product_id = e.' . $this->getProductEntityLinkField())
+            ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 'stock_item.product_id = e.entity_id')
             ->where('e.sku IN (?)', $skus);
 
         return $this->connection->fetchPairs($query);
-    }
-
-    protected function getProductEntityLinkField()
-    {
-        if (!$this->productEntityLinkField) {
-            $this->productEntityLinkField = $this->metadataPool
-                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
-                ->getLinkField();
-        }
-
-        return $this->productEntityLinkField;
     }
 
     protected function getStockTables()
