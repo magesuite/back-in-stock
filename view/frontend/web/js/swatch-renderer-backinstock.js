@@ -38,11 +38,13 @@ define([
             },
 
             /**
-             * On every _Rebuild collect all out of stock options and bind (fresh) Click event to all of them 
+             * On every _Rebuild reset css classes of bis-selected and collect all out of stock options and bind (fresh) Click event to all of them.
              */
             _Rebuild: function () {
                 this._super();
-                
+
+                this.element.find('.bis-selected').removeClass('bis-selected');
+
                 this.$outOfStockOptions = this.element.find(this.options.outOfStockSwatchesSelector);
 
                 if (this.$outOfStockOptions.length) {
@@ -52,6 +54,17 @@ define([
 
                     this._setEvent();
                 }
+            },
+
+            /**
+             * Rewind options for controls.
+             * Mixed to remove not only 'disabled' but also all BiS classes too
+             */
+            _Rewind: function (controls) {
+                this._super(controls);
+
+                controls.find('div[data-option-id], option[data-option-id]').removeClass(this.options.swatchClass);
+                controls.find('div[data-option-empty], option[data-option-empty]').addClass(this.options.swatchClass);
             },
 
             /**
@@ -87,20 +100,31 @@ define([
 
             /**
              * Custom method.
-             * On each (out of stock) swatch click set proper CSS class and show panel (optionally in modal)
+             * On each (out of stock) swatch click set proper CSS class (remove from siblings first) and show panel (optionally in modal)
              */
             _setEvent: function() {
-                var _self = this;
+                var $widget = this;
 
                 this.$outOfStockOptions.on('click', function(e) {
                     e.preventDefault();
-                    $(this).parent().children().removeClass('bis-selected');
-                    $(this).addClass('bis-selected');
 
-                    if (_self.options.showSubscriptionInModal) {
-                        _self.$subscriptionForm.modal('openModal');
+                    var $this = $(this),
+                        $parent = $this.parents('.' + $widget.options.classes.attributeClass);
+
+                    if ($parent.find('.' + $widget.options.classes.optionClass + '.selected').length) {
+                        $parent.removeAttr('data-option-selected').find('.selected').removeClass('selected');
+                        $parent.find('.' + $widget.options.classes.attributeInput).val('');
+                        $parent.find('.' + $widget.options.classes.attributeSelectedOptionLabelClass).text('');
+                        $this.attr('aria-checked', false);
+                    }
+
+                    $parent.find('.bis-selected').removeClass('bis-selected');
+                    $this.addClass('bis-selected');
+
+                    if ($widget.options.showSubscriptionInModal) {
+                        $widget.$subscriptionForm.modal('openModal');
                     } else {
-                        _self.$subscriptionForm.removeClass(_self.options.subscriptionFormClass + '--hidden');
+                        $widget.$subscriptionForm.removeClass($widget.options.subscriptionFormClass + '--hidden');
                     }
                 });
             }
