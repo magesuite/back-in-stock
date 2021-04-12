@@ -11,8 +11,7 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
-    private $configuration;
-
+    protected $configuration;
 
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -56,5 +55,17 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
         }
 
         return null;
+    }
+
+    public function canRenderFormOnSimple()
+    {
+        $product = $this->getProduct();
+
+        /** Additional check to hide form for salable simple products */
+        if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE && $product->isSalable()) {
+            return false;
+        }
+
+        return true;
     }
 }
