@@ -3,8 +3,6 @@ namespace MageSuite\BackInStock\Block\Product\View;
 
 class Stock extends \Magento\ProductAlert\Block\Product\View
 {
-    const PRODUCT_TYPE_SIMPLE = 'simple';
-
     protected $customer = null;
     /**
      * @var \Magento\Framework\UrlInterface
@@ -63,7 +61,8 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
     {
         $product = $this->getProduct();
 
-        if ($product->getTypeId() == self::PRODUCT_TYPE_SIMPLE && $product->isSalable()) {
+        /** Additional check to hide form for salable simple products */
+        if ($product->getTypeId() == \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE && $product->isSalable()) {
             return false;
         }
 
