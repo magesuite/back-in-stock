@@ -1,30 +1,32 @@
 <?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */ ?>
-<form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?> cs-buybox__stock-subscription"
-    novalidate
-    action="<?php echo $block->getActionUrl();?>"
-    method="post"
-    data-mage-init='{
-        "MageSuite_BackInStock/js/back-in-stock": {
-            "loaderIcon": "<?= $block->getViewFileUrl($block->getLoaderIconPath()) ?>"
-        }
-    }'
->
-    <div class="cs-product-stock-subscription__msg">
-        <div class="message cs-messages__message"><div class="cs-messages__text"></div></div>
-    </div>
-    <?= $block->getChildHtml('configurables.introduction') ?>
-    <?= $block->getChildHtml('product.backinstock.subscription.hotspot.aboveemail') ?>
-    <fieldset class="fieldset">
-        <div class="field cs-product-stock-subscription__field">
-            <label class="label cs-product-stock-subscription__label" for="email"><?= $block->getEmailLabel() ?></label>
-            <input type="hidden" name="product_id" id="product_id" value="<?= $block->getProductId();?>"/>
-            <div class="cs-product-stock-subscription__input-wrapper">
-                <input class="input-text cs-product-stock-subscription__input" data-validate="{required:true, 'validate-email':true}" title="<?= $block->getEmailLabel() ?>" type="text" name="email" id="email"/>
-            </div>
+<?php if ($block->canRenderForm()):?>
+    <form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?> cs-buybox__stock-subscription"
+        novalidate
+        action="<?php echo $block->getActionUrl();?>"
+        method="post"
+        data-mage-init='{
+            "MageSuite_BackInStock/js/back-in-stock": {
+                "loaderIcon": "<?= $block->getViewFileUrl($block->getLoaderIconPath()) ?>"
+            }
+        }'
+    >
+        <div class="cs-product-stock-subscription__msg">
+            <div class="message cs-messages__message"><div class="cs-messages__text"></div></div>
         </div>
-    </fieldset>
-    <button type="submit" class="action submit primary cs-product-stock-subscription__submit">
-        <span class="cs-product-stock-subscription__submit-label"><?= $block->getSubmitLabel() ?></span>
-        <?= $block->getChildHtml('product.backinstock.subscription.icon'); ?>
-    </button>
-</form>
+        <?= $block->getChildHtml('configurables.introduction') ?>
+        <?= $block->getChildHtml('product.backinstock.subscription.hotspot.aboveemail') ?>
+        <fieldset class="fieldset">
+            <div class="field cs-product-stock-subscription__field">
+                <label class="label cs-product-stock-subscription__label" for="email"><?= $block->getEmailLabel() ?></label>
+                <input type="hidden" name="product_id" id="product_id" value="<?= $block->getProductId();?>"/>
+                <div class="cs-product-stock-subscription__input-wrapper">
+                    <input class="input-text cs-product-stock-subscription__input" data-validate="{required:true, 'validate-email':true}" title="<?= $block->getEmailLabel() ?>" type="text" name="email" id="email"/>
+                </div>
+            </div>
+        </fieldset>
+        <button type="submit" class="action submit primary cs-product-stock-subscription__submit">
+            <span class="cs-product-stock-subscription__submit-label"><?= $block->getSubmitLabel() ?></span>
+            <?= $block->getChildHtml('product.backinstock.subscription.icon'); ?>
+        </button>
+    </form>
+<?php endif;?>

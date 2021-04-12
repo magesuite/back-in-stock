@@ -3,6 +3,8 @@ namespace MageSuite\BackInStock\Block\Product\View;
 
 class Stock extends \Magento\ProductAlert\Block\Product\View
 {
+    const PRODUCT_TYPE_SIMPLE = 'simple';
+
     protected $customer = null;
     /**
      * @var \Magento\Framework\UrlInterface
@@ -11,8 +13,7 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
-    private $configuration;
-
+    protected $configuration;
 
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -56,5 +57,16 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
         }
 
         return null;
+    }
+
+    public function canRenderForm()
+    {
+        $product = $this->getProduct();
+
+        if ($product->getTypeId() == self::PRODUCT_TYPE_SIMPLE && $product->isSalable()) {
+            return false;
+        }
+
+        return true;
     }
 }
