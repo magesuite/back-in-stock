@@ -1,5 +1,5 @@
 <?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */ ?>
-<?php if ($block->canRenderForm()):?>
+<?php if ($block->canRenderFormOnSimple()):?>
     <form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?> cs-buybox__stock-subscription"
         novalidate
         action="<?php echo $block->getActionUrl();?>"

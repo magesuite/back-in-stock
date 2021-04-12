@@ -57,7 +57,7 @@ class Stock extends \Magento\ProductAlert\Block\Product\View
         return null;
     }
 
-    public function canRenderForm()
+    public function canRenderFormOnSimple()
     {
         $product = $this->getProduct();
 
