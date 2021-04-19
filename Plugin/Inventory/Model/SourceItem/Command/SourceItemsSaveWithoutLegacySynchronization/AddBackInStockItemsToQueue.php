@@ -1,9 +1,11 @@
 <?php
 
-namespace MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave;
+namespace MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization;
 
 class AddBackInStockItemsToQueue
 {
+    protected $handlerClass = \MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue::class;
+
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
@@ -22,7 +24,7 @@ class AddBackInStockItemsToQueue
         $this->addBackInStockItemsToQueue = $addBackInStockItemsToQueue;
     }
 
-    public function beforeExecute(\Magento\Inventory\Model\SourceItem\Command\SourceItemsSave $subject, $sourceItems)
+    public function beforeExecute(\Magento\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization $subject, $sourceItems)
     {
         if (!$this->configuration->isModuleEnabled()) {
             return [$sourceItems];
