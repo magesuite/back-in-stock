@@ -30,11 +30,17 @@
             "id": true,
             "subscription_id": true,
             "notification_type": true,
-            "message": true
+            "message": true,
+            "customer_email": false,
+            "store_id": false,
+            "product_id": false,
+            "customer_id": false
         },
         "constraint": {
             "PRIMARY": true,
-            "FK_1F83656A5D0C1E64DDE378345C443EBA": true
+            "FK_1F83656A5D0C1E64DDE378345C443EBA": true,
+            "BACK_IN_STOCK_NOTIFICATION_QUEUE_STORE_ID_STORE_STORE_ID": false,
+            "BACK_IN_STOCK_NTFC_QUEUE_PRD_ID_CAT_PRD_ENTT_ENTT_ID": false
         }
     }
 }

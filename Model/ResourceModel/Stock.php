@@ -57,15 +57,24 @@ class Stock
 
         $parentSelect = $this->connection
             ->select()
-            ->from($firstStockTableName, ['sku', 'quantity AS ' . $firstStockTable['stock_id'] . '.quantity']);
+            ->from(
+                $firstStockTableName,
+                [
+                    'sku AS ' . $firstStockTable['stock_id'] . '.sku',
+                    'quantity AS ' . $firstStockTable['stock_id'] . '.quantity'
+                ]
+            );
 
         foreach ($stockTables as $stockTable) {
             $stockTableName = $this->connection->getTableName($stockTable['stock_table']);
 
-            $parentSelect->join(
+            $parentSelect->joinLeft(
                 $stockTableName,
                 sprintf('%s.sku = %s.sku', $firstStockTableName, $stockTableName),
-                ['sku', 'quantity AS ' . $stockTable['stock_id'] . '.quantity']
+                [
+                    'sku AS ' . $stockTable['stock_id'] . '.sku',
+                    'quantity AS ' . $stockTable['stock_id'] . '.quantity'
+                ]
             );
         }
 
@@ -79,13 +88,14 @@ class Stock
 
         foreach ($items as $item) {
             foreach ($stockIds as $stockId) {
+                $sku = $item[$stockId . '.sku'] ?? null;
                 $itemStockQty = $item[$stockId . '.quantity'] ?? null;
 
-                if ($itemStockQty == null) {
+                if ($sku == null || $itemStockQty == null) {
                     continue;
                 }
 
-                $stockQtys[$item['sku']][$stockId] = $itemStockQty;
+                $stockQtys[$sku][$stockId] = $itemStockQty;
             }
 
         }
