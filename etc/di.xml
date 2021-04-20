@@ -27,7 +27,11 @@
     </virtualType>
 
     <type name="Magento\Inventory\Model\SourceItem\Command\SourceItemsSave">
-        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave\AddBackInStockItemsToQueue" sortOrder="1" />
+        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave\AddBackInStockItemsToQueue" sortOrder="10" />
+    </type>
+
+    <type name="Magento\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization">
+        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization\AddBackInStockItemsToQueue" sortOrder="10" />
     </type>
 
     <type name="MageSuite\BackInStock\Service\SubscriptionEntityCreator">
