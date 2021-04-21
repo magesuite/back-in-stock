@@ -17,16 +17,23 @@ class History extends \Magento\Framework\View\Element\Template
      */
     protected $productRepository;
 
+    /**
+     * @var \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku
+     */
+    protected $getSalableQuantityDataBySku;
+
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Customer\Model\Session $customerSession,
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku $getSalableQuantityDataBySku
     ) {
         $this->customerSession = $customerSession;
         parent::__construct($context);
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
         $this->productRepository = $productRepository;
+        $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
     }
 
 
@@ -67,6 +74,24 @@ class History extends \Magento\Framework\View\Element\Template
     public function getProduct($id)
     {
         return $this->productRepository->getById($id);
+    }
+
+    public function isProductSaleable($product)
+    {
+        $isSaleable = $product->getIsSalable();
+
+        if (!$isSaleable) {
+            return $isSaleable;
+        }
+
+        $saleableQuantityData = $this->getSalableQuantityDataBySku->execute($product->getSku());
+        $qty = $saleableQuantityData[0]['qty'] ?? null;
+
+        if ($qty === null) {
+            return $isSaleable;
+        }
+
+        return $qty > 0;
     }
 
     public function getPagerHtml()

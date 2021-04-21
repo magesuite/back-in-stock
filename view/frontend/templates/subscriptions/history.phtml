@@ -23,7 +23,7 @@
                         </a>
                     </td>
                     <td data-th="<?= $block->escapeHtml(__('Request Date')) ?>" class="col date"><?= $block->formatDate($notification->getAddDate()) ?></td>
-                    <td data-th="<?= $block->escapeHtml(__('Stock Status')) ?>" class="col status"><?php echo $product->getIsSalable() ? __('In Stock') : __('Out of Stock') ?></td>
+                    <td data-th="<?= $block->escapeHtml(__('Stock Status')) ?>" class="col status"><?php echo $block->isProductSaleable($product) ? __('In Stock') : __('Out of Stock') ?></td>
                     <td data-th="<?= $block->escapeHtml(__('Actions')) ?>" class="col actions">
                         <a href="<?php /* @escapeNotVerified */ echo $block->getUnsubscribeUrl($notification) ;?>" class="action view">
                             <span><?php echo $notification->getStatus() ? __('Delete') : __('Unsubscribe') ?></span>
