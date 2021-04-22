@@ -18,6 +18,11 @@ class History extends \Magento\Framework\View\Element\Template
     protected $productRepository;
 
     /**
+     * @var \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface
+     */
+    protected $notificationProductDataResolver;
+
+    /**
      * @var \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku
      */
     protected $getSalableQuantityDataBySku;
@@ -27,12 +32,14 @@ class History extends \Magento\Framework\View\Element\Template
         \Magento\Customer\Model\Session $customerSession,
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
         \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku $getSalableQuantityDataBySku
     ) {
         $this->customerSession = $customerSession;
         parent::__construct($context);
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
         $this->productRepository = $productRepository;
+        $this->notificationProductDataResolver = $notificationProductDataResolver;
         $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
     }
 
@@ -92,6 +99,21 @@ class History extends \Magento\Framework\View\Element\Template
         }
 
         return $qty > 0;
+    }
+
+    public function getProductUrl($product, $notification)
+    {
+        if (!$notification->getParentProductId()) {
+            return $product->getProductUrl();
+        }
+
+        $parentProductData = $this->notificationProductDataResolver->getProductData($notification);
+
+        if (empty($parentProductData)) {
+            return null;
+        }
+
+        return $parentProductData->getProductUrl();
     }
 
     public function getPagerHtml()

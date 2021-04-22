@@ -18,7 +18,7 @@
                 <tr>
                     <td data-th="<?= $block->escapeHtml(__('SKU')) ?>" class="col id"><?= /* @escapeNotVerified */ $product->getSku() ?></td>
                     <td data-th="<?= $block->escapeHtml(__('Name')) ?>" class="col name">
-                        <a href="<?php /* @escapeNotVerified */ echo $product->getProductUrl() ?>" class="action view" target="_blank">
+                        <a href="<?php /* @escapeNotVerified */ echo $block->getProductUrl($product, $notification) ?>" class="action view" target="_blank">
                             <span><?= /* @escapeNotVerified */ $product->getName() ?></span>
                         </a>
                     </td>
