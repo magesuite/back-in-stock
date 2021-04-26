@@ -105,18 +105,38 @@ define([
                 beforeSend: this._beforeSend()
             }).done(function(response) {
                 this._onDoneHandler(response);
+            }.bind(this))
+            .fail(function(response) {
+                if (response.responseJSON && response.responseJSON.message) {
+                    this._onFailHandler(response.responseJSON.message)
+                }
+            }.bind(this))
+            .always(function() {
+                if (this.useLoader) {
+                    this.element.loader('hide');
+                }
+
+                this.$submitButton.prop('disabled', false);
             }.bind(this));
         },
 
         /**
-         * Disable submit button to prevent multiple submissions and reset component state before ajax request
+         * Clear previous response (if available),disable submit button to prevent multiple submissions and reset component state before ajax request
          */
         _beforeSend: function() {
-            this.$submitButton.prop('disabled', true);
-
-            if (this.useLoader) {
-                this.element.loader('show');
+            if (this.$responseElWrapper.length) {
+                this.$responseElWrapper.removeClass(
+                    this.options.successClass 
+                    + ' ' 
+                    + this.options.errorClass
+                );
             }
+
+            if (this.$responseElText.length) {
+                this.$responseElText.html('');
+            }
+
+            this.$submitButton.prop('disabled', true);
 
             if (this.$responseElWrapper.length) {
                 this.$responseElWrapper.removeClass(this.options.successClass + this.options.errorClass);
@@ -136,20 +156,30 @@ define([
                 this.options.successClass :
                 this.options.errorClass;
 
-            this.$submitButton.prop('disabled', false);
-
-            if (this.useLoader) {
-                this.element.loader('hide');
-            }
-
             if (this.$responseElWrapper.length) {
                 this.$responseElWrapper.addClass(feedbackClass);
             } else {
-                alert(msg);
+                alert(response.message);
             }
 
             if (this.$responseElText.length) {
                 this.$responseElText.html(response.message);
+            }
+        },
+
+        /**
+         * After AJAX request FAILED - place error and set proper error class on message container
+         * @param {string} error - XHR error message
+         */
+        _onFailHandler(error) {
+            if (this.$responseElWrapper.length) {
+                this.$responseElWrapper.addClass(this.options.errorClass);
+            }
+
+            if (this.$responseElText.length) {
+                this.$responseElText.html(error);
+            } else {
+                alert(error);
             }
         }
     });
