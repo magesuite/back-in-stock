@@ -4,32 +4,46 @@ namespace MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\Source
 
 class AddBackInStockItemsToQueue
 {
+    protected $handlerClass = \MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue::class;
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
     protected $configuration;
 
     /**
-     * @var \MageSuite\BackInStock\Model\Command\AddBackInStockItemsToQueue
+     * @var \MageSuite\BackInStock\Model\Command\GetBackInStockItems
      */
-    protected $addBackInStockItemsToQueue;
+    protected $getBackInStockItems;
+
+    /**
+     * @var \MageSuite\Queue\Service\Publisher
+     */
+    protected $queuePublisher;
 
     public function __construct(
         \MageSuite\BackInStock\Helper\Configuration $configuration,
-        \MageSuite\BackInStock\Model\Command\AddBackInStockItemsToQueue $addBackInStockItemsToQueue
+        \MageSuite\BackInStock\Model\Command\GetBackInStockItems $getBackInStockItems,
+        \MageSuite\Queue\Service\Publisher $queuePublisher
     ) {
         $this->configuration = $configuration;
-        $this->addBackInStockItemsToQueue = $addBackInStockItemsToQueue;
+        $this->getBackInStockItems = $getBackInStockItems;
+        $this->queuePublisher = $queuePublisher;
     }
 
-    public function beforeExecute(\Magento\Inventory\Model\SourceItem\Command\SourceItemsSave $subject, $sourceItems)
+    public function aroundExecute(\Magento\Inventory\Model\SourceItem\Command\SourceItemsSave $subject, callable $proceed, $sourceItems)
     {
         if (!$this->configuration->isModuleEnabled()) {
-            return [$sourceItems];
+            return $proceed($sourceItems);
         }
 
-        $this->addBackInStockItemsToQueue->execute($sourceItems);
+        $backInStockItems = $this->getBackInStockItems->execute($sourceItems);
 
-        return [$sourceItems];
+        $proceed($sourceItems);
+
+        if (!empty($backInStockItems)) {
+            $this->queuePublisher->publish($this->handlerClass, $backInStockItems);
+        }
+
+        return true;
     }
 }
