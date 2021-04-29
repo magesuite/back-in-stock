@@ -117,8 +117,6 @@ class EmailSubscriptionCreator
             $storeId,
             $customerId
         );
-
-        $this->messageManager->addSuccessMessage(__('Alert subscription has been saved. You will receive email with confirmation.'));
     }
 
     public function getCustomer()
