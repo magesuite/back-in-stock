@@ -15,7 +15,7 @@ define([
                 outOfStockSwatchesSelector: '.swatch-option[disabled]',
                 showSubscriptionInModal: false,
                 subscriptionFormClass: 'cs-product-stock-subscription',
-                swatchClass: 'back-in-stock-alert',
+                swatchAlertClass: 'back-in-stock-alert',
                 modalOptions: {
                     type: 'popup',
                     title: $t('Out of stock'),
@@ -28,8 +28,9 @@ define([
                 this._super();
 
                 this.$subscriptionForm = $('.' + this.options.subscriptionFormClass);
+                this.canApplyMixin = this.$subscriptionForm.length;
 
-                if (this.$subscriptionForm.length) {
+                if (this.canApplyMixin) {
                     this._prepareBackInStockNotifications();
                     this._resetBiSFormOnOptionChange();
 
@@ -43,16 +44,18 @@ define([
             _Rebuild: function () {
                 this._super();
 
-                this.element.find('.bis-selected').removeClass('bis-selected');
+                if (this.canApplyMixin) {
+                    this.element.find('.bis-selected').removeClass('bis-selected');
 
-                this.$outOfStockOptions = this.element.find(this.options.outOfStockSwatchesSelector);
+                    this.$outOfStockOptions = this.element.find(this.options.outOfStockSwatchesSelector);
 
-                if (this.$outOfStockOptions.length) {
-                    this.$outOfStockOptions
-                        .addClass(this.options.swatchClass)
-                        .off('click');
+                    if (this.$outOfStockOptions.length) {
+                        this.$outOfStockOptions
+                            .addClass(this.options.swatchAlertClass)
+                            .off('click');
 
-                    this._setEvent();
+                        this._setEvent();
+                    }
                 }
             },
 
@@ -63,8 +66,10 @@ define([
             _Rewind: function (controls) {
                 this._super(controls);
 
-                controls.find('div[data-option-id], option[data-option-id]').removeClass(this.options.swatchClass);
-                controls.find('div[data-option-empty], option[data-option-empty]').addClass(this.options.swatchClass);
+                if (this.canApplyMixin) {
+                    controls.find('div[data-option-id], option[data-option-id]').removeClass(this.options.swatchAlertClass);
+                    controls.find('div[data-option-empty], option[data-option-empty]').addClass(this.options.swatchAlertClass);
+                }
             },
 
             /**
@@ -89,13 +94,11 @@ define([
              * If (newly introduced) showSubscriptionInModal option is FALSE, on each change of value for any super attribute make sure Subscription Panel is closed until it's needed.
              */
             _resetBiSFormOnOptionChange: function() {
-                var _self = this;
-
                 this.element.on('click change', '.' + this.options.classes.optionClass, function() {
-                    if (!_self.options.showSubscriptionInModal) {
-                        _self.$subscriptionForm.addClass(_self.options.subscriptionFormClass + '--hidden');
+                    if (!this.options.showSubscriptionInModal) {
+                        this.$subscriptionForm.addClass(this.options.subscriptionFormClass + '--hidden');
                     }
-                });
+                }.bind(this));
             },
 
             /**
