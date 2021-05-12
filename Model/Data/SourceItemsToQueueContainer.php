@@ -12,14 +12,14 @@ namespace MageSuite\BackInStock\Model\Data;
  * \MageSuite\BackInStock\Plugin\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin\AddBackInStockItemsToQueue
  * plugin adds items from container to queue
  */
-class ItemsToQueueContainer
+class SourceItemsToQueueContainer
 {
     /**
      * @var array
      */
     protected $items = [];
 
-    public function setItems($items)
+    public function addItems($items)
     {
         if (!empty($this->items)) {
             $items = array_merge($items, $this->items);

@@ -35,7 +35,7 @@
     </type>
 
     <type name="Magento\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin">
-        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin\AddBackInStockItemsToQueue" sortOrder="10" />
+        <plugin name="add_back_in_stock_items_to_queue" type="MageSuite\BackInStock\Plugin\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin\AddBackInStockItemsToQueue" sortOrder="10" />
     </type>
 
     <type name="MageSuite\BackInStock\Service\SubscriptionEntityCreator">

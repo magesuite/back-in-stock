@@ -15,18 +15,18 @@ class CollectBackInStockItemsForQueue
     protected $getBackInStockItems;
 
     /**
-     * @var \MageSuite\BackInStock\Model\Data\ItemsToQueueContainer
+     * @var \MageSuite\BackInStock\Model\Data\SourceItemsToQueueContainer
      */
-    protected $itemsToQueueContainer;
+    protected $sourceItemsToQueueContainer;
 
     public function __construct(
         \MageSuite\BackInStock\Helper\Configuration $configuration,
         \MageSuite\BackInStock\Model\Command\GetBackInStockItems $getBackInStockItems,
-        \MageSuite\BackInStock\Model\Data\ItemsToQueueContainer $itemsToQueueContainer
+        \MageSuite\BackInStock\Model\Data\SourceItemsToQueueContainer $sourceItemsToQueueContainer
     ) {
         $this->configuration = $configuration;
         $this->getBackInStockItems = $getBackInStockItems;
-        $this->itemsToQueueContainer = $itemsToQueueContainer;
+        $this->sourceItemsToQueueContainer = $sourceItemsToQueueContainer;
     }
 
     public function aroundExecute(\Magento\Inventory\Model\SourceItem\Command\SourceItemsSave $subject, callable $proceed, $sourceItems)
@@ -38,7 +38,7 @@ class CollectBackInStockItemsForQueue
         $backInStockItems = $this->getBackInStockItems->execute($sourceItems);
 
         if (!empty($backInStockItems)) {
-            $this->itemsToQueueContainer->setItems($backInStockItems);
+            $this->sourceItemsToQueueContainer->addItems($backInStockItems);
         }
 
         return $proceed($sourceItems);

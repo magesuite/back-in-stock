@@ -17,18 +17,18 @@ class AddBackInStockItemsToQueue
     protected $queuePublisher;
 
     /**
-     * @var \MageSuite\BackInStock\Model\Data\ItemsToQueueContainer
+     * @var \MageSuite\BackInStock\Model\Data\SourceItemsToQueueContainer
      */
-    protected $itemsToQueueContainer;
+    protected $sourceItemsToQueueContainer;
 
     public function __construct(
         \MageSuite\BackInStock\Helper\Configuration $configuration,
         \MageSuite\Queue\Service\Publisher $queuePublisher,
-        \MageSuite\BackInStock\Model\Data\ItemsToQueueContainer $itemsToQueueContainer
+        \MageSuite\BackInStock\Model\Data\SourceItemsToQueueContainer $sourceItemsToQueueContainer
     ) {
         $this->configuration = $configuration;
         $this->queuePublisher = $queuePublisher;
-        $this->itemsToQueueContainer = $itemsToQueueContainer;
+        $this->sourceItemsToQueueContainer = $sourceItemsToQueueContainer;
     }
 
     public function afterAfterExecute(\Magento\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin $subject, $result)
@@ -37,12 +37,14 @@ class AddBackInStockItemsToQueue
             return $result;
         }
 
-        $backInStockItems = $this->itemsToQueueContainer->getItems();
+        $backInStockItems = $this->sourceItemsToQueueContainer->getItems();
 
-        if (!empty($backInStockItems)) {
-            $this->queuePublisher->publish($this->handlerClass, $backInStockItems);
-            $this->itemsToQueueContainer->clearItems();
+        if(empty($backInStockItems)) {
+            return $result;
         }
+
+        $this->queuePublisher->publish($this->handlerClass, $backInStockItems);
+        $this->sourceItemsToQueueContainer->clearItems();
 
         return $result;
     }
