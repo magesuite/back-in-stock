@@ -1,5 +1,6 @@
 <?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */ ?>
 <?php if ($block->canRenderFormOnSimple()):?>
+    <?php $placeholder = $block->getEmailInputPlaceholder() ?>
     <form class="form cs-product-stock-subscription <?= $block->getAdditionalCssClasses() ?> cs-buybox__stock-subscription"
         novalidate
         action="<?php echo $block->getActionUrl();?>"
@@ -20,7 +21,14 @@
                 <label class="label cs-product-stock-subscription__label" for="email"><?= $block->getEmailLabel() ?></label>
                 <input type="hidden" name="product_id" id="product_id" value="<?= $block->getProductId();?>"/>
                 <div class="cs-product-stock-subscription__input-wrapper">
-                    <input class="input-text cs-product-stock-subscription__input" data-validate="{required:true, 'validate-email':true}" title="<?= $block->getEmailLabel() ?>" type="text" name="email" id="email"/>
+                    <input class="input-text cs-product-stock-subscription__input" 
+                           data-validate="{required:true, 'validate-email':true}" 
+                           title="<?= $block->getEmailLabel() ?>" 
+                           type="text" 
+                           name="email" 
+                           id="email"
+                           <?php if($placeholder): ?> placeholder="<?= $placeholder ?>"<?php endif ?>
+                    />
                 </div>
             </div>
         </fieldset>
