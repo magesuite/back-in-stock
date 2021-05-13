@@ -27,11 +27,15 @@
     </virtualType>
 
     <type name="Magento\Inventory\Model\SourceItem\Command\SourceItemsSave">
-        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave\AddBackInStockItemsToQueue" sortOrder="10" />
+        <plugin name="collect_back_in_stock_items" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave\CollectBackInStockItemsForQueue" sortOrder="10" />
     </type>
 
     <type name="Magento\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization">
-        <plugin name="add_notifications_to_queue" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization\AddBackInStockItemsToQueue" sortOrder="10" />
+        <plugin name="collect_back_in_stock_items" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization\CollectBackInStockItemsForQueue" sortOrder="10" />
+    </type>
+
+    <type name="Magento\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin">
+        <plugin name="add_back_in_stock_items_to_queue" type="MageSuite\BackInStock\Plugin\InventoryIndexer\Plugin\InventoryApi\ReindexAfterSourceItemsSavePlugin\AddBackInStockItemsToQueue" sortOrder="10" />
     </type>
 
     <type name="MageSuite\BackInStock\Service\SubscriptionEntityCreator">

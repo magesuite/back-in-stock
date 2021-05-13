@@ -2,10 +2,8 @@
 
 namespace MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization;
 
-class AddBackInStockItemsToQueue
+class CollectBackInStockItemsForQueue
 {
-    protected $handlerClass = \MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue::class;
-
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
@@ -17,18 +15,18 @@ class AddBackInStockItemsToQueue
     protected $getBackInStockItems;
 
     /**
-     * @var \MageSuite\Queue\Service\Publisher
+     * @var \MageSuite\BackInStock\Model\Data\SourceItemsToQueueContainer
      */
-    protected $queuePublisher;
+    protected $sourceItemsToQueueContainer;
 
     public function __construct(
         \MageSuite\BackInStock\Helper\Configuration $configuration,
         \MageSuite\BackInStock\Model\Command\GetBackInStockItems $getBackInStockItems,
-        \MageSuite\Queue\Service\Publisher $queuePublisher
+        \MageSuite\BackInStock\Model\Data\SourceItemsToQueueContainer $sourceItemsToQueueContainer
     ) {
         $this->configuration = $configuration;
         $this->getBackInStockItems = $getBackInStockItems;
-        $this->queuePublisher = $queuePublisher;
+        $this->sourceItemsToQueueContainer = $sourceItemsToQueueContainer;
     }
 
     public function aroundExecute(\Magento\Inventory\Model\SourceItem\Command\SourceItemsSaveWithoutLegacySynchronization $subject, callable $proceed, $sourceItems)
@@ -39,12 +37,10 @@ class AddBackInStockItemsToQueue
 
         $backInStockItems = $this->getBackInStockItems->execute($sourceItems);
 
-        $proceed($sourceItems);
-
         if (!empty($backInStockItems)) {
-            $this->queuePublisher->publish($this->handlerClass, $backInStockItems);
+            $this->sourceItemsToQueueContainer->addItems($backInStockItems);
         }
 
-        return true;
+        return $proceed($sourceItems);
     }
 }
