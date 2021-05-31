@@ -43,25 +43,6 @@ class History extends \Magento\Framework\View\Element\Template
         $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
     }
 
-
-    public function getNotifications()
-    {
-        if (!($customerId = $this->customerSession->getCustomerId())) {
-            return false;
-        }
-        if (!$this->subscriptions) {
-            $this->subscriptions = $this->subscriptionCollectionFactory->create()
-                ->addFieldToSelect('*')
-                ->addFieldToFilter('customer_confirmed', ['eq' => 1])
-                ->addFieldToFilter('customer_id', ['eq' => $customerId])
-                ->setOrder(
-                    'add_date',
-                    'desc'
-                );
-        }
-        return $this->subscriptions;
-    }
-
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
@@ -78,52 +59,9 @@ class History extends \Magento\Framework\View\Element\Template
         return $this;
     }
 
-    public function getProduct($id)
-    {
-        return $this->productRepository->getById($id);
-    }
-
-    public function isProductSaleable($product)
-    {
-        $isSaleable = $product->getIsSalable();
-
-        if (!$isSaleable) {
-            return $isSaleable;
-        }
-
-        $saleableQuantityData = $this->getSalableQuantityDataBySku->execute($product->getSku());
-        $qty = $saleableQuantityData[0]['qty'] ?? null;
-
-        if ($qty === null) {
-            return $isSaleable;
-        }
-
-        return $qty > 0;
-    }
-
-    public function getProductUrl($product, $notification)
-    {
-        if (!$notification->getParentProductId()) {
-            return $product->getProductUrl();
-        }
-
-        $parentProductData = $this->notificationProductDataResolver->getProductData($notification);
-
-        if (empty($parentProductData)) {
-            return null;
-        }
-
-        return $parentProductData->getProductUrl();
-    }
-
     public function getPagerHtml()
     {
         return $this->getChildHtml('pager');
-    }
-
-    public function getUnsubscribeUrl($notification)
-    {
-        return $this->getUrl('backinstock/notification/unsubscribe', ['id' => $notification->getId(), 'token' => $notification->getToken()]);
     }
 
     public function getBackUrl()

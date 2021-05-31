@@ -3,6 +3,8 @@ namespace MageSuite\BackInStock\Controller\Notification;
 
 class Unsubscribe extends \Magento\Framework\App\Action\Action
 {
+    const NOTIFICATION_CHANNEL_EMAIL = 'email';
+
     /**
      * @var \Magento\Framework\View\Result\PageFactory
      */
@@ -36,7 +38,7 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
         try {
             $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
 
-            if(!$this->validateToken($subscription->getToken(), $params['token'])){
+            if(!$this->validateToken($subscription, $params)){
                 throw new \Exception(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
             }
 
@@ -50,11 +52,18 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
         return $resultRedirect;
     }
 
-    public function validateToken($subscriptionToken, $postParamToken)
+    public function validateToken($subscription, $params)
     {
-        if($subscriptionToken !== $postParamToken){
+        if ($subscription->getNotificationChannel() != self::NOTIFICATION_CHANNEL_EMAIL) {
+            return true;
+        }
+
+        $token = $params['token'] ?? null;
+
+        if (!$token || $subscription->getToken() !== $token) {
             return false;
         }
+
         return true;
     }
 }

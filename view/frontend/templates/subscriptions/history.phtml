@@ -1,5 +1,10 @@
-<?php $notifications = $block->getNotifications(); ?>
-<?php if ($notifications && count($notifications)): ?>
+<?php
+/** @var \MageSuite\BackInStock\Block\Subscriptions\History $block */
+/** @var \MageSuite\BackInStock\ViewModel\Subscriptions\History $viewModel */
+$viewModel = $block->getViewModel();
+$subscriptions = $viewModel->getSubscriptions();
+
+if (count($subscriptions)): ?>
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
             <caption class="table-caption"><?= /* @escapeNotVerified */ __('Notification requests') ?></caption>
@@ -13,20 +18,20 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($notifications as $notification): ?>
-                <?php $product = $block->getProduct($notification->getProductId());?>
+            <?php foreach ($subscriptions as $subscription): ?>
+                <?php $productData = $viewModel->getProductData($subscription);?>
                 <tr>
-                    <td data-th="<?= $block->escapeHtml(__('SKU')) ?>" class="col id"><?= /* @escapeNotVerified */ $product->getSku() ?></td>
+                    <td data-th="<?= $block->escapeHtml(__('SKU')) ?>" class="col id"><?= /* @escapeNotVerified */ $productData->getSku() ?></td>
                     <td data-th="<?= $block->escapeHtml(__('Name')) ?>" class="col name">
-                        <a href="<?php /* @escapeNotVerified */ echo $block->getProductUrl($product, $notification) ?>" class="action view" target="_blank">
-                            <span><?= /* @escapeNotVerified */ $product->getName() ?></span>
+                        <a href="<?= /* @escapeNotVerified */ $productData->getProductUrl() ?>" class="action view" target="_blank">
+                            <span><?= /* @escapeNotVerified */ $productData->getName() ?></span>
                         </a>
                     </td>
-                    <td data-th="<?= $block->escapeHtml(__('Request Date')) ?>" class="col date"><?= $block->formatDate($notification->getAddDate()) ?></td>
-                    <td data-th="<?= $block->escapeHtml(__('Stock Status')) ?>" class="col status"><?php echo $block->isProductSaleable($product) ? __('In Stock') : __('Out of Stock') ?></td>
+                    <td data-th="<?= $block->escapeHtml(__('Request Date')) ?>" class="col date"><?= $block->formatDate($subscription->getAddDate()) ?></td>
+                    <td data-th="<?= $block->escapeHtml(__('Stock Status')) ?>" class="col status"><?php echo $viewModel->isProductSaleable($subscription) ? __('In Stock') : __('Out of Stock') ?></td>
                     <td data-th="<?= $block->escapeHtml(__('Actions')) ?>" class="col actions">
-                        <a href="<?php /* @escapeNotVerified */ echo $block->getUnsubscribeUrl($notification) ;?>" class="action view">
-                            <span><?php echo $notification->getStatus() ? __('Delete') : __('Unsubscribe') ?></span>
+                        <a href="<?php /* @escapeNotVerified */ echo $viewModel->getUnsubscribeUrl($subscription) ;?>" class="action view">
+                            <span><?php echo __('Unsubscribe') ?></span>
                         </a>
                     </td>
                 </tr>
