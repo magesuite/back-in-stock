@@ -85,6 +85,7 @@ define([
 
                     $form.on('modalclosed', function() {
                         $form.removeClass('active');
+                        $('body').trigger('bis:modalclosed');
                     });
                 }
             },
@@ -95,6 +96,7 @@ define([
              */
             _resetBiSFormOnOptionChange: function() {
                 this.element.on('click change', '.' + this.options.classes.optionClass, function() {
+                    $('body').trigger('bis:formclosed');
                     if (!this.options.showSubscriptionInModal) {
                         this.$subscriptionForm.addClass(this.options.subscriptionFormClass + '--hidden');
                     }
