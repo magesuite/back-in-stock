@@ -8,7 +8,11 @@ Email,E-Mail
 "My Back In Stock Notifications","Meine Wieder verfügbar Benachrichtigungen"
 "Correctly unsubscribed from back in stock notification.","Erfolgreich für Benachrichtigungen abgemeldet."
 "Back in stock subscription has been confirmed.","Erfolgreich für Benachrichtigungen angemeldet."
+"You have been unsubscribed from back in stock notification.", "Sie wurden von der Benachrichtigung über den Lagerbestand abgemeldet."
+"You have been already unsubscribed from back in stock notification.", "Sie wurden bereits von der Zurück in der Lagerbenachrichtigung abgemeldet."
+"Time for subscription confirmation passed.", "Zeit für Abonnementbestätigung abgelaufen."
 "Invalid email address.","Die E-Mail Adresse ist nicht gültig."
+"If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.","Wenn Sie dieses Produkt noch nicht abonniert haben, wird eine Anfrage zur Bestätigung Ihres Abonnements an Ihre E-Mail gesendet. Wenn Sie dieses Produkt in den letzten %1 Stunden abonniert haben, überprüfen Sie Ihre E-Mail - die Bestätigungsanfrage sollte bereits da sein."
 "You have already subscribed for a back-to-stock notification for this product.","Sie haben sich bereits für Benachrichtigungen für diesen Artikel angemeldet."
 "Alert subscription has been saved. You will receive email with confirmation.","Sie haben sich für eine Benachrichtigung angemeldet. Sie erhalten eine E-Mail mit einer Bestätigung."
 Sent,Gesendet

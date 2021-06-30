@@ -38,11 +38,20 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
         try {
             $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
 
-            if(!$this->validateToken($subscription, $params)){
+            if (!$this->validateToken($subscription, $params)) {
                 throw new \Exception(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
             }
 
-            $this->backInStockSubscriptionRepository->delete($subscription);
+            if ($subscription->isCustomerUnsubscribed()) {
+                throw new \Exception(__('You have been already unsubscribed from back in stock notification.'));
+            }
+
+            if ($subscription->isConfirmationDeadlinePassed()) {
+                throw new \Exception(__('Time for subscription confirmation passed'));
+            }
+
+            $subscription->setCustomerUnsubscribed(true);
+            $this->backInStockSubscriptionRepository->save($subscription);
 
             $this->messageManager->addSuccessMessage(__('Correctly unsubscribed from back in stock notification.'));
         } catch (\Exception $e) {

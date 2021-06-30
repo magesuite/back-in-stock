@@ -35,11 +35,6 @@ class Subscribe extends \Magento\Framework\App\Action\Action
 
         try {
             $this->subscriptionEntityCreator->subscribe($params);
-        } catch (\Magento\Framework\Exception\AlreadyExistsException $e) {
-            return $jsonResult->setData([
-                'success' => false,
-                'message' => __('Subscription already exist.')
-            ]);
         } catch (\Exception $e) {
             return $jsonResult
                 ->setHttpResponseCode(500)
@@ -51,7 +46,7 @@ class Subscribe extends \Magento\Framework\App\Action\Action
 
         return $jsonResult->setData([
             'success' => true,
-            'message' => __('Subscription has been saved. We will notify you when product is back in stock.')
+            'message' => __('If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.', \MageSuite\BackInStock\Model\BackInStockSubscription::SUBSCRIPTION_CONFIRMATION_AWAITING_TIME_IN_HOURS)
         ]);
     }
 }

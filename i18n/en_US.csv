@@ -26,8 +26,12 @@ Email,Email
 "Missing required arguments in request URL.","Missing required arguments in request URL."
 "Something went wrong while confirming your subscription. Please contact store owner.","Something went wrong while confirming your subscription. Please contact store owner."
 "This subscription request has been already confirmed.","This subscription request has been already confirmed."
+"You have been unsubscribed from back in stock notification.", "You have been unsubscribed from back in stock notification."
+"You have been already unsubscribed from back in stock notification.", "You have been already unsubscribed from back in stock notification."
+"Time for subscription confirmation passed.", "Time for subscription confirmation passed."
 "Back in stock subscription has been confirmed.","Back in stock subscription has been confirmed."
 "Invalid email address.","Invalid email address."
+"If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.","If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there."
 "You have already subscribed for a back-to-stock notification for this product.","You have already subscribed for a back-to-stock notification for this product."
 "Alert subscription has been saved. You will receive email with confirmation.","Alert subscription has been saved. You will receive email with confirmation."
 Sent,Sent

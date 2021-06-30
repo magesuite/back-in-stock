@@ -27,6 +27,8 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected $subscription;
 
+    protected $subscriptionCollection;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,6 +38,7 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->subscriptionRepository = $this->objectManager->create(\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface::class);
         $this->subscription = $this->objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);
+        $this->subscriptionCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection::class);
     }
 
     /**
@@ -66,6 +69,33 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/unsubscribe');
 
-        $this->assertFalse($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test@unsubscribe.com', 1));
+        $this->assertEquals(true, $this->subscriptionRepository->getById($subscription->getId())->isCustomerUnsubscribed());
+    }
+
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture loadExpiredSubscriptions
+     */
+    public function testItNotUnsubscribesExpiredSubscription()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
+
+        $this->assertEquals(false, $subscription->isCustomerUnsubscribed());
+
+        $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
+
+        $this->dispatch('backinstock/notification/unsubscribe');
+
+        $this->assertEquals(false, $this->subscriptionRepository->getById($subscription->getId())->isCustomerUnsubscribed());
+    }
+
+    public static function loadExpiredSubscriptions()
+    {
+        include __DIR__.'/../../../_files/expired_subscriptions.php';
     }
 }

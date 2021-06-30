@@ -13,7 +13,8 @@
             "was_notification_sent": true,
             "customer_confirmed": true,
             "token": true,
-            "notification_channel": true
+            "notification_channel": true,
+            "customer_unsubscribed": true
         },
         "index": {
             "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_PRODUCT_ID": true,

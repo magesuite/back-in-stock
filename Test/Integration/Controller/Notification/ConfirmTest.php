@@ -66,6 +66,6 @@ class ConfirmTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/confirm');
 
-        $this->assertEquals(1, $this->subscriptionRepository->getById($subscription->getId())->getCustomerConfirmed());
+        $this->assertEquals(true, $this->subscriptionRepository->getById($subscription->getId())->isCustomerConfirmed());
     }
 }

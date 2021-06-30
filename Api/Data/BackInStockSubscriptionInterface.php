@@ -130,13 +130,24 @@ interface BackInStockSubscriptionInterface
     /**
      * @return int
      */
-    public function getCustomerConfirmed();
+    public function isCustomerConfirmed();
 
     /**
-     * @param int $confirmed
+     * @param bool $confirmed
      * @return \MageSuite\BackInStock\Model\BackInStockSubscription
      */
-    public function setCustomerConfirmed($confirmed);
+    public function setCustomerConfirmed(bool $confirmed);
+
+    /**
+     * @return bool
+     */
+    public function isCustomerUnsubscribed(): bool;
+
+    /**
+     * @param bool $unsubscribed
+     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
+     */
+    public function setCustomerUnsubscribed(bool $unsubscribed);
 
     /**
      * @return int

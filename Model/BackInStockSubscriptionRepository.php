@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Model;
 
 class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
@@ -6,10 +7,12 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
     /**
      * @var ResourceModel\BackInStockSubscription
      */
+
     protected $backInStockSubscriptionResource;
     /**
      * @var BackInStockSubscriptionFactory
      */
+
     protected $backInStockSubscriptionFactory;
     /**
      * @var ResourceModel\BackInStockSubscription\CollectionFactory
@@ -22,7 +25,6 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory
     )
     {
-
         $this->backInStockSubscriptionResource = $backInStockSubscriptionResource;
         $this->backInStockSubscriptionFactory = $backInStockSubscriptionFactory;
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
@@ -35,7 +37,22 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         if (!$subscription->getId()) {
             throw new \Magento\Framework\Exception\NoSuchEntityException(__('Back in stock subscription with id "%1" does not exist.', $id));
         }
+
         return $subscription;
+    }
+
+    /**
+     * @inheirtDoc
+     */
+    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
+        $collection = $this->subscriptionCollectionFactory->create();
+
+        $collection->addFieldToFilter('product_id', ['eq' => $productId]);
+        $collection->addFieldToFilter('store_id', ['eq' => $storeId]);
+        $collection->addFieldToFilter($identifyByField, ['eq' => $identifyByValue]);
+
+        return $collection->getFirstItem();
     }
 
     public function save(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription)
@@ -72,7 +89,7 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         $collection->addFieldToFilter('store_id', ['eq' => $storeId]);
         $collection->addFieldToFilter($identifyByField, ['eq' => $identifyByValue]);
 
-        if($collection->getSize()){
+        if ($collection->getSize()) {
             return true;
         }
 

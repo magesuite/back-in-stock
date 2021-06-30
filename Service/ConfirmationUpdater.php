@@ -25,21 +25,29 @@ class ConfirmationUpdater
     public function update($params)
     {
         try {
-            if(!isset($params['id']) || !isset($params['token'])) {
+            if (!isset($params['id']) || !isset($params['token'])) {
                 throw new \Exception(__('Missing required arguments in request URL.'));
             }
 
             $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
 
-            if(!$this->validateToken($subscription->getToken(), $params['token'])){
+            if (!$this->validateToken($subscription->getToken(), $params['token'])) {
                 throw new \Exception(__('Something went wrong while confirming your subscription. Please contact store owner.'));
             }
 
-            if($subscription->getCustomerConfirmed()){
+            if ($subscription->isCustomerUnsubscribed()) {
+                throw new \Exception(__('You have been unsubscribed from back in stock notification.'));
+            }
+
+            if ($subscription->isCustomerConfirmed()) {
                 throw new \Exception(__('This subscription request has been already confirmed.'));
             }
 
-            $subscription->setCustomerConfirmed(1);
+            if ($subscription->isConfirmationDeadlinePassed()) {
+                throw new \Exception(__('Time for subscription confirmation passed'));
+            }
+
+            $subscription->setCustomerConfirmed(true);
 
             $this->backInStockSubscriptionRepository->save($subscription);
 

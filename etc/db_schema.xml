@@ -10,7 +10,8 @@
         <column xsi:type="timestamp" name="send_date" on_update="false" nullable="true" comment="Send Date"/>
         <column xsi:type="smallint" name="send_count" unsigned="true" nullable="false" identity="false" default="0" comment="Send Count"/>
         <column xsi:type="smallint" name="was_notification_sent" unsigned="true" nullable="false" identity="false" default="0" comment="Was notification sent"/>
-        <column xsi:type="smallint" name="customer_confirmed" unsigned="true" nullable="false" identity="false" default="0" comment="Customer confirmed"/>
+        <column xsi:type="boolean" name="customer_confirmed" nullable="false" default="0" comment="Customer confirmed"/>
+        <column xsi:type="boolean" name="customer_unsubscribed" nullable="false" default="0" comment="Customer unsubscribed"/>
         <column xsi:type="varchar" name="token" nullable="false" length="255" comment="Token" />
         <column xsi:type="varchar" name="notification_channel" nullable="false" length="255" default="email" comment="Notification channel" />
         <constraint xsi:type="primary" referenceId="PRIMARY">
