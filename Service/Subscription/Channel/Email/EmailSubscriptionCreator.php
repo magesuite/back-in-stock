@@ -8,26 +8,32 @@ class EmailSubscriptionCreator
     protected $customer = null;
 
     protected $templateParams = [];
+
     /**
      * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $productRepository;
+
     /**
      * @var \Magento\Customer\Model\SessionFactory
      */
     protected $customerSession;
+
     /**
      * @var \Magento\Framework\Message\ManagerInterface
      */
     protected $messageManager;
+
     /**
      * @var \MageSuite\BackInStock\Model\BackInStockSubscription
      */
     protected $backInStockSubscription;
+
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
+
     /**
      * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
      */
@@ -37,6 +43,7 @@ class EmailSubscriptionCreator
      * @var \MageSuite\BackInStock\Service\EmailSender
      */
     protected $emailSender;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
@@ -52,6 +59,11 @@ class EmailSubscriptionCreator
      */
     protected $configuration;
 
+    /**
+     * @var \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory
+     */
+    protected $backInStockSubscriptionFactory;
+
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Customer\Model\SessionFactory $customerSession,
@@ -62,7 +74,8 @@ class EmailSubscriptionCreator
         \MageSuite\BackInStock\Service\EmailSender $emailSender,
         \Magento\Framework\UrlInterface $url,
         \MageSuite\BackInStock\Service\Subscription\ProductResolver $productResolver,
-        \MageSuite\BackInStock\Helper\Configuration $configuration
+        \MageSuite\BackInStock\Helper\Configuration $configuration,
+        \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory
     )
     {
         $this->productRepository = $productRepository;
@@ -75,6 +88,7 @@ class EmailSubscriptionCreator
         $this->url = $url;
         $this->productResolver = $productResolver;
         $this->configuration = $configuration;
+        $this->backInStockSubscriptionFactory = $backInStockSubscriptionFactory;
     }
 
     public function subscribe($params)
@@ -91,22 +105,15 @@ class EmailSubscriptionCreator
             throw new \Exception(__('Invalid email address.'));
         }
 
-        if($this->subscriptionExist($product->getId(), $customerId, $email, $storeId)){
-            throw new \Magento\Framework\Exception\AlreadyExistsException(__('You have already subscribed for a back-to-stock notification for this product.'));
+        if ($this->subscriptionExist($product->getId(), $customerId, $email, $storeId)) {
+            $subscription = $this->getExistingSubscription($product->getId(), $customerId, $email, $storeId);
+            if (!$this->canSubscriptionBeReset($subscription)) {
+                return;
+            }
+            $subscription = $this->resetExistingSubscription($subscription, $customerId, $email);
+        } else {
+            $subscription = $this->createNewSubscription($product, $customerId, $email, $storeId);
         }
-
-        $token = $this->backInStockSubscriptionRepository->generateToken($email, $customerId);
-
-        $subscription = $this->backInStockSubscription
-            ->setCustomerId($customerId)
-            ->setCustomerEmail($email)
-            ->setProductId($product->getId())
-            ->setParentProductId($product->getParentProductId())
-            ->setStoreId($storeId)
-            ->setNotificationChannel('email')
-            ->setToken($token);
-
-        $subscription = $this->backInStockSubscriptionRepository->save($subscription);
 
         $this->setTemplateParams($subscription, $product);
 
@@ -121,7 +128,7 @@ class EmailSubscriptionCreator
 
     public function getCustomer()
     {
-        if(!$this->customer){
+        if (!$this->customer) {
             $this->customer = $this->customerSession->getCustomer();
         }
 
@@ -175,5 +182,93 @@ class EmailSubscriptionCreator
             $identifyByValue,
             $storeId
         );
+    }
+
+    /**
+     * @param int $productId
+     * @param int $customerId
+     * @param string $email
+     * @param int $storeId
+     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
+     */
+    public function getExistingSubscription(int $productId, int $customerId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
+        $identifyByField = \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::CUSTOMER_EMAIL;
+        $identifyByValue = $email;
+
+        if ($customerId) {
+            $identifyByField = \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::CUSTOMER_ID;
+            $identifyByValue = $customerId;
+        }
+
+        return $this->backInStockSubscriptionRepository->get(
+            $productId,
+            $identifyByField,
+            $identifyByValue,
+            $storeId
+        );
+    }
+
+    /**
+     * @param \MageSuite\BackInStock\Model\BackInStockSubscription $subscription
+     * @return bool
+     * @throws \Exception
+     */
+    public function canSubscriptionBeReset(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription): bool
+    {
+        if ($subscription->isCustomerConfirmed() && !$subscription->isCustomerUnsubscribed()) {
+            return false;
+        }
+        if (!$subscription->isCustomerConfirmed() && !$subscription->isCustomerUnsubscribed() && !$subscription->isConfirmationDeadlinePassed()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param \Magento\Catalog\Api\Data\ProductInterface $product
+     * @param int $customerId
+     * @param string $email
+     * @param int $storeId
+     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
+     */
+    public function createNewSubscription(\Magento\Catalog\Api\Data\ProductInterface $product, int $customerId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
+        $token = $this->backInStockSubscriptionRepository->generateToken($email, $customerId);
+
+        $subscription = $this->backInStockSubscription
+            ->setCustomerId($customerId)
+            ->setCustomerEmail($email)
+            ->setProductId($product->getId())
+            ->setParentProductId($product->getParentProductId())
+            ->setStoreId($storeId)
+            ->setNotificationChannel('email')
+            ->setToken($token);
+        $subscription = $this->backInStockSubscriptionRepository->save($subscription);
+
+        return $subscription;
+    }
+
+    /**
+     * @param \MageSuite\BackInStock\Model\BackInStockSubscription $subscription
+     * @param int $customerId
+     * @param string $email
+     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
+     */
+    public function resetExistingSubscription(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription, int $customerId, string $email): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
+        $token = $this->backInStockSubscriptionRepository->generateToken($email, $customerId);
+
+        $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
+        $subscription
+            ->setCustomerConfirmed(false)
+            ->setCustomerUnsubscribed(false)
+            ->setAddDate(new \DateTime())
+            ->setToken($token);
+
+        $subscription = $this->backInStockSubscriptionRepository->save($subscription);
+
+        return $subscription;
     }
 }

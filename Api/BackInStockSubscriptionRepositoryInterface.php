@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Api;
 
 interface BackInStockSubscriptionRepositoryInterface
@@ -9,6 +10,15 @@ interface BackInStockSubscriptionRepositoryInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getById($id);
+
+    /**
+     * @param string|int $productId
+     * @param string|int $identifyByField
+     * @param string $identifyByValue
+     * @param int $storeId
+     * @return mixed
+     */
+    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription;
 
     /**
      * @param \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription

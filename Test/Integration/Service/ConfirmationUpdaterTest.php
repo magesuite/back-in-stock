@@ -56,16 +56,43 @@ class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
 
         $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
 
-        $this->assertEquals(0, $subscription->getCustomerConfirmed());
+        $this->assertEquals(false, $subscription->isCustomerConfirmed());
 
         $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
 
         $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
 
-        $this->assertEquals(1, $subscription->getCustomerConfirmed());
+        $this->assertEquals(true, $subscription->isCustomerConfirmed());
     }
 
-    public static function loadSubscriptions() {
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture loadExpiredSubscriptions
+     */
+    public function testItNotConfirmsExpiredSubscription()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
+
+        $this->assertEquals(false, $subscription->isCustomerConfirmed());
+
+        $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
+
+        $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
+
+        $this->assertEquals(false, $subscription->isCustomerConfirmed());
+    }
+
+    public static function loadSubscriptions()
+    {
         include __DIR__.'/../../_files/subscriptions.php';
+    }
+
+    public static function loadExpiredSubscriptions()
+    {
+        include __DIR__.'/../../_files/expired_subscriptions.php';
     }
 }

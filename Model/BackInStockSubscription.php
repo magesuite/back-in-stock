@@ -3,6 +3,34 @@ namespace MageSuite\BackInStock\Model;
 
 class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel implements \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
 {
+    public const SUBSCRIPTION_CONFIRMATION_AWAITING_TIME_IN_HOURS = 24;
+
+    /**
+     * @var \MageSuite\BackInStock\Helper\Subscription
+     */
+    protected $subscriptionHelper;
+
+    /**
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
+     * @param array $data
+     */
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
+        array $data = []
+    )
+    {
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+        $this->subscriptionHelper = $subscriptionHelper;
+    }
+
     protected function _construct()
     {
         $this->_init(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription::class);
@@ -192,20 +220,37 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
-    public function getCustomerConfirmed()
+    public function isCustomerConfirmed(): bool
     {
         return $this->getData('customer_confirmed');
     }
 
     /**
-     * @param int $confirmed
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
+     * @inheritDoc
      */
-    public function setCustomerConfirmed($confirmed)
+    public function setCustomerConfirmed(bool $confirmed)
     {
         $this->setData('customer_confirmed', $confirmed);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isCustomerUnsubscribed(): bool
+    {
+        return $this->getData('customer_unsubscribed');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setCustomerUnsubscribed(bool $unsubscribed)
+    {
+        $this->setData('customer_unsubscribed', $unsubscribed);
 
         return $this;
     }
@@ -243,5 +288,10 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
     public function setNotificationChannel($channel)
     {
         return $this->setData('notification_channel', $channel);
+    }
+
+    public function isConfirmationDeadlinePassed(): bool
+    {
+        return $this->subscriptionHelper->isConfirmationDeadlinePassed($this->getAddDate());
     }
 }
