@@ -3,9 +3,9 @@ namespace MageSuite\BackInStock\Service;
 
 class EmailSender
 {
+    const STATUS_SENT = 'sent';
+
     /**
-     * Store manager
-     *
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
@@ -71,7 +71,7 @@ class EmailSender
 
     public function sendMail($receiverEmail, $emailTemplateVariables, $templateConfigPath, $storeId, $customerId = 0)
     {
-        if($customerId){
+        if ($customerId) {
             $this->addCustomerNameToVariables($emailTemplateVariables, $customerId);
         }
 
@@ -93,14 +93,17 @@ class EmailSender
             $this->inlineTranslation->resume();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
+            return $e->getMessage();
         }
+
+        return self::STATUS_SENT;
     }
 
     protected function addCustomerNameToVariables(&$emailTemplateVariables, $customerId)
     {
-        try{
+        try {
             $customer = $this->customerRepository->getById($customerId);
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             $emailTemplateVariables['customerName'] = null;
             return;
         }

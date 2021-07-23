@@ -25,8 +25,7 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
         $this->subscriptionHelper = $subscriptionHelper;
     }
@@ -201,20 +200,20 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getWasNotificationSent()
+    public function getSendNotificationStatus()
     {
-        return $this->getData('was_notification_sent');
+        return $this->getData('send_notification_status');
     }
 
     /**
-     * @param int $wasNotificationSent
+     * @param string $sendNotificationStatus
      * @return \MageSuite\BackInStock\Model\BackInStockSubscription
      */
-    public function setWasNotificationSent($wasNotificationSent)
+    public function setSendNotificationStatus($sendNotificationStatus)
     {
-        $this->setData('was_notification_sent', $wasNotificationSent);
+        $this->setData('send_notification_status', $sendNotificationStatus);
 
         return $this;
     }
