@@ -79,19 +79,31 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
         }
 
         $saleableQuantityData = $this->getSalableQuantityDataBySku->execute($sku);
-        $qty = $saleableQuantityData[0]['qty'] ?? null;
 
-        if ($qty === null) {
-            return false;
-        }
-
-        return $qty > 0;
+        return $this->isSalableQuantityPositive($saleableQuantityData);
     }
 
     public function getUnsubscribeUrl($notification)
     {
         return $this->url->getUrl(
             'backinstock/notification/unsubscribe',
-            ['id' => $notification->getId(), 'token' => $notification->getToken()]);
+            [
+                'id' => $notification->getId(),
+                'token' => $notification->getToken()
+            ]
+        );
+    }
+
+    protected function isSalableQuantityPositive($saleableQuantityData)
+    {
+        foreach ($saleableQuantityData as $saleableQuantityItem) {
+            $qty = $saleableQuantityItem['qty'] ?? 0;
+
+            if ($qty > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
