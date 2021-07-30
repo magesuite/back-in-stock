@@ -30,7 +30,7 @@ class EmailNotificationSender
 
     public function send($notification, $subscription)
     {
-        $this->emailSender->sendMail(
+        return  $this->emailSender->sendMail(
             $subscription->getCustomerEmail(),
             $this->getTemplateParams($notification, $subscription),
             $this->getEmailTemplateId($notification->getNotificationType()),

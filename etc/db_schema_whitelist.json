@@ -11,6 +11,7 @@
             "send_date": true,
             "send_count": true,
             "was_notification_sent": true,
+            "send_notification_status": true,
             "customer_confirmed": true,
             "token": true,
             "notification_channel": true,

@@ -28,14 +28,11 @@ class NotificationQueueSender
     protected $sendersByChannel;
 
     public function __construct(
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
         \MageSuite\BackInStock\Api\NotificationRepositoryInterface $notificationRepository,
         \MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory $notificationCollectionFactory,
         $sendersByChannel = []
-    )
-    {
-        $this->productRepository = $productRepository;
+    ) {
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
         $this->notificationRepository = $notificationRepository;
         $this->notificationCollectionFactory = $notificationCollectionFactory;
@@ -52,11 +49,11 @@ class NotificationQueueSender
 
             $channel = $subscription->getNotificationChannel();
 
-            if(!isset($this->sendersByChannel[$channel])) {
+            if (!isset($this->sendersByChannel[$channel])) {
                 continue;
             }
 
-            $this->sendersByChannel[$channel]->send($notification, $subscription);
+            $sendNotificationStatus = $this->sendersByChannel[$channel]->send($notification, $subscription);
 
             if ($automaticRemoveSubscription) {
                 $this->backInStockSubscriptionRepository->delete($subscription);
@@ -64,7 +61,7 @@ class NotificationQueueSender
                 $subscription
                     ->setSendCount($subscription->getSendCount() + 1)
                     ->setSendDate(date("Y-m-d H:i:s"))
-                    ->setWasNotificationSent(1);
+                    ->setSendNotificationStatus($sendNotificationStatus);
 
                 $this->backInStockSubscriptionRepository->save($subscription);
             }

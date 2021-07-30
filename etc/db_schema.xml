@@ -9,7 +9,7 @@
         <column xsi:type="timestamp" name="add_date" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Add Date"/>
         <column xsi:type="timestamp" name="send_date" on_update="false" nullable="true" comment="Send Date"/>
         <column xsi:type="smallint" name="send_count" unsigned="true" nullable="false" identity="false" default="0" comment="Send Count"/>
-        <column xsi:type="smallint" name="was_notification_sent" unsigned="true" nullable="false" identity="false" default="0" comment="Was notification sent"/>
+        <column xsi:type="varchar" name="send_notification_status" nullable="true" length="255" comment="Send notification status"/>
         <column xsi:type="boolean" name="customer_confirmed" nullable="false" default="0" comment="Customer confirmed"/>
         <column xsi:type="boolean" name="customer_unsubscribed" nullable="false" default="0" comment="Customer unsubscribed"/>
         <column xsi:type="varchar" name="token" nullable="false" length="255" comment="Token" />

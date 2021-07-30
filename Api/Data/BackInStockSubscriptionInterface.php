@@ -12,7 +12,7 @@ interface BackInStockSubscriptionInterface
     const ADD_DATE = 'add_date';
     const SEND_DATE = 'send_date';
     const SEND_COUNT = 'send_count';
-    const WAS_NOTIFICATION_SENT = 'was_notification_sent';
+    const SEND_NOTIFICATION_STATUS = 'send_notification_status';
     const CUSTOMER_CONFIRMED = 'customer_confirmed';
     const TOKEN = 'token';
     const NOTIFICATION_CHANNEL = 'notification_channel';
@@ -117,15 +117,15 @@ interface BackInStockSubscriptionInterface
     public function setSendCount($sendCount);
 
     /**
-     * @return int
+     * @return string
      */
-    public function getWasNotificationSent();
+    public function getSendNotificationStatus();
 
     /**
-     * @param int $wasNotificationSent
+     * @param string $sendNotificationStatus
      * @return \MageSuite\BackInStock\Model\BackInStockSubscription
      */
-    public function setWasNotificationSent($wasNotificationSent);
+    public function setSendNotificationStatus($sendNotificationStatus);
 
     /**
      * @return int
