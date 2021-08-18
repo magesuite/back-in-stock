@@ -19,11 +19,6 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
     protected $notificationProductDataResolver;
 
     /**
-     * @var \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku
-     */
-    protected $getSalableQuantityDataBySku;
-
-    /**
      * @var \MageSuite\BackInStock\Model\ResourceModel\Product
      */
     protected $productResource;
@@ -33,20 +28,41 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
      */
     protected $url;
 
+    /**
+     * @var \Magento\Store\Model\StoreManager
+     */
+    protected $storeManager;
+
+    /**
+     * @var \Magento\InventorySales\Model\StockResolver
+     */
+    protected $stockResolver;
+
+    /**
+     * @var \Magento\InventorySales\Model\GetProductSalableQty
+     */
+    protected $getProductSalableQty;
+
     public function __construct(
         \Magento\Customer\Model\Session $customerSession,
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
         \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
-        \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku $getSalableQuantityDataBySku,
         \MageSuite\BackInStock\Model\ResourceModel\Product $productResource,
-        \Magento\Framework\UrlInterface $url
+        \Magento\Framework\UrlInterface $url,
+        \Magento\Store\Model\StoreManager $storeManager,
+        \Magento\InventorySales\Model\StockResolver $stockResolver,
+        \Magento\InventorySales\Model\GetProductSalableQty $getProductSalableQty
+
     ) {
         $this->customerSession = $customerSession;
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
         $this->notificationProductDataResolver = $notificationProductDataResolver;
-        $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
         $this->productResource = $productResource;
         $this->url = $url;
+        $this->storeManager = $storeManager;
+        $this->stockResolver = $stockResolver;
+        $this->getProductSalableQty = $getProductSalableQty;
+
     }
 
     public function getSubscriptions()
@@ -79,9 +95,11 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
             return false;
         }
 
-        $saleableQuantityData = $this->getSalableQuantityDataBySku->execute($sku);
+        $websiteCode = $this->storeManager->getWebsite()->getCode();
+        $stockId = $this->stockResolver->execute(\Magento\InventorySalesApi\Api\Data\SalesChannelInterface::TYPE_WEBSITE, $websiteCode)->getStockId();
 
-        return $this->isSalableQuantityPositive($saleableQuantityData);
+        $qty = $this->getProductSalableQty->execute($sku, $stockId);
+        return $qty > 0;
     }
 
     public function getUnsubscribeUrl($notification)
@@ -93,18 +111,5 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
                 'token' => $notification->getToken()
             ]
         );
-    }
-
-    protected function isSalableQuantityPositive($saleableQuantityData)
-    {
-        foreach ($saleableQuantityData as $saleableQuantityItem) {
-            $qty = $saleableQuantityItem['qty'] ?? 0;
-
-            if ($qty > 0) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
