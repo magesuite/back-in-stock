@@ -46,13 +46,13 @@ define([
 
                 if (this.canApplyMixin) {
                     this.element.find('.bis-selected').removeClass('bis-selected');
+                    this.element.find('.' + this.options.classes.optionClass).off('click');
 
                     this.$outOfStockOptions = this.element.find(this.options.outOfStockSwatchesSelector);
 
                     if (this.$outOfStockOptions.length) {
                         this.$outOfStockOptions
-                            .addClass(this.options.swatchAlertClass)
-                            .off('click');
+                            .addClass(this.options.swatchAlertClass);
 
                         this._setEvent();
                     }
@@ -81,10 +81,9 @@ define([
                     popup;
 
                 if (this.options.showSubscriptionInModal) {
-                    popup = modal(this.options.modalOptions, $form);
+                    popup = $form.modal(this.options.modalOptions);
 
-                    $form.on('modalclosed', function() {
-                        $form.removeClass('active');
+                    popup.on('modalclosed', function() {
                         $('body').trigger('bis:modalclosed');
                     });
                 }
