@@ -14,6 +14,7 @@ interface BackInStockSubscriptionInterface
     const SEND_COUNT = 'send_count';
     const SEND_NOTIFICATION_STATUS = 'send_notification_status';
     const CUSTOMER_CONFIRMED = 'customer_confirmed';
+    const CUSTOMER_UNSUBSCRIBED = 'customer_unsubscribed';
     const TOKEN = 'token';
     const NOTIFICATION_CHANNEL = 'notification_channel';
 
