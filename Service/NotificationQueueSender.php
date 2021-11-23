@@ -23,19 +23,33 @@ class NotificationQueueSender
     protected $notificationCollectionFactory;
 
     /**
+     * @var \MageSuite\BackInStock\Helper\Subscription
+     */
+    protected $subscriptionHelper;
+
+    /**
      * @var array
      */
     protected $sendersByChannel;
 
+    /**
+     * @param \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository
+     * @param \MageSuite\BackInStock\Api\NotificationRepositoryInterface $notificationRepository
+     * @param \MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory $notificationCollectionFactory
+     * @param \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
+     * @param array $sendersByChannel
+     */
     public function __construct(
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
         \MageSuite\BackInStock\Api\NotificationRepositoryInterface $notificationRepository,
         \MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory $notificationCollectionFactory,
+        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
         $sendersByChannel = []
     ) {
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
         $this->notificationRepository = $notificationRepository;
         $this->notificationCollectionFactory = $notificationCollectionFactory;
+        $this->subscriptionHelper = $subscriptionHelper;
         $this->sendersByChannel = $sendersByChannel;
     }
 
@@ -46,6 +60,11 @@ class NotificationQueueSender
         /** @var \MageSuite\BackInStock\Model\Notification $notification */
         foreach ($notificationCollection as $notification) {
             $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
+
+            if ($subscription->isCustomerUnsubscribed()
+                || $this->subscriptionHelper->isSubscriptionRejected($subscription->isCustomerConfirmed(), $subscription->isCustomerUnsubscribed(), $subscription->getAddDate())) {
+                continue;
+            }
 
             $channel = $subscription->getNotificationChannel();
 
