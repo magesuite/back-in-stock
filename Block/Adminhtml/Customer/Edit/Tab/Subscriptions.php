@@ -34,7 +34,8 @@ class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $customerId = $this->_request->getParam('id');
         $collection = $this->subscriptionCollectionFactory->create()
-            ->addFieldToFilter('customer_id', ['eq' => $customerId]);
+            ->addFieldToFilter('customer_id', ['eq' => $customerId])
+            ->addFieldToFilter('is_removed', ['eq' => 0]);
 
         $this->setCollection($collection);
         return parent::_prepareCollection();

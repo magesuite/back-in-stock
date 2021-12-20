@@ -289,6 +289,22 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         return $this->setData('notification_channel', $channel);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function isRemoved(): bool
+    {
+        return $this->getData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::IS_REMOVED);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setIsRemoved(bool $isRemoved)
+    {
+        return $this->setData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::IS_REMOVED, $isRemoved);
+    }
+
     public function isConfirmationDeadlinePassed(): bool
     {
         return $this->subscriptionHelper->isConfirmationDeadlinePassed($this->getAddDate());

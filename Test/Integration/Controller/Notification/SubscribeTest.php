@@ -55,14 +55,14 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture loadProduct
-     * @magentoDataFixture loadSubscriptions
-     * @dataProvider provideSubscriptions
+     * @magentoDataFixture loadResetSubscriptions
+     * @dataProvider provideResetSubscriptions
      */
     public function testItResetSubscriptionCorrectly(string $email, bool $expectedResult)
     {
         $product = $this->productRepository->get('product_out_of_stock');
 
-        $subscription =  $this->subscriptionRepository->get(
+        $subscription = $this->subscriptionRepository->get(
             $product->getId(),
             'customer_email',
             $email,
@@ -81,20 +81,54 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->assertEquals($expectedResult, $subscription->getToken() !== $resetedSubscription->getToken());
     }
 
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture loadRemovedSubscriptions
+     * @dataProvider provideRemovedSubscriptions
+     */
+    public function testItCreateNewSubscriptionCorrectlyWhenPreviousIsRemoved(string $email)
+    {
+        $product = $this->productRepository->get('simple');
+
+        $this->getRequest()->setParams([
+            'notification_channel' => 'email',
+            'product' => $product->getId(),
+            'email' => $email
+        ]);
+
+        $this->dispatch('backinstock/notification/subscribe');
+
+        $newSubscription = $subscription = $this->subscriptionRepository->get(
+            $product->getId(),
+            'customer_email',
+            $email,
+            1
+        );
+
+        $this->assertEquals(false, $newSubscription->isRemoved());
+    }
+
     public static function loadProduct()
     {
         include __DIR__.'/../../../_files/product_out_of_stock.php';
     }
 
-    public static function loadSubscriptions()
+    public static function loadResetSubscriptions()
     {
         include __DIR__.'/../../../_files/reset_subscriptions.php';
+    }
+
+    public static function loadRemovedSubscriptions()
+    {
+        include __DIR__.'/../../../_files/removed_subscriptions.php';
     }
 
     /**
      * @return array
      */
-    public function provideSubscriptions(): array
+    public function provideResetSubscriptions(): array
     {
         return [
             ['test+0@test.com', true],
@@ -105,6 +139,23 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
             ['test+5@test.com', true],
             ['test+6@test.com', true],
             ['test+7@test.com', false]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function provideRemovedSubscriptions(): array
+    {
+        return [
+            ['test+0@test.com'],
+            ['test+1@test.com'],
+            ['test+2@test.com'],
+            ['test+3@test.com'],
+            ['test+4@test.com'],
+            ['test+5@test.com'],
+            ['test+6@test.com'],
+            ['test+7@test.com']
         ];
     }
 }

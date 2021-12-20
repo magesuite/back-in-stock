@@ -33,7 +33,8 @@ class BackInStockSubscription extends \Magento\Framework\Model\ResourceModel\Db\
             ->from(['s' => $tableName], 's.*')
             ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 's.product_id = e.entity_id', 'e.sku')
             ->where('e.sku IN (?)', $skus)
-            ->where('s.customer_confirmed = ?', 1);
+            ->where('s.customer_confirmed = ?', 1)
+            ->where('s.is_removed = ?', 0);
 
         return $this->connection->fetchAll($query);
     }

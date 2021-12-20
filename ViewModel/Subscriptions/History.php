@@ -79,6 +79,7 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
             ->addFieldToFilter('customer_confirmed', ['eq' => 1])
             ->addFieldToFilter('customer_unsubscribed', ['eq' => 0])
             ->addFieldToFilter('customer_id', ['eq' => $customerId])
+            ->addFieldToFilter('is_removed', ['eq' => 0])
             ->setOrder('add_date', 'desc');
     }
 

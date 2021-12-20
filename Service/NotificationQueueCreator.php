@@ -51,7 +51,9 @@ class NotificationQueueCreator
         $collection
             ->addFieldToFilter('product_id', ['eq' => $productId])
             ->addFieldToFilter('store_id', ['eq' => $storeId])
-            ->addFieldToFilter('customer_confirmed', ['eq' => 1]);
+            ->addFieldToFilter('customer_confirmed', ['eq' => 1])
+            ->addFieldToFilter('customer_unsubscribed', ['eq' => 0])
+            ->addFieldToFilter('is_removed', ['eq' => 0]);
 
         return $collection;
     }

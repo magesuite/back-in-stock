@@ -62,7 +62,9 @@ class NotificationQueueSender
             $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
 
             if ($subscription->isCustomerUnsubscribed()
+                || $subscription->isRemoved()
                 || $this->subscriptionHelper->isSubscriptionRejected($subscription->isCustomerConfirmed(), $subscription->isCustomerUnsubscribed(), $subscription->getAddDate())) {
+                $this->notificationRepository->delete($notification);
                 continue;
             }
 
@@ -74,16 +76,15 @@ class NotificationQueueSender
 
             $sendNotificationStatus = $this->sendersByChannel[$channel]->send($notification, $subscription);
 
+            $subscription
+                ->setSendCount($subscription->getSendCount() + 1)
+                ->setSendDate(date("Y-m-d H:i:s"))
+                ->setSendNotificationStatus($sendNotificationStatus);
             if ($automaticRemoveSubscription) {
-                $this->backInStockSubscriptionRepository->delete($subscription);
-            } else {
-                $subscription
-                    ->setSendCount($subscription->getSendCount() + 1)
-                    ->setSendDate(date("Y-m-d H:i:s"))
-                    ->setSendNotificationStatus($sendNotificationStatus);
-
-                $this->backInStockSubscriptionRepository->save($subscription);
+                $subscription->setIsRemoved(true);
             }
+
+            $this->backInStockSubscriptionRepository->save($subscription);
 
             $this->notificationRepository->delete($notification);
         }

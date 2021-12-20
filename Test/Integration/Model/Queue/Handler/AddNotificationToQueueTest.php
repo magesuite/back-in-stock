@@ -39,6 +39,7 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture loadSubscriptions
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoDataFixture loadSubscriptionsMarkedRemoved
      */
     public function testItCreateNotificationQueueCorrectly()
     {
@@ -59,7 +60,7 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
 
         $this->addNotificationToQueue->execute($item);
 
-        $this->assertEquals(10, $this->notificationCollection->getSize());
+        $this->assertEquals(7, $this->notificationCollection->getSize());
 
         foreach ($this->notificationCollection as $notification) {
             $this->assertEquals('automatic_notification', $notification->getNotificationType());
@@ -74,5 +75,10 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
     public static function loadSubscriptionsCustomerConfirmed()
     {
         include __DIR__.'/../../../../_files/subscriptions_confirmed_customer.php';
+    }
+
+    public static function loadSubscriptionsMarkedRemoved()
+    {
+        include __DIR__.'/../../../../_files/subscriptions_marked_removed.php';
     }
 }

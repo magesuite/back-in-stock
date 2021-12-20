@@ -30,6 +30,7 @@ Email,Email
 "You have been already unsubscribed from back in stock notification.", "You have been already unsubscribed from back in stock notification."
 "Time for subscription confirmation passed.", "Time for subscription confirmation passed."
 "Back in stock subscription has been confirmed.","Back in stock subscription has been confirmed."
+"This subscription does not exist","This subscription does not exist"
 "Invalid email address.","Invalid email address."
 "If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.","If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there."
 "You have already subscribed for a back-to-stock notification for this product.","You have already subscribed for a back-to-stock notification for this product."

@@ -3,20 +3,21 @@ namespace MageSuite\BackInStock\Api\Data;
 
 interface BackInStockSubscriptionInterface
 {
-    const ID = 'id';
-    const CUSTOMER_ID = 'customer_id';
-    const CUSTOMER_EMAIL = 'customer_email';
-    const PRODUCT_ID = 'product_id';
-    const PARENT_PRODUCT_ID = 'parent_product_id';
-    const STORE_ID = 'store_id';
-    const ADD_DATE = 'add_date';
-    const SEND_DATE = 'send_date';
-    const SEND_COUNT = 'send_count';
-    const SEND_NOTIFICATION_STATUS = 'send_notification_status';
-    const CUSTOMER_CONFIRMED = 'customer_confirmed';
-    const CUSTOMER_UNSUBSCRIBED = 'customer_unsubscribed';
-    const TOKEN = 'token';
-    const NOTIFICATION_CHANNEL = 'notification_channel';
+    public const ID = 'id';
+    public const CUSTOMER_ID = 'customer_id';
+    public const CUSTOMER_EMAIL = 'customer_email';
+    public const PRODUCT_ID = 'product_id';
+    public const PARENT_PRODUCT_ID = 'parent_product_id';
+    public const STORE_ID = 'store_id';
+    public const ADD_DATE = 'add_date';
+    public const SEND_DATE = 'send_date';
+    public const SEND_COUNT = 'send_count';
+    public const SEND_NOTIFICATION_STATUS = 'send_notification_status';
+    public const CUSTOMER_CONFIRMED = 'customer_confirmed';
+    public const CUSTOMER_UNSUBSCRIBED = 'customer_unsubscribed';
+    public const TOKEN = 'token';
+    public const NOTIFICATION_CHANNEL = 'notification_channel';
+    public const IS_REMOVED = 'is_removed';
 
     /**
      * @return int
@@ -171,4 +172,14 @@ interface BackInStockSubscriptionInterface
      * @return \MageSuite\BackInStock\Model\BackInStockSubscription
      */
     public function setNotificationChannel($channel);
+
+    /**
+     * @return bool
+     */
+    public function isRemoved(): bool;
+
+    /**
+     * @param bool $isRemoved
+     */
+    public function setIsRemoved(bool $isRemoved);
 }

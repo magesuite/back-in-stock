@@ -43,6 +43,10 @@ class ConfirmationUpdater
                 throw new \Exception(__('This subscription request has been already confirmed.'));
             }
 
+            if ($subscription->isRemoved()) {
+                throw new \Exception(__('This subscription does not exist.'));
+            }
+
             if ($subscription->isConfirmationDeadlinePassed()) {
                 throw new \Exception(__('Time for subscription confirmation passed'));
             }

@@ -56,6 +56,23 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture loadRemovedSubscriptions
+     */
+    public function testItDoesNotAddRemovedSubscriptionToNotificationQueue()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION, 'test message');
+
+        $notificationCollection = $this->notificationCollection;
+
+        $this->assertEquals(0, $notificationCollection->getSize());
+    }
+
     public static function loadSubscriptions()
     {
         include __DIR__.'/../../_files/subscriptions.php';
@@ -64,5 +81,10 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
     public static function loadSubscriptionsCustomerConfirmed()
     {
         include __DIR__.'/../../_files/subscriptions_confirmed_customer.php';
+    }
+
+    public static function loadRemovedSubscriptions()
+    {
+        include __DIR__.'/../../_files/removed_subscriptions.php';
     }
 }

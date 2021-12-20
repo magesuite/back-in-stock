@@ -10,7 +10,7 @@ $productRepository = $objectManager->create(\Magento\Catalog\Api\ProductReposito
 $backInStockSubscriptionRepository = $objectManager->create(\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface::class);
 
 /** @var \Magento\Catalog\Model\Product $product */
-$product = $productRepository->get('product_out_of_stock');
+$product = $productRepository->get('simple');
 
 $currentDateTime = new \DateTime();
 $subscriptionAddDate =  $currentDateTime->sub(
@@ -18,14 +18,14 @@ $subscriptionAddDate =  $currentDateTime->sub(
 );
 $subscriptionAddDateFormatted = $subscriptionAddDate->format('Y-m-d H:i:s');
 $subscriptionsData = [
-    ['confirmed' => true, 'unsubscribed' => true, 'add_date' => '2020-07-31 09:15:15'],
-    ['confirmed' => true, 'unsubscribed' => false, 'add_date' => '2020-07-31 09:15:15'],
-    ['confirmed' => true, 'unsubscribed' => true, 'add_date' => $subscriptionAddDateFormatted],
-    ['confirmed' => true, 'unsubscribed' => false, 'add_date' => $subscriptionAddDateFormatted],
-    ['confirmed' => false, 'unsubscribed' => true, 'add_date' => '2020-07-31 09:15:15'],
-    ['confirmed' => false, 'unsubscribed' => true, 'add_date' => $subscriptionAddDateFormatted],
-    ['confirmed' => false, 'unsubscribed' => false, 'add_date' => '2020-07-31 09:15:15'],
-    ['confirmed' => false, 'unsubscribed' => false, 'add_date' => $subscriptionAddDateFormatted]
+    ['confirmed' => true, 'unsubscribed' => true, 'removed' => true, 'add_date' => '2020-07-31 09:15:15'],
+    ['confirmed' => true, 'unsubscribed' => false, 'removed' => true, 'add_date' => '2020-07-31 09:15:15'],
+    ['confirmed' => true, 'unsubscribed' => true, 'removed' => true, 'add_date' => $subscriptionAddDateFormatted],
+    ['confirmed' => true, 'unsubscribed' => false, 'removed' => true, 'add_date' => $subscriptionAddDateFormatted],
+    ['confirmed' => false, 'unsubscribed' => true, 'removed' => true, 'add_date' => '2020-07-31 09:15:15'],
+    ['confirmed' => false, 'unsubscribed' => true, 'removed' => true, 'add_date' => $subscriptionAddDateFormatted],
+    ['confirmed' => false, 'unsubscribed' => false, 'removed' => true, 'add_date' => '2020-07-31 09:15:15'],
+    ['confirmed' => false, 'unsubscribed' => false, 'removed' => true,'add_date' => $subscriptionAddDateFormatted]
 
 ];
 
@@ -44,6 +44,7 @@ for ($i = 0; $i < 8; $i++) {
         ->setCustomerEmail($email)
         ->setCustomerConfirmed($subscriptionsData[$i]['confirmed'])
         ->setCustomerUnsubscribed($subscriptionsData[$i]['unsubscribed'])
+        ->setIsRemoved($subscriptionsData[$i]['removed'])
         ->setAddDate($subscriptionsData[$i]['add_date'])
         ->setToken($token);
 
