@@ -50,6 +50,10 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
                 throw new \Exception(__('Time for subscription confirmation passed'));
             }
 
+            if ($subscription->isRemoved()) {
+                throw new \Exception(__('This subscription does not exist.'));
+            }
+
             $subscription->setCustomerUnsubscribed(true);
             $this->backInStockSubscriptionRepository->save($subscription);
 

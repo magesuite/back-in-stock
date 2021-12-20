@@ -48,7 +48,8 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
         }
         $collection = $this->subscriptionCollectionFactory->create();
         $collection
-            ->addFieldToFilter('product_id', ['eq' => $productId]);
+            ->addFieldToFilter('product_id', ['eq' => $productId])
+            ->addFieldToFilter('is_removed', ['eq' => 0]);
 
         if($storeId) {
             $collection

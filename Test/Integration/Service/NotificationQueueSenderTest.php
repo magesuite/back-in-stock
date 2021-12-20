@@ -44,6 +44,11 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      */
     protected $backInStockSubscriptionRepository;
 
+    /**
+     * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory
+     */
+    protected $backInStockSubscriptionCollectionFactory;
+
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
@@ -55,6 +60,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
         $this->notificationQueueSender = $this->objectManager->create(\MageSuite\BackInStock\Service\NotificationQueueSender::class);
         $this->emailNotificationSender = $this->objectManager->create(\MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender::class);
         $this->backInStockSubscriptionRepository = $this->objectManager->create(\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface::class);
+        $this->backInStockSubscriptionCollectionFactory = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory::class);
     }
 
     /**
@@ -95,7 +101,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture loadSubscriptions
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
      */
-    public function testItRemovesSubscriptionsAfterQueueIsProcessed()
+    public function testItMarkSubscriptionsAsRemovedAfterQueueIsProcessed()
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
@@ -110,7 +116,10 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
 
         $notificationCollection = $this->notificationCollection->create();
 
-        $this->assertEquals(0, $this->subscriptionCollection->getSize());
+        $removedSubscriptions = $this->backInStockSubscriptionCollectionFactory->create()
+            ->addFieldToFilter('is_removed', 1);
+
+        $this->assertEquals(10, $removedSubscriptions->getSize());
         $this->assertEquals(0, $notificationCollection->getSize());
     }
 
@@ -119,6 +128,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture loadSubscriptions
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoDataFixture loadSubscriptionsMarkedRemoved
      */
     public function testItGetsCorrectDataToSendForAutomaticType()
     {
@@ -129,7 +139,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
 
         $notificationCollection = $this->notificationCollection->create();
 
-        $this->assertEquals(10, $notificationCollection->getSize());
+        $this->assertEquals(7, $notificationCollection->getSize());
 
         $emailNotificationSender = $this->emailNotificationSender;
 
@@ -151,6 +161,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture loadSubscriptions
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoDataFixture loadSubscriptionsMarkedRemoved
      */
     public function testItGetCorrectDataToSendForManualType()
     {
@@ -161,7 +172,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
 
         $notificationCollection = $this->notificationCollection->create();
 
-        $this->assertEquals(10, $notificationCollection->getSize());
+        $this->assertEquals(7, $notificationCollection->getSize());
 
         $emailNotificationSender = $this->emailNotificationSender;
 
@@ -184,5 +195,10 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
     public static function loadSubscriptionsCustomerConfirmed()
     {
         include __DIR__ . '/../../_files/subscriptions_confirmed_customer.php';
+    }
+
+    public static function loadSubscriptionsMarkedRemoved()
+    {
+        include __DIR__.'/../../_files/subscriptions_marked_removed.php';
     }
 }

@@ -19,12 +19,14 @@
         </arguments>
     </type>
 
-    <virtualType name="MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <type name="MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Grid\Collection">
         <arguments>
             <argument name="mainTable" xsi:type="string">back_in_stock_subscription_entity</argument>
+            <argument name="eventPrefix" xsi:type="string">backinstock_subscriptions_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">backinstock_subscriptions_grid_collection</argument>
             <argument name="resourceModel" xsi:type="string">MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription</argument>
         </arguments>
-    </virtualType>
+    </type>
 
     <type name="Magento\Inventory\Model\SourceItem\Command\SourceItemsSave">
         <plugin name="collect_back_in_stock_items" type="MageSuite\BackInStock\Plugin\Inventory\Model\SourceItem\Command\SourceItemsSave\CollectBackInStockItemsForQueue" sortOrder="10" />
