@@ -8,10 +8,9 @@ define([
     /**
      * Wrap backinstock functionality into modal
      */
-
     $.widget('magesuite.backInStockModal', {
         options: {
-            subscriptionFormClass: 'cs-product-stock-subscription',
+            subscriptionFormClass: '.cs-product-stock-subscription',
             modalTriggerSelector: '.back-in-stock-modal-trigger',
             modalOptions: {
                 type: 'popup',
@@ -22,13 +21,14 @@ define([
         },
 
         _init: function() {
-            this.$subscriptionForm = $('.' + this.options.subscriptionFormClass);
-            this.$outOfStockOptions = $(this.options.modalTriggerSelector);
+            console.log('init');
+            this.$subscriptionForm = $(this.options.subscriptionFormClass);
+            this.$modalTrigger = $(this.options.modalTriggerSelector);
             this.$addToCartForm = $('#product_addtocart_form');
-            this.groupedProductId = this.$addToCartForm .find('input[name="product"]').val();
+            this.groupedProductId = this.$addToCartForm.find('input[name="product"]').val();
 
-            if (this.$outOfStockOptions.length) {
-                this._prepareBackInStockNotifications();
+            if (this.$modalTrigger.length) {
+                this._createBackInStockModal();
                 this._setEvent();
             }
         },
@@ -36,14 +36,13 @@ define([
         /**
          * Create a modal to be ready
          */
-        _prepareBackInStockNotifications: function() {
-            var $widget  = this;
+        _createBackInStockModal: function() {
             var popup = this.$subscriptionForm.modal(this.options.modalOptions);
 
             popup.on('modalclosed', function() {
                 $('body').trigger('bis:modalclosed');
-                $widget._resetForm();
-            });
+                this._resetForm();
+            }.bind(this));
         },
 
         /**
@@ -67,9 +66,9 @@ define([
         _setEvent: function() {
             var $widget = this;
 
-            this.$outOfStockOptions.on('click', function(e) {
+            this.$modalTrigger.on('click', function(e) {
                 e.preventDefault();
-                var simpleId = $(this).parents('.col.qty').data('simple-id');
+                var simpleId = $(this).parents('.associated-product').data('simple-id');
                 $widget._modifyForm(simpleId);
                 $widget.$subscriptionForm.modal('openModal');
             });

@@ -1,22 +1,24 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceContainer name="product.info.form.content">
-            <referenceBlock name="product.info.grouped">
-                <block name="grouped.item.outofstock.spot" template="MageSuite_BackInStock::product/view/type/grouped/notify-me.phtml">
-                    <block class="MageSuite\ThemeHelpers\Block\Icon" name="product.backinstock.grouped.subscription.icon">
-                        <arguments>
-                            <argument name="icon_url" xsi:type="string">images/icons/stock/back-in-stock.svg</argument>
-                            <argument name="css_class" xsi:type="string"></argument>
-                            <argument name="inlined" xsi:type="boolean">true</argument>
-                            <argument name="lazy_loaded" xsi:type="boolean">false</argument>
-                            <argument name="alt_text" xsi:type="string" translate="true">back in stock</argument>
-                        </arguments>
-                    </block>
+        <referenceBlock name="product.info.grouped">
+            <block name="grouped.item.outofstock.spot" template="MageSuite_BackInStock::product/view/type/grouped/notify-me.phtml">
+                <block class="MageSuite\ThemeHelpers\Block\Icon" name="product.backinstock.grouped.subscription.icon">
+                    <arguments>
+                        <argument name="icon_url" xsi:type="string">images/icons/stock/back-in-stock.svg</argument>
+                        <argument name="css_class" xsi:type="string"></argument>
+                        <argument name="inlined" xsi:type="boolean">true</argument>
+                        <argument name="lazy_loaded" xsi:type="boolean">false</argument>
+                        <argument name="alt_text" xsi:type="string" translate="true">back in stock</argument>
+                    </arguments>
                 </block>
-            </referenceBlock>
-            <block name="product.info.grouped.backinstock" after="-" template="MageSuite_BackInStock::product/view/type/grouped/back-in-stock.phtml"/>
+            </block>
+        </referenceBlock>
+
+        <referenceContainer name="product.info.form.content">
+            <block name="product.info.grouped.backinstock" after="-" template="MageSuite_BackInStock::product/view/type/grouped/modal-init.phtml"/>
         </referenceContainer>
+
         <referenceContainer name="product.backinstock.subscription.hotspot.aboveemail">
             <container name="product.backinstock.subscription.grouped.introduction" htmlTag="div" htmlClass="cs-product-stock-subscription__introduction">
                 <block class="Magento\Framework\View\Element\Text" name="product.backinstock.subscription.grouped.introduction.text">
@@ -26,5 +28,7 @@
                 </block>
             </container>
         </referenceContainer>
+
+        <move element="product.backinstock.subscription" destination="before.body.end" after="-" />
     </body>
 </page>
