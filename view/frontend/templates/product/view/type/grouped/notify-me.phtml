@@ -1,0 +1,10 @@
+<?php
+/**
+ * @var \Magento\Framework\View\Element\Template  $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<div class="back-in-stock-modal-trigger">
+    <span><?= $escaper->escapeHtml(__('Notify me')) ?></span>
+    <?= $block->getChildHtml('product.backinstock.grouped.subscription.icon'); ?>
+</div>
