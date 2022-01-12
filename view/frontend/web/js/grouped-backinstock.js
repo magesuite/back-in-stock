@@ -21,7 +21,6 @@ define([
         },
 
         _init: function() {
-            console.log('init');
             this.$subscriptionForm = $(this.options.subscriptionFormClass);
             this.$modalTrigger = $(this.options.modalTriggerSelector);
             this.$addToCartForm = $('#product_addtocart_form');
