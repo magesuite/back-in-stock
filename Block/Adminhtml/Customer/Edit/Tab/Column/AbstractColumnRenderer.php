@@ -3,24 +3,24 @@ namespace MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\Tab\Column;
 
 abstract class AbstractColumnRenderer extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer
 {
-    static $backInStockData;
+    protected static $backInStockData;
+
     /**
      * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
      */
     protected $backInStockSubscriptionRepository;
+
     /**
      * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $productRepository;
-
 
     public function __construct(
         \Magento\Backend\Block\Context $context,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
         $this->productRepository = $productRepository;
@@ -34,15 +34,12 @@ abstract class AbstractColumnRenderer extends \Magento\Backend\Block\Widget\Grid
     {
         $column = $this->getColumn()->getIndex();
 
-        $value = $this->getColumnValue($column, $row->getId());
-
-        return $value;
+        return $this->getColumnValue($column, $row->getId());
     }
-
 
     public function getBackInStockData($entityId)
     {
-        if(!isset(self::$backInStockData[$entityId])) {
+        if (!isset(self::$backInStockData[$entityId])) {
             self::$backInStockData[$entityId] = $this->backInStockSubscriptionRepository->getById($entityId);
         }
 

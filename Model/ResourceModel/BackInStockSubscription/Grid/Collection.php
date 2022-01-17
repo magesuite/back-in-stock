@@ -7,7 +7,7 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
     /**
      * @var AggregationInterface
      */
-    private $aggregations;
+    protected $aggregations;
 
     /**
      * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
@@ -110,7 +110,8 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
         return $this;
     }
 
-    protected function _renderFiltersBefore() {
+    protected function _renderFiltersBefore()
+    {
         $this->getSelect()->where('main_table.is_removed = 0');
         parent::_renderFiltersBefore();
     }

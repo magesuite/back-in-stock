@@ -18,7 +18,7 @@ interface BackInStockSubscriptionRepositoryInterface
      * @param int $storeId
      * @return mixed
      */
-    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription;
+    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription; //phpcs:ignore
 
     /**
      * @param \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
@@ -39,7 +39,7 @@ interface BackInStockSubscriptionRepositoryInterface
      * @param string $storeId
      * @return mixed
      */
-    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId);
+    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId); //phpcs:ignore
 
     /**
      * @param $email

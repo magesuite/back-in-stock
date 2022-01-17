@@ -14,23 +14,22 @@ $productSkus = ['simple_1', 'simple_2', 'simple_3'];
 
 foreach ($productSkus as $sku) {
     $product = $productRepository->get($sku);
-    if($sku === 'simple_2')
-    {
+    if ($sku === 'simple_2') {
         continue;
     }
 
-    for($i = 0; $i < 10; $i++) {
-    $token = $backInStockSubscriptionRepository->generateToken('test+'.$i.'@test.com', '0');
+    for ($i = 0; $i < 10; $i++) {
+        $token = $backInStockSubscriptionRepository->generateToken('test+'.$i.'@test.com', '0');
     /** @var \MageSuite\BackInStock\Model\BackInStockSubscription $backInStockSubscription */
-    $backInStockSubscription = $objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);
+        $backInStockSubscription = $objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);
 
-    $backInStockSubscription
-    ->setProductId($product->getId())
-    ->setStoreId(1)
-    ->setCustomerId(0)
-    ->setCustomerEmail('test+'.$i.'@test.com')
-    ->setToken($token);
+        $backInStockSubscription
+        ->setProductId($product->getId())
+        ->setStoreId(1)
+        ->setCustomerId(0)
+        ->setCustomerEmail('test+'.$i.'@test.com')
+        ->setToken($token);
 
-    $backInStockSubscriptionRepository->save($backInStockSubscription);
+        $backInStockSubscriptionRepository->save($backInStockSubscription);
     }
 }

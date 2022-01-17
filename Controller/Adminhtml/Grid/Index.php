@@ -6,7 +6,7 @@ class Index extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Framework\View\Result\PageFactory
      */
-    private $pageFactory;
+    protected $pageFactory;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,

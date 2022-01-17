@@ -39,7 +39,7 @@ class AddBackInStockItemsToQueue
 
         $backInStockItems = $this->sourceItemsToQueueContainer->getItems();
 
-        if(empty($backInStockItems)) {
+        if (empty($backInStockItems)) {
             return $result;
         }
 

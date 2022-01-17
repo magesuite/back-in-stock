@@ -28,7 +28,12 @@ class EmailSenderTest extends \PHPUnit\Framework\TestCase
 
         $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
 
-        $this->emailSender = $this->objectManager->create(\MageSuite\BackInStock\Service\EmailSender::class, ['transportBuilder' => $this->objectManager->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class)]);
+        $this->emailSender = $this->objectManager->create(
+            \MageSuite\BackInStock\Service\EmailSender::class,
+            [
+                'transportBuilder' => $this->objectManager->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class)
+            ]
+        );
     }
 
     /**
@@ -55,7 +60,16 @@ class EmailSenderTest extends \PHPUnit\Framework\TestCase
 
         $this->$assertContains('test@test.com', $sentMessage);
 
-        $emailSender->sendMail('test@test.com', ['product_name' => $product->getName(), 'product_sku' => $product->getSku(), 'product_url' => $product->getProductUrl()], 'back_in_stock/email_configuration/automatic_notification_email_template', 1);
+        $emailSender->sendMail(
+            'test@test.com',
+            [
+                'product_name' => $product->getName(),
+                'product_sku' => $product->getSku(),
+                'product_url' => $product->getProductUrl()
+            ],
+            'back_in_stock/email_configuration/automatic_notification_email_template',
+            1
+        );
 
         /** @var \Magento\TestFramework\Mail\Template\TransportBuilderMock $transportBuilder */
         $transportBuilder = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()

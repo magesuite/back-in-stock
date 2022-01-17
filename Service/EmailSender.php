@@ -24,10 +24,12 @@ class EmailSender
      * @var string
      */
     protected $templateId;
+
     /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
@@ -54,7 +56,7 @@ class EmailSender
         $this->customerRepository = $customerRepository;
     }
 
-    public function generateTemplate($emailTemplateVariables, $senderInfo, $receiverInfo, $storeId)
+    public function generateTemplate($emailTemplateVariables, $senderInfo, $receiverInfo, $storeId) //phpcs:ignore
     {
         $this->transportBuilder->setTemplateIdentifier($this->templateId)
             ->setTemplateOptions(
@@ -69,7 +71,7 @@ class EmailSender
         return $this->transportBuilder;
     }
 
-    public function sendMail($receiverEmail, $emailTemplateVariables, $templateConfigPath, $storeId, $customerId = 0)
+    public function sendMail($receiverEmail, $emailTemplateVariables, $templateConfigPath, $storeId, $customerId = 0) //phpcs:ignore
     {
         if ($customerId) {
             $this->addCustomerNameToVariables($emailTemplateVariables, $customerId);
@@ -110,5 +112,4 @@ class EmailSender
 
         $emailTemplateVariables['customerName'] = sprintf('%s %s', $customer->getFirstname(), $customer->getLastname());
     }
-
 }

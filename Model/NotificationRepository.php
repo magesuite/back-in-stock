@@ -21,8 +21,7 @@ class NotificationRepository implements \MageSuite\BackInStock\Api\NotificationR
         \MageSuite\BackInStock\Model\ResourceModel\Notification $notificationResource,
         \MageSuite\BackInStock\Model\NotificationFactory $notificationFactory,
         \MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory $notificationCollectionFactory
-    )
-    {
+    ) {
 
         $this->notificationResource = $notificationResource;
         $this->notificationFactory = $notificationFactory;

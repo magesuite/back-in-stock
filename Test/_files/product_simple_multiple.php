@@ -13,7 +13,7 @@ $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
 /** @var \Magento\Catalog\Api\CategoryLinkManagementInterface $categoryLinkManagement */
 $categoryLinkManagement = $objectManager->get(\Magento\Catalog\Api\CategoryLinkManagementInterface::class);
-for($i = 1; $i <= 3; $i++) {
+for ($i = 1; $i <= 3; $i++) {
     /** @var $product \Magento\Catalog\Model\Product */
     $product = $objectManager->create(\Magento\Catalog\Model\Product::class);
     $product->isObjectNew(true);

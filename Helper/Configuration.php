@@ -5,6 +5,9 @@ class Configuration
 {
     const MODULE_ENABLED_CONFIG_PATH = 'back_in_stock/general/enabled';
     const AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH = 'back_in_stock/general/remove_subscription_after_send_notification';
+    const IS_CONFIRMATION_REQUIRED_CONFIG_PATH = 'back_in_stock/general/is_confirmation_required';
+    const SUCCESS_WITH_CONFIRMATION_MESSAGE_CONFIG_PATH = 'back_in_stock/general/success_with_confirmation_message';
+    const SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH = 'back_in_stock/general/success_without_confirmation_message';
     const SENDER_TYPE_CONFIG_PATH = 'back_in_stock/email_configuration/sender_email';
     const SENDER_NAME_CONFIG_PATH = 'trans_email/ident_%s/name';
     const SENDER_EMAIL_CONFIG_PATH = 'trans_email/ident_%s/email';
@@ -38,6 +41,30 @@ class Configuration
     public function isRemoveSubscriptionAfterSendNotification()
     {
         return (bool)$this->getConfigValue(self::AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH);
+    }
+
+    public function isConfirmationRequired()
+    {
+        return (bool)$this->getConfigValue(self::IS_CONFIRMATION_REQUIRED_CONFIG_PATH);
+    }
+
+    public function getSuccessSubscribeMessage()
+    {
+        if ($this->isConfirmationRequired()) {
+            return $this->getSuccessWithConfirmationMessage();
+        }
+
+        return $this->getSuccessWithoutConfirmationMessage();
+    }
+
+    public function getSuccessWithConfirmationMessage()
+    {
+        return $this->getConfigValue(self::SUCCESS_WITH_CONFIRMATION_MESSAGE_CONFIG_PATH);
+    }
+
+    public function getSuccessWithoutConfirmationMessage()
+    {
+        return $this->getConfigValue(self::SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH);
     }
 
     public function canDisplaySubscriptionForm($product, $storeId)
