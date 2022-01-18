@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="product.info.grouped">
-            <block name="grouped.item.outofstock.spot" template="MageSuite_BackInStock::product/view/type/grouped/notify-me.phtml">
+            <block name="grouped.item.outofstock.spot" template="MageSuite_BackInStock::product/view/type/grouped/notify-me.phtml" ifconfig="back_in_stock/general/enabled">
                 <block class="MageSuite\ThemeHelpers\Block\Icon" name="product.backinstock.grouped.subscription.icon">
                     <arguments>
                         <argument name="icon_url" xsi:type="string">images/icons/stock/back-in-stock.svg</argument>
