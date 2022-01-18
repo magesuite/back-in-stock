@@ -1,8 +1,6 @@
 <?php
 namespace MageSuite\BackInStock\Block\Adminhtml\Product\Edit\Tab\Alerts;
 
-use Magento\Backend\Block\Widget\Grid;
-
 class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
@@ -23,6 +21,7 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
 
     /**
      * @return void
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     protected function _construct()
     {
@@ -37,7 +36,8 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
     }
 
     /**
-     * @return Grid
+     * @return \Magento\Backend\Block\Widget\Grid
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     protected function _prepareCollection()
     {
@@ -51,12 +51,10 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
             ->addFieldToFilter('product_id', ['eq' => $productId])
             ->addFieldToFilter('is_removed', ['eq' => 0]);
 
-        if($storeId) {
+        if ($storeId) {
             $collection
                 ->addFieldToFilter('store_id', ['eq' => $storeId]);
         }
-
-
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -64,6 +62,7 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
 
     /**
      * @return $this
+     * @throws \Exception
      */
     protected function _prepareColumns()
     {
@@ -85,6 +84,7 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
 
     /**
      * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getGridUrl()
     {

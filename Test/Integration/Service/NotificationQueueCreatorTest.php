@@ -18,7 +18,6 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
      */
     protected $productRepository;
 
-
     /**
      * @var \MageSuite\BackInStock\Model\ResourceModel\Notification\Collection
      */
@@ -50,7 +49,7 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(10, $notificationCollection->getSize());
 
-        foreach ($notificationCollection as $notification){
+        foreach ($notificationCollection as $notification) {
             $this->assertEquals('automatic_notification', $notification->getNotificationType());
             $this->assertEquals('test message', $notification->getMessage());
         }

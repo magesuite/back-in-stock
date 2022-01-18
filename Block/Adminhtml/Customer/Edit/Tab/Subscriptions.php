@@ -3,7 +3,6 @@ namespace MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\Tab;
 
 class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
 {
-
     /**
      * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory
      */
@@ -29,7 +28,6 @@ class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->setEmptyText(__('There are no subscriptions for this customer.'));
     }
 
-
     protected function _prepareCollection()
     {
         $customerId = $this->_request->getParam('id');
@@ -40,7 +38,6 @@ class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
-
 
     protected function _prepareColumns()
     {

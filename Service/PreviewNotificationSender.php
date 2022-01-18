@@ -8,7 +8,6 @@ class PreviewNotificationSender
      */
     protected $emailSender;
 
-
     public function __construct(\MageSuite\BackInStock\Service\EmailSender $emailSender)
     {
         $this->emailSender = $emailSender;

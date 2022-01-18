@@ -16,8 +16,7 @@ class Preview extends \Magento\Backend\App\Action
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \MageSuite\BackInStock\Service\PreviewNotificationSender $previewNotificationSender
-    )
-    {
+    ) {
         parent::__construct($context);
 
         $this->resultJsonFactory = $resultJsonFactory;
@@ -34,26 +33,28 @@ class Preview extends \Magento\Backend\App\Action
         /** @var \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();
 
-        if ($data) {
-            try {
-                foreach ($data['messages'] as $storeId => $message) {
-                    if(empty($message)){
-                        continue;
-                    }
-                    $this->previewNotificationSender->sendPreview($data['preview_email_address'], $storeId, $message);
+        if (empty($data)) {
+            return $result;
+        }
+
+        try {
+            foreach ($data['messages'] as $storeId => $message) {
+                if (empty($message)) {
+                    continue;
                 }
-
-                $result->setData([
-                    'success' => true,
-                    'successMessage' => __('Preview emails has been sent to provided email address.')
-                ]);
-            } catch (\Exception $e) {
-
-                $result->setData([
-                    'success' => false,
-                    'errorMessage' => __('Error occured while sending notifications.', $e->getMessage())
-                ]);
+                $this->previewNotificationSender->sendPreview($data['preview_email_address'], $storeId, $message);
             }
+
+            $result->setData([
+                'success' => true,
+                'successMessage' => __('Preview emails has been sent to provided email address.')
+            ]);
+        } catch (\Exception $e) {
+
+            $result->setData([
+                'success' => false,
+                'errorMessage' => __('Error occured while sending notifications.', $e->getMessage())
+            ]);
         }
 
         return $result;

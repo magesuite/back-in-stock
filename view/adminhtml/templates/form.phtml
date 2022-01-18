@@ -4,31 +4,31 @@ $product = $block->getProduct();
 $stores = $block->getStores();
 ?>
 <div id="backinstock-notify-manually-modal">
-    <form method="post" id="backinstock-notify-manually-form" action="<?php echo $block->getUrl('backinstock/notification/manual') ?>">
-        <input type="hidden" name="product_id" id="product_id" value="<?php echo $product->getId() ?>"/>
-        <input type="hidden" name="preview_action" id="preview_action" value="<?php echo $block->getUrl('backinstock/notification/preview') ?>"/>
+    <form method="post" id="backinstock-notify-manually-form" action="<?= /* @noEscape */ $block->getUrl('backinstock/notification/manual') ?>">
+        <input type="hidden" name="product_id" id="product_id" value="<?= /* @noEscape */ $product->getId() ?>"/>
+        <input type="hidden" name="preview_action" id="preview_action" value="<?= /* @noEscape */ $block->getUrl('backinstock/notification/preview') ?>"/>
         <fieldset class="admin__fieldset">
             <div class="admin__field">
-                <label class="admin__field-label" for="preview_email_address"><span><?php echo __('Email Address') ;?></span></label>
+                <label class="admin__field-label" for="preview_email_address"><span><?= /* @noEscape */ __('Email Address') ;?></span></label>
                 <div class="admin__field-control">
                     <input class="admin__control-text" name="preview_email_address" id="preview_email_address"/>
                     <div class="admin__field-note">
-                        <span><?php echo __('Please type email addess to which notification preview will be sent.') ?></span>
+                        <span><?= /* @noEscape */ __('Please type email addess to which notification preview will be sent.') ?></span>
                     </div>
                 </div>
             </div>
-            <?php foreach($stores as $store):?>
+            <?php foreach ($stores as $store) :?>
                 <div class="admin__field">
-                    <label class="admin__field-label" for="messages[<?php echo $store['store_id'];?>]"><span><?php echo __(sprintf('Message for store %s', $store['name'])) ;?></span></label>
+                    <label class="admin__field-label" for="messages[<?= /* @noEscape */ $store['store_id'];?>]"><span><?= /* @noEscape */ __(sprintf('Message for store %s', $store['name'])) ;?></span></label>
                     <div class="admin__field-control">
-                        <textarea class="admin__control-text" name="messages[<?php echo $store['store_id'];?>]" id="messages" rows="10"></textarea>
+                        <textarea class="admin__control-text" name="messages[<?= /* @noEscape */ $store['store_id'];?>]" id="messages" rows="10"></textarea>
                         <div class="admin__field-note">
-                            <span><?php echo __('Please write message which will be sent to all customers which requested back in stock notification. If you leave it empty message won\'t be sent.') ?></span>
+                            <span><?= /* @noEscape */ __('Please write message which will be sent to all customers which requested back in stock notification. If you leave it empty message won\'t be sent.') ?></span>
                         </div>
                     </div>
                 </div>
             <?php endforeach;?>
         </fieldset>
-        <input type="hidden" name="form_key" value="<?php echo $block->getFormKey() ?>"/>
+        <input type="hidden" name="form_key" value="<?= /* @noEscape */ $block->getFormKey() ?>"/>
     </form>
 </div>

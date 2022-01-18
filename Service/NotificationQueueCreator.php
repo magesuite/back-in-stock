@@ -7,10 +7,12 @@ class NotificationQueueCreator
      * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory
      */
     protected $subscriptionCollectionFactory;
+
     /**
      * @var \MageSuite\BackInStock\Model\NotificationFactory
      */
     protected $notificationFactory;
+
     /**
      * @var \MageSuite\BackInStock\Api\NotificationRepositoryInterface
      */
@@ -20,14 +22,13 @@ class NotificationQueueCreator
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
         \MageSuite\BackInStock\Model\NotificationFactory $notificationFactory,
         \MageSuite\BackInStock\Api\NotificationRepositoryInterface $notificationRepository
-    )
-    {
+    ) {
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
         $this->notificationFactory = $notificationFactory;
         $this->notificationRepository = $notificationRepository;
     }
 
-    public function addNotificationsToQueue($productId, $storeId = \Magento\Store\Model\Store::DEFAULT_STORE_ID, $notificationType = '', $message = '')
+    public function addNotificationsToQueue($productId, $storeId = \Magento\Store\Model\Store::DEFAULT_STORE_ID, $notificationType = '', $message = '') //phpcs:ignore
     {
         $subscriptionCollection = $this->getSubscriptions($productId, $storeId);
 
@@ -41,7 +42,6 @@ class NotificationQueueCreator
 
             $this->notificationRepository->save($notification);
         }
-
     }
 
     public function getSubscriptions($productId, $storeId)

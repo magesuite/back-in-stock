@@ -14,10 +14,11 @@ class ProductResolver
         $this->productRepository = $productRepository;
     }
 
-    public function resolve($params) {
+    public function resolve($params)
+    {
         $product = $this->productRepository->getById($params['product']);
 
-        if($product->getTypeId() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+        if ($product->getTypeId() == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
             $product = $this->getChildProduct($params, $product);
             $product->setParentProductId($params['product']);
         }

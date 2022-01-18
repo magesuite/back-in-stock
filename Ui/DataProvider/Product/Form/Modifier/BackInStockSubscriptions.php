@@ -3,9 +3,13 @@ namespace MageSuite\BackInStock\Ui\DataProvider\Product\Form\Modifier;
 
 class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier
 {
-    const DATA_SCOPE       = 'data';
+    const DATA_SCOPE = 'data';
     const DATA_SCOPE_BACK_IN_STOCK = 'back_in_stock';
     const DATA_NOTIFICATION_MODAL = 'back_in_stock_notification_modal';
+
+    const MANUAL_NOTIFY_BUTTON_FORMAT = '<button type="button" data-bind="css: buttonClasses" class="action-basic" onclick="javascript: openNotifyManuallyModal(%s, \'%s\')">
+    <span data-bind="text: title">%s</span>
+</button>';
     /**
      * @var string
      */
@@ -20,19 +24,21 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
      * @var \Magento\Framework\View\LayoutFactory
      */
     protected $layoutFactory;
+
     /**
      * @var \Magento\Framework\App\RequestInterface
      */
     protected $request;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
     protected $url;
+
     /**
      * @var \MageSuite\BackInStock\Helper\Configuration
      */
-    private $configuration;
-
+    protected $configuration;
 
     public function __construct(
         \Magento\Framework\View\LayoutFactory $layoutFactory,
@@ -65,7 +71,7 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
             return $meta;
         }
 
-        $meta = array_replace_recursive(
+        return array_replace_recursive(
             $meta,
             [
                 'backinstock' => [
@@ -93,8 +99,6 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
                 ],
             ]
         );
-
-        return $meta;
     }
 
     /**
@@ -125,9 +129,9 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
         ];
     }
 
-
     protected function getNotifyAllButton()
     {
+        $formUrl = sprintf("'%s'", $this->getFormUrl());
         return [
             'arguments' => [
                 'data' => [
@@ -136,10 +140,12 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
                         'componentType' => 'container',
                         'component' => 'Magento_Ui/js/form/components/html',
                         'additionalClasses' => 'admin__fieldset-note',
-                        'content' =>
-                            '<button type="button" data-bind="css: buttonClasses" class="action-basic" onclick="javascript: openNotifyManuallyModal('. $this->getProductId() .', '. sprintf("'%s'", $this->getFormUrl()) .')">
-<span data-bind="text: title">Notify Manually</span>
-</button>'
+                        'content' => sprintf(
+                            self::MANUAL_NOTIFY_BUTTON_FORMAT,
+                            $this->getProductId(),
+                            $this->getFormUrl(),
+                            __('Notify Manually')
+                        )
                     ]
                 ]
             ]
@@ -150,7 +156,7 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
     {
         $params = $this->request->getParams();
 
-        if(isset($params['id'])){
+        if (isset($params['id'])) {
             return $params['id'];
         }
 
@@ -161,12 +167,11 @@ class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\
     {
         $params = $this->request->getParams();
 
-        return isset($params['store']) ? $params['store'] : null;
+        return $params['store'] ?? null;
     }
 
     protected function getFormUrl()
     {
         return $this->url->getUrl('backinstock/notification/form', ['product_id' => $this->getProductId(), 'store' => $this->getStoreId()]);
     }
-
 }

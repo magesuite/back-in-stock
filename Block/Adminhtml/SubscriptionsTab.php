@@ -26,8 +26,7 @@ class SubscriptionsTab extends \Magento\Ui\Component\Layout\Tabs\TabWrapper impl
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    )
-    {
+    ) {
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }

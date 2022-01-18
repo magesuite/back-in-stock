@@ -7,13 +7,13 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
     /**
      * @var ResourceModel\BackInStockSubscription
      */
-
     protected $backInStockSubscriptionResource;
+
     /**
      * @var BackInStockSubscriptionFactory
      */
-
     protected $backInStockSubscriptionFactory;
+
     /**
      * @var ResourceModel\BackInStockSubscription\CollectionFactory
      */
@@ -23,8 +23,7 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription $backInStockSubscriptionResource,
         \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory,
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory
-    )
-    {
+    ) {
         $this->backInStockSubscriptionResource = $backInStockSubscriptionResource;
         $this->backInStockSubscriptionFactory = $backInStockSubscriptionFactory;
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
@@ -44,7 +43,7 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
     /**
      * @inheirtDoc
      */
-    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription //phpcs:ignore
     {
         $collection = $this->subscriptionCollectionFactory->create();
 
@@ -82,7 +81,7 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return true;
     }
 
-    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId)
+    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId) //phpcs:ignore
     {
         $collection = $this->subscriptionCollectionFactory->create();
 
@@ -100,6 +99,6 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
 
     public function generateToken($email, $customerId)
     {
-        return substr(md5(json_encode(['customer_email' => $email, 'customer_id' => $customerId, 'token' => md5(random_bytes(20))])), 0, 8);
+        return substr(md5(json_encode(['customer_email' => $email, 'customer_id' => $customerId, 'token' => md5(random_bytes(20))])), 0, 8); //phpcs:ignore
     }
 }

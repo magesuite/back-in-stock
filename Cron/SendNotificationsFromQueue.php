@@ -16,8 +16,7 @@ class SendNotificationsFromQueue
     public function __construct(
         \MageSuite\BackInStock\Service\NotificationQueueSender $notificationQueueSender,
         \MageSuite\BackInStock\Helper\Configuration $configuration
-    )
-    {
+    ) {
         $this->notificationQueueSender = $notificationQueueSender;
         $this->configuration = $configuration;
     }

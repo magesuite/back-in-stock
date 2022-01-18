@@ -8,7 +8,6 @@ class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
      */
     protected $productRepository;
 
-
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
         \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
@@ -21,10 +20,9 @@ class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
     }
 
     /**
-     * Prepare Data Source
-     *
      * @param array $dataSource
      * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function prepareDataSource(array $dataSource)
     {

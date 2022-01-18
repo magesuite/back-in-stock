@@ -17,21 +17,13 @@ class ConfirmationStatus extends \Magento\Ui\Component\Listing\Columns\Column
      */
     protected $subscriptionHelper;
 
-    /**
-     * @param \Magento\Framework\View\Element\UiComponent\ContextInterface $context
-     * @param \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory
-     * @param \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
-     * @param array $components
-     * @param array $data
-     */
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
         \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
         \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
         array $components = [],
         array $data = []
-    )
-    {
+    ) {
         $this->subscriptionHelper = $subscriptionHelper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }

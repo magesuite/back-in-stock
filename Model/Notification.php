@@ -5,7 +5,7 @@ class Notification extends \Magento\Framework\Model\AbstractModel implements \Ma
 {
     protected function _construct()
     {
-        $this->_init('MageSuite\BackInStock\Model\ResourceModel\Notification');
+        $this->_init(\MageSuite\BackInStock\Model\ResourceModel\Notification::class);
     }
 
     public function setId($id)

@@ -24,6 +24,19 @@
                     <source_model>\Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Enables automatic removing subscription after sending an email notification.</comment>
                 </field>
+                <field id="is_confirmation_required" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Is confirmation required</label>
+                    <source_model>\Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If enabled, customer receives e-mail with confirmation link.</comment>
+                </field>
+                <field id="success_with_confirmation_message" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Success message (confirmation required)</label>
+                    <comment>This message will be displayed to customer on the frontend, when he subscribes to BiS and e-mail confirmation is required.</comment>
+                </field>
+                <field id="success_without_confirmation_message" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Success message (confirmation not required)</label>
+                    <comment>This message will be displayed to customer on the frontend, when he subscribes to BiS and e-mail confirmation is not required.</comment>
+                </field>
             </group>
             <group id="email_configuration" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Email Configuration</label>
