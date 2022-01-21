@@ -114,6 +114,10 @@ class EmailSubscriptionCreator
             $subscription = $this->createNewSubscription($product, $customerId, $email, $storeId);
         }
 
+        if (!$this->configuration->isConfirmationRequired()) {
+            return;
+        }
+
         $this->setTemplateParams($subscription, $product);
 
         $this->sendConfirmationRequest(
