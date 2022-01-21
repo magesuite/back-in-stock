@@ -26,4 +26,18 @@ class Product
             return null;
         }
     }
+
+    public function getTypeIdByProductId($productId)
+    {
+        $query = $this->connection
+            ->select()
+            ->from(['e' => $this->connection->getTableName('catalog_product_entity')], ['e.type_id'])
+            ->where('e.entity_id = ?', $productId);
+
+        try {
+            return $this->connection->fetchOne($query);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }
