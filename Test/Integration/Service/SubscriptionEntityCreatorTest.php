@@ -74,7 +74,8 @@ class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($product->getId(), $subscription->getProductId());
     }
 
-    public static function loadSubscriptions() {
+    public static function loadSubscriptions()
+    {
         include __DIR__.'/../../_files/subscriptions.php';
     }
 }

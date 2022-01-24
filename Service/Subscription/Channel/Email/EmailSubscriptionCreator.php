@@ -76,8 +76,7 @@ class EmailSubscriptionCreator
         \MageSuite\BackInStock\Service\Subscription\ProductResolver $productResolver,
         \MageSuite\BackInStock\Helper\Configuration $configuration,
         \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory
-    )
-    {
+    ) {
         $this->productRepository = $productRepository;
         $this->customerSession = $customerSession;
         $this->messageManager = $messageManager;
@@ -101,8 +100,8 @@ class EmailSubscriptionCreator
 
         $product = $this->productResolver->resolve($params);
 
-        if(!$this->validateEmail($email)){
-            throw new \Exception(__('Invalid email address.'));
+        if (!$this->validateEmail($email)) {
+            throw new \Exception(__('Invalid email address.')); //phpcs:ignore
         }
 
         if ($this->subscriptionExist($product->getId(), $customerId, $email, $storeId)) {
@@ -113,6 +112,10 @@ class EmailSubscriptionCreator
             $subscription = $this->resetExistingSubscription($subscription, $customerId, $email);
         } else {
             $subscription = $this->createNewSubscription($product, $customerId, $email, $storeId);
+        }
+
+        if (!$this->configuration->isConfirmationRequired()) {
+            return;
         }
 
         $this->setTemplateParams($subscription, $product);
@@ -135,7 +138,7 @@ class EmailSubscriptionCreator
         return $this->customer;
     }
 
-    public function sendConfirmationRequest($email, $params, $templateConfigPath, $storeId, $customerId)
+    public function sendConfirmationRequest($email, $params, $templateConfigPath, $storeId, $customerId) //phpcs:ignore
     {
         $this->emailSender->sendMail($email, $params, $templateConfigPath, $storeId, $customerId);
     }
@@ -166,7 +169,7 @@ class EmailSubscriptionCreator
         return \Zend_Validate::is(trim($email), 'EmailAddress');
     }
 
-    public function subscriptionExist($productId, $customerId, $email, $storeId)
+    public function subscriptionExist($productId, $customerId, $email, $storeId) //phpcs:ignore
     {
         $identifyByField = \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::CUSTOMER_EMAIL;
         $identifyByValue = $email;
@@ -191,7 +194,7 @@ class EmailSubscriptionCreator
      * @param int $storeId
      * @return \MageSuite\BackInStock\Model\BackInStockSubscription
      */
-    public function getExistingSubscription(int $productId, int $customerId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    public function getExistingSubscription(int $productId, int $customerId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription //phpcs:ignore
     {
         $identifyByField = \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::CUSTOMER_EMAIL;
         $identifyByValue = $email;
@@ -233,13 +236,15 @@ class EmailSubscriptionCreator
      * @param int $storeId
      * @return \MageSuite\BackInStock\Model\BackInStockSubscription
      */
-    public function createNewSubscription(\Magento\Catalog\Api\Data\ProductInterface $product, int $customerId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    public function createNewSubscription(\Magento\Catalog\Api\Data\ProductInterface $product, int $customerId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription //phpcs:ignore
     {
         $token = $this->backInStockSubscriptionRepository->generateToken($email, $customerId);
+        $isConfirmationRequired = $this->configuration->isConfirmationRequired();
 
         $subscription = $this->backInStockSubscription
             ->setCustomerId($customerId)
             ->setCustomerEmail($email)
+            ->setCustomerConfirmed(!$isConfirmationRequired)
             ->setProductId($product->getId())
             ->setParentProductId($product->getParentProductId())
             ->setStoreId($storeId)
@@ -259,10 +264,11 @@ class EmailSubscriptionCreator
     public function resetExistingSubscription(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription, int $customerId, string $email): \MageSuite\BackInStock\Model\BackInStockSubscription
     {
         $token = $this->backInStockSubscriptionRepository->generateToken($email, $customerId);
+        $isConfirmationRequired = $this->configuration->isConfirmationRequired();
 
         $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
         $subscription
-            ->setCustomerConfirmed(false)
+            ->setCustomerConfirmed(!$isConfirmationRequired)
             ->setCustomerUnsubscribed(false)
             ->setAddDate(new \DateTime())
             ->setToken($token);

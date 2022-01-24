@@ -17,7 +17,7 @@ class SubscriptionEntityCreator
     {
         $channel = $params['notification_channel'];
 
-        if(!isset($this->creatorsByChannel[$channel])) {
+        if (!isset($this->creatorsByChannel[$channel])) {
             throw new \Magento\Framework\Exception\LocalizedException(__('Creator for specified channel does not exist'));
         }
 

@@ -9,18 +9,17 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
      * @var \Magento\Framework\View\Result\PageFactory
      */
     protected $pageFactory;
+
     /**
      * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
      */
     protected $backInStockSubscriptionRepository;
 
-
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository
-    )
-    {
+    ) {
         $this->pageFactory = $pageFactory;
         parent::__construct($context);
 
@@ -39,19 +38,19 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
             $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
 
             if (!$this->validateToken($subscription, $params)) {
-                throw new \Exception(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
             }
 
             if ($subscription->isCustomerUnsubscribed()) {
-                throw new \Exception(__('You have been already unsubscribed from back in stock notification.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('You have been already unsubscribed from back in stock notification.'));
             }
 
             if ($subscription->isConfirmationDeadlinePassed()) {
-                throw new \Exception(__('Time for subscription confirmation passed'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Time for subscription confirmation passed'));
             }
 
             if ($subscription->isRemoved()) {
-                throw new \Exception(__('This subscription does not exist.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('This subscription does not exist.'));
             }
 
             $subscription->setCustomerUnsubscribed(true);

@@ -14,17 +14,22 @@ class Subscribe extends \Magento\Framework\App\Action\Action
      */
     protected $subscriptionEntityCreator;
 
+    /**
+     * @var \MageSuite\BackInStock\Helper\Configuration
+     */
+    protected $configuration;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
-        \MageSuite\BackInStock\Service\SubscriptionEntityCreator $subscriptionEntityCreator
-    )
-    {
+        \MageSuite\BackInStock\Service\SubscriptionEntityCreator $subscriptionEntityCreator,
+        \MageSuite\BackInStock\Helper\Configuration $configuration
+    ) {
         parent::__construct($context);
 
         $this->subscriptionEntityCreator = $subscriptionEntityCreator;
         $this->jsonResultFactory = $jsonResultFactory;
+        $this->configuration = $configuration;
     }
 
     public function execute()
@@ -44,9 +49,11 @@ class Subscribe extends \Magento\Framework\App\Action\Action
                 ]);
         }
 
+        $successMessage = $this->configuration->getSuccessSubscribeMessage();
+
         return $jsonResult->setData([
             'success' => true,
-            'message' => __('If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.', \MageSuite\BackInStock\Model\BackInStockSubscription::SUBSCRIPTION_CONFIRMATION_AWAITING_TIME_IN_HOURS)
+            'message' => __($successMessage, \MageSuite\BackInStock\Model\BackInStockSubscription::SUBSCRIPTION_CONFIRMATION_AWAITING_TIME_IN_HOURS)
         ]);
     }
 }

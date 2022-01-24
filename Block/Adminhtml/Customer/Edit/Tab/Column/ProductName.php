@@ -8,6 +8,7 @@ class ProductName extends \MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\T
      * @param $columnId
      * @param $entityId
      * @return mixed
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getColumnValue($columnId, $entityId)
     {

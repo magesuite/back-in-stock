@@ -22,8 +22,7 @@ class Confirm extends \Magento\Framework\App\Action\Action
         \Magento\Framework\View\Result\PageFactory $pageFactory,
         \MageSuite\BackInStock\Service\ConfirmationUpdater $confirmationUpdater,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository
-    )
-    {
+    ) {
         $this->pageFactory = $pageFactory;
         parent::__construct($context);
 

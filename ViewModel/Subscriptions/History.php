@@ -52,7 +52,6 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
         \Magento\Store\Model\StoreManager $storeManager,
         \Magento\InventorySales\Model\StockResolver $stockResolver,
         \Magento\InventorySales\Model\GetProductSalableQty $getProductSalableQty
-
     ) {
         $this->customerSession = $customerSession;
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
@@ -62,7 +61,6 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
         $this->storeManager = $storeManager;
         $this->stockResolver = $stockResolver;
         $this->getProductSalableQty = $getProductSalableQty;
-
     }
 
     public function getSubscriptions()

@@ -74,7 +74,6 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
         $storeIdStockIdMap = $this->stockInfo->getStoreIdStockIdMap();
         $areProductsSalable = $this->areProductsSalable->execute($this->getSkus($subscriptions), $items);
 
-
         foreach ($subscriptions as $subscription) {
             $stockId = $storeIdStockIdMap[$subscription['store_id']] ?? null;
             $isProductSalableItem = $areProductsSalable[$subscription['sku']][$stockId] ?? null;

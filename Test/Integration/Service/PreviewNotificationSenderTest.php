@@ -21,7 +21,17 @@ class PreviewNotificationSenderTest extends \PHPUnit\Framework\TestCase
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
-        $this->previewNotificationSender = $this->objectManager->create(\MageSuite\BackInStock\Service\PreviewNotificationSender::class, ['emailSender' => $this->objectManager->create(\MageSuite\BackInStock\Service\EmailSender::class, ['transportBuilder' => $this->objectManager->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class)])]);
+        $this->previewNotificationSender = $this->objectManager->create(
+            \MageSuite\BackInStock\Service\PreviewNotificationSender::class,
+            [
+                'emailSender' => $this->objectManager->create(
+                    \MageSuite\BackInStock\Service\EmailSender::class,
+                    [
+                        'transportBuilder' => $this->objectManager->get(\Magento\TestFramework\Mail\Template\TransportBuilderMock::class)
+                    ]
+                )
+            ]
+        );
     }
 
     /**
@@ -41,5 +51,4 @@ class PreviewNotificationSenderTest extends \PHPUnit\Framework\TestCase
 
         $this->$assertContains('test@preview.com', $sentMessage);
     }
-
 }

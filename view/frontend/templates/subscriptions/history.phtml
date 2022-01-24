@@ -4,34 +4,34 @@
 $viewModel = $block->getViewModel();
 $subscriptions = $viewModel->getSubscriptions();
 
-if (count($subscriptions)): ?>
+if (count($subscriptions)) : ?>
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
-            <caption class="table-caption"><?= /* @escapeNotVerified */ __('Notification requests') ?></caption>
+            <caption class="table-caption"><?= /* @noEscape */ __('Notification requests') ?></caption>
             <thead>
             <tr>
-                <th scope="col" class="col id"><?= /* @escapeNotVerified */ __('SKU') ?></th>
-                <th scope="col" class="col date"><?= /* @escapeNotVerified */ __('Name') ?></th>
-                <th scope="col" class="col shipping"><?= /* @escapeNotVerified */ __('Request Date') ?></th>
-                <th scope="col" class="col shipping"><?= /* @escapeNotVerified */ __('Stock Status') ?></th>
-                <th scope="col" class="col actions"><?= /* @escapeNotVerified */ __('Action') ?></th>
+                <th scope="col" class="col id"><?= /* @noEscape */ __('SKU') ?></th>
+                <th scope="col" class="col date"><?= /* @noEscape */ __('Name') ?></th>
+                <th scope="col" class="col shipping"><?= /* @noEscape */ __('Request Date') ?></th>
+                <th scope="col" class="col shipping"><?= /* @noEscape */ __('Stock Status') ?></th>
+                <th scope="col" class="col actions"><?= /* @noEscape */ __('Action') ?></th>
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($subscriptions as $subscription): ?>
+            <?php foreach ($subscriptions as $subscription) : ?>
                 <?php $productData = $viewModel->getProductData($subscription);?>
                 <tr>
-                    <td data-th="<?= $block->escapeHtml(__('SKU')) ?>" class="col id"><?= /* @escapeNotVerified */ $productData->getSku() ?></td>
+                    <td data-th="<?= $block->escapeHtml(__('SKU')) ?>" class="col id"><?= /* @noEscape */ $productData->getSku() ?></td>
                     <td data-th="<?= $block->escapeHtml(__('Name')) ?>" class="col name">
-                        <a href="<?= /* @escapeNotVerified */ $productData->getProductUrl() ?>" class="action view" target="_blank">
-                            <span><?= /* @escapeNotVerified */ $productData->getName() ?></span>
+                        <a href="<?= /* @noEscape */ $productData->getProductUrl() ?>" class="action view" target="_blank">
+                            <span><?= /* @noEscape */ $productData->getName() ?></span>
                         </a>
                     </td>
-                    <td data-th="<?= $block->escapeHtml(__('Request Date')) ?>" class="col date"><?= $block->formatDate($subscription->getAddDate()) ?></td>
-                    <td data-th="<?= $block->escapeHtml(__('Stock Status')) ?>" class="col status"><?php echo $viewModel->isProductSaleable($subscription) ? __('In Stock') : __('Out of Stock') ?></td>
-                    <td data-th="<?= $block->escapeHtml(__('Actions')) ?>" class="col actions">
-                        <a href="<?php /* @escapeNotVerified */ echo $viewModel->getUnsubscribeUrl($subscription) ;?>" class="action view">
-                            <span><?php echo __('Unsubscribe') ?></span>
+                    <td data-th="<?= /* @noEscape */ $block->escapeHtml(__('Request Date')) ?>" class="col date"><?= /* @noEscape */ $block->formatDate($subscription->getAddDate()) ?></td>
+                    <td data-th="<?= /* @noEscape */ $block->escapeHtml(__('Stock Status')) ?>" class="col status"><?= /* @noEscape */ $viewModel->isProductSaleable($subscription) ? __('In Stock') : __('Out of Stock') ?></td>
+                    <td data-th="<?= /* @noEscape */ $block->escapeHtml(__('Actions')) ?>" class="col actions">
+                        <a href="<?= /* @noEscape */ $viewModel->getUnsubscribeUrl($subscription) ;?>" class="action view">
+                            <span><?= /* @noEscape */ __('Unsubscribe') ?></span>
                         </a>
                     </td>
                 </tr>
@@ -39,9 +39,9 @@ if (count($subscriptions)): ?>
             </tbody>
         </table>
     </div>
-    <?php if ($block->getPagerHtml()): ?>
+    <?php if ($block->getPagerHtml()) : ?>
         <div class="order-products-toolbar toolbar bottom"><?= $block->getPagerHtml() ?></div>
     <?php endif ?>
-<?php else: ?>
-    <div class="message info empty"><span><?= /* @escapeNotVerified */ __('You have no back in stock subscriptions yet.') ?></span></div>
+<?php else : ?>
+    <div class="message info empty"><span><?= /* @noEscape */ __('You have no back in stock subscriptions yet.') ?></span></div>
 <?php endif ?>

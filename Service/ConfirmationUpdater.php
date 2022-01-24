@@ -12,12 +12,10 @@ class ConfirmationUpdater
      */
     protected $backInStockSubscriptionRepository;
 
-
     public function __construct(
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository
-    )
-    {
+    ) {
         $this->messageManager = $messageManager;
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
     }
@@ -26,29 +24,29 @@ class ConfirmationUpdater
     {
         try {
             if (!isset($params['id']) || !isset($params['token'])) {
-                throw new \Exception(__('Missing required arguments in request URL.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Missing required arguments in request URL.'));
             }
 
             $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
 
             if (!$this->validateToken($subscription->getToken(), $params['token'])) {
-                throw new \Exception(__('Something went wrong while confirming your subscription. Please contact store owner.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Something went wrong while confirming your subscription. Please contact store owner.'));
             }
 
             if ($subscription->isCustomerUnsubscribed()) {
-                throw new \Exception(__('You have been unsubscribed from back in stock notification.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('You have been unsubscribed from back in stock notification.'));
             }
 
             if ($subscription->isCustomerConfirmed()) {
-                throw new \Exception(__('This subscription request has been already confirmed.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('This subscription request has been already confirmed.'));
             }
 
             if ($subscription->isRemoved()) {
-                throw new \Exception(__('This subscription does not exist.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('This subscription does not exist.'));
             }
 
             if ($subscription->isConfirmationDeadlinePassed()) {
-                throw new \Exception(__('Time for subscription confirmation passed'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Time for subscription confirmation passed'));
             }
 
             $subscription->setCustomerConfirmed(true);
@@ -63,7 +61,7 @@ class ConfirmationUpdater
 
     public function validateToken($subscriptionToken, $postParamToken)
     {
-        if($subscriptionToken !== $postParamToken){
+        if ($subscriptionToken !== $postParamToken) {
             return false;
         }
         return true;
