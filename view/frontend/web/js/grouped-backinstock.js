@@ -24,7 +24,6 @@ define([
             this.$subscriptionForm = $(this.options.subscriptionFormClass);
             this.$modalTrigger = $(this.options.modalTriggerSelector);
             this.$addToCartForm = $('#product_addtocart_form');
-            this.groupedProductId = this.$addToCartForm.find('input[name="product"]').val();
 
             if (this.$modalTrigger.length) {
                 this._createBackInStockModal();
@@ -48,7 +47,7 @@ define([
          * Reset product input of add to cart form to default value
          */
         _resetForm: function() {
-            this.$addToCartForm.find('input[name="product"]').val(this.groupedProductId);
+            this.$addToCartForm.find('input[name="simple_id"]').remove();
         },
 
         /**
@@ -56,7 +55,7 @@ define([
          * Replace value of grouped product input with simple product id
          */
         _modifyForm: function(simpleId) {
-            this.$addToCartForm .find('input[name="product"]').val(simpleId);
+            this.$addToCartForm.append('<input hidden type="text" name="simple_id" value="' + simpleId + '" />');
         },
 
         /**
