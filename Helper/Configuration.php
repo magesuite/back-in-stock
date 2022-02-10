@@ -67,7 +67,7 @@ class Configuration
         return $this->getConfigValue(self::SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH);
     }
 
-    public function canDisplaySubscriptionForm($product, $storeId)
+    public function canDisplaySubscriptionForm($storeId)
     {
         return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH, $storeId);
     }
