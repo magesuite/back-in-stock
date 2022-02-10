@@ -1,5 +1,9 @@
-<?php /* @var $block \MageSuite\BackInStock\Block\Product\View\Stock */ ?>
-<?php if ($block->canRenderFormOnSimple()) :?>
+<?php
+/** @var $block \MageSuite\BackInStock\Block\Product\View\Stock */
+/** @var \MageSuite\BackInStock\ViewModel\Product $viewModel */
+$viewModel = $block->getViewModel();
+?>
+<?php if ($viewModel->canRenderBackInStockForm()) :?>
     <?php $placeholder = $block->getEmailInputPlaceholder() ?>
     <form class="form cs-product-stock-subscription <?= /* @noEscape */ $block->getAdditionalCssClasses() ?> cs-buybox__stock-subscription"
         novalidate
@@ -19,7 +23,7 @@
         <fieldset class="fieldset">
             <div class="field cs-product-stock-subscription__field">
                 <label class="label cs-product-stock-subscription__label" for="email"><?= /* @noEscape */ $block->getEmailLabel() ?></label>
-                <input type="hidden" name="product_id" id="product_id" value="<?= /* @noEscape */ $block->getProductId();?>"/>
+                <input type="hidden" name="product_id" id="product_id" value="<?= /* @noEscape */ $viewModel->getProductId();?>"/>
                 <div class="cs-product-stock-subscription__input-wrapper">
                     <input class="input-text cs-product-stock-subscription__input" 
                            data-validate="{required:true, 'validate-email':true}" 

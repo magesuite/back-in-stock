@@ -4,6 +4,7 @@
         <referenceContainer name="product.info.main">
             <block class="MageSuite\BackInStock\Block\Product\View\Stock" name="product.backinstock.subscription" template="MageSuite_BackInStock::product/subscription_form.phtml" after="product.info.price">
                 <arguments>
+                    <argument name="view_model" xsi:type="object">MageSuite\BackInStock\ViewModel\Product</argument>
                     <argument name="email_label" xsi:type="string" translate="true">Please enter email to subscribe for stock alert</argument>
                     <argument name="submit_label" xsi:type="string" translate="true">Notify me by e-mail</argument>
                     <argument name="loader_icon_path" xsi:type="string">images/spinner.svg</argument>

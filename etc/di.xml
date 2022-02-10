@@ -64,4 +64,14 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="MageSuite\BackInStock\Model\ProductResolverPool">
+        <arguments>
+            <argument name="productResolvers" xsi:type="array">
+                <item name="configurable" xsi:type="object">\MageSuite\BackInStock\Model\ProductResolver\Configurable</item>
+                <item name="grouped" xsi:type="object">\MageSuite\BackInStock\Model\ProductResolver\Grouped</item>
+                <item name="simple" xsi:type="object">\MageSuite\BackInStock\Model\ProductResolver\Simple</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
