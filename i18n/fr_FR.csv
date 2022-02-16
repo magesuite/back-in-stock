@@ -1,36 +1,37 @@
-"Product ID","ID de produit"
-"There are no customers for this alert.","Aucun client pour cette alerte."
-"Customer ID","ID de client"
-Email,E-mail
-"Subscribe Date","Date de l’abonnement"
-"Last Notified","Dernière notification"
-"Send Count","Nombre d’envois"
-Sent,Envoyé
-"Email Address","Adresse email"
-SKU,Réf.
-Name,Nom
-"Stock Status","État du stock"
-"In Stock","En stock"
-"Out of Stock","En rupture de stock"
-Delete,Supprimer
-Unsubscribe,Désabonner
-General,Général
-Enabled,Activé
-"Email Sender","Expéditeur de l’email"
-"Confirmation Email Template","Gabarit de l’email de confirmation"
-"Customer Email","Email du client"
-Product,Produit
+"%store_name - product back in stock notification","%store_name - Article à nouveau disponible"
 "Add Date","Ajouter une date"
-Status,Statut
-"My Back In Stock Notifications","Mes notifications de retour en stock"
-"You have subscribed with your e-mail address","Vous vous êtes inscrit avec votre adresse e-mail"
-"to back-in-stock notifications.","pour une notification de disponibilité de stock."
+"Bitte bestätigen Sie, dass Sie Benachrichtigungen in Ihrem Browser erhalten möchten.","Veuillez confirmer que vous souhaitez recevoir des notifications dans votre navigateur."
 "Bitte klicken Sie hier für die Bestätigung:","Veuillez cliquer ici pour la confirmation:"
+"Confirmation Email Template","Gabarit de l’email de confirmation"
+"Correctly unsubscribed from back in stock notification.","Vous avez désactivé avec succès l'abonnement de disponibilité."
+"Customer Email","Email du client"
+"Customer ID","ID de client"
+"Email Address","Adresse email"
+"Email Sender","Expéditeur de l’email"
+"In Stock","En stock"
+"Last Notified","Dernière notification"
+"Let me know by push notification","Activer les notifications push"
+"My Back In Stock Notifications","Mes notifications de retour en stock"
+"Notify me by e-mail","Avertir par e-mail"
+"Out of Stock","En rupture de stock"
 "Please click following link if you wish to decline the subscription:","Veuillez cliquer ici pour refuser:"
 "Please click the following link to purchase the product:","Veuillez cliquer sur le lien suivant pour accéder au produit :"
-"%store_name - product back in stock notification","%store_name - Article à nouveau disponible"
-"Notify me by e-mail","Avertir par e-mail"
+"Product ID","ID de produit"
+"Send Count","Nombre d’envois"
+"Stock Status","État du stock"
+"Subscribe Date","Date de l’abonnement"
+"There are no customers for this alert.","Aucun client pour cette alerte."
+"to back-in-stock notifications.","pour une notification de disponibilité de stock."
 "You are successfully subscribed for back in stock notification.","Vous vous êtes inscrit avec succès à l'abonnement de disponibilité."
-"Let me know by push notification","Activer les notifications push"
-"Bitte bestätigen Sie, dass Sie Benachrichtigungen in Ihrem Browser erhalten möchten.","Veuillez confirmer que vous souhaitez recevoir des notifications dans votre navigateur."
-"Correctly unsubscribed from back in stock notification.","Vous avez désactivé avec succès l'abonnement de disponibilité."
+"You have no back in stock subscriptions yet.","Actuellement vous n’avez pas des abonnement de disponibilité activés."
+"You have subscribed with your e-mail address","Vous vous êtes inscrit avec votre adresse e-mail"
+Delete,Supprimer
+Email,E-mail
+Enabled,Activé
+General,Général
+Name,Nom
+Product,Produit
+Sent,Envoyé
+SKU,Réf.
+Status,Statut
+Unsubscribe,Désabonner
