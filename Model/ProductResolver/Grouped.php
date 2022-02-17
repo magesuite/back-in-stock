@@ -11,10 +11,20 @@ class Grouped implements ProductResolverInterface
 
     public function canRenderForm($product)
     {
-        $allAssignedProductIds = $product->getTypeInstance()->getChildrenIds($product->getId());
-        $salableAssignedProductIds = $product->getTypeInstance()->getAssociatedProductIds($product);
+        $allAssignedProductIdsGroupedByType = $product->getTypeInstance()->getChildrenIds($product->getId());
+        $allAssignedProductIds = $allAssignedProductIdsGroupedByType[\Magento\GroupedProduct\Model\ResourceModel\Product\Link::LINK_TYPE_GROUPED] ?? [];
+        
+        $salableAssignedProductCount = 0;
 
-        if (count($salableAssignedProductIds) < count($allAssignedProductIds)) {
+        foreach ($product->getTypeInstance()->getAssociatedProducts($product) as $associatedProduct) {
+            if (!$associatedProduct->isSalable()) {
+                continue;
+            }
+
+            $salableAssignedProductCount++;
+        }
+
+        if ($salableAssignedProductCount < count($allAssignedProductIds)) {
             return true;
         }
 
