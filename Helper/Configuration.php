@@ -48,23 +48,23 @@ class Configuration
         return (bool)$this->getConfigValue(self::IS_CONFIRMATION_REQUIRED_CONFIG_PATH);
     }
 
-    public function getSuccessSubscribeMessage()
+    public function getSuccessSubscribeMessage($storeId = null)
     {
         if ($this->isConfirmationRequired()) {
-            return $this->getSuccessWithConfirmationMessage();
+            return $this->getSuccessWithConfirmationMessage($storeId);
         }
 
-        return $this->getSuccessWithoutConfirmationMessage();
+        return $this->getSuccessWithoutConfirmationMessage($storeId);
     }
 
-    public function getSuccessWithConfirmationMessage()
+    public function getSuccessWithConfirmationMessage($storeId = null)
     {
-        return $this->getConfigValue(self::SUCCESS_WITH_CONFIRMATION_MESSAGE_CONFIG_PATH);
+        return $this->getConfigValue(self::SUCCESS_WITH_CONFIRMATION_MESSAGE_CONFIG_PATH, $storeId);
     }
 
-    public function getSuccessWithoutConfirmationMessage()
+    public function getSuccessWithoutConfirmationMessage($storeId = null)
     {
-        return $this->getConfigValue(self::SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH);
+        return $this->getConfigValue(self::SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH, $storeId);
     }
 
     public function canDisplaySubscriptionForm($storeId)

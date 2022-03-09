@@ -19,17 +19,24 @@ class Subscribe extends \Magento\Framework\App\Action\Action
      */
     protected $configuration;
 
+    /**
+     * @var \Magento\Store\Model\StoreManager
+     */
+    protected $storeManager;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory,
         \MageSuite\BackInStock\Service\SubscriptionEntityCreator $subscriptionEntityCreator,
-        \MageSuite\BackInStock\Helper\Configuration $configuration
+        \MageSuite\BackInStock\Helper\Configuration $configuration,
+        \Magento\Store\Model\StoreManager $storeManager
     ) {
         parent::__construct($context);
 
         $this->subscriptionEntityCreator = $subscriptionEntityCreator;
         $this->jsonResultFactory = $jsonResultFactory;
         $this->configuration = $configuration;
+        $this->storeManager = $storeManager;
     }
 
     public function execute()
@@ -49,7 +56,7 @@ class Subscribe extends \Magento\Framework\App\Action\Action
                 ]);
         }
 
-        $successMessage = $this->configuration->getSuccessSubscribeMessage();
+        $successMessage = $this->configuration->getSuccessSubscribeMessage($this->storeManager->getStore()->getId());
 
         return $jsonResult->setData([
             'success' => true,
