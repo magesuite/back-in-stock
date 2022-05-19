@@ -20,7 +20,11 @@
         },
         "index": {
             "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_PRODUCT_ID": true,
-            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_STORE_ID": true
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_STORE_ID": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_CUSTOMER_ID": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_CUSTOMER_CONFIRMED": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_CUSTOMER_UNSUBSCRIBED": true,
+            "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_IS_REMOVED": true
         },
         "constraint": {
             "PRIMARY": true,

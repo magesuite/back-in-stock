@@ -25,6 +25,18 @@
         <index referenceId="BIS_SUBSCRIPTION_ENTITY_STORE_ID" indexType="btree">
             <column name="store_id"/>
         </index>
+        <index referenceId="BIS_SUBSCRIPTION_ENTITY_CUSTOMER_ID" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+        <index referenceId="BIS_SUBSCRIPTION_ENTITY_CUSTOMER_CONFIRMED" indexType="btree">
+            <column name="customer_confirmed"/>
+        </index>
+        <index referenceId="BIS_SUBSCRIPTION_ENTITY_CUSTOMER_UNSUBSCRIBED" indexType="btree">
+            <column name="customer_unsubscribed"/>
+        </index>
+        <index referenceId="BIS_SUBSCRIPTION_ENTITY_IS_REMOVED" indexType="btree">
+            <column name="is_removed"/>
+        </index>
         <constraint xsi:type="foreign" referenceId="BIS_SUBSCRIPTION_ENTITY_PRODUCT_ID_CATALOG_PRODUCT_ENTITY_ENTITY_ID"
                     table="back_in_stock_subscription_entity" column="product_id" referenceTable="catalog_product_entity"
                     referenceColumn="entity_id" onDelete="CASCADE"/>
