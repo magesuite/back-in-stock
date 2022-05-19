@@ -45,10 +45,6 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
                 throw new \Magento\Framework\Exception\LocalizedException(__('You have been already unsubscribed from back in stock notification.'));
             }
 
-            if ($subscription->isConfirmationDeadlinePassed()) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Time for subscription confirmation passed'));
-            }
-
             if ($subscription->isRemoved()) {
                 throw new \Magento\Framework\Exception\LocalizedException(__('This subscription does not exist.'));
             }

@@ -76,28 +76,6 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadExpiredSubscriptions
-     */
-    public function testItNotUnsubscribesExpiredSubscription()
-    {
-        /** @var \Magento\Catalog\Model\Product $product */
-        $product = $this->productRepository->get('simple');
-
-        $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
-
-        $this->assertEquals(false, $subscription->isCustomerUnsubscribed());
-
-        $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
-
-        $this->dispatch('backinstock/notification/unsubscribe');
-
-        $this->assertEquals(false, $this->subscriptionRepository->getById($subscription->getId())->isCustomerUnsubscribed());
-    }
-
-    /**
-     * @magentoDbIsolation enabled
-     * @magentoAppIsolation enabled
-     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
     public function testItNotUnsubscribesRemovedSubscription()
     {
