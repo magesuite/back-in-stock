@@ -25,6 +25,12 @@
                 {{trans "Please click the following link to purchase the product:"}}
                 <a href="{{var product_url|raw}}">{{var product_url|raw}}</a>
             </p>
+            {{depend unsubscribe_url}}
+            <p>
+                {{trans "Unsubscribe from this back in stock notification:"}}
+                <a href="{{var unsubscribe_url|raw}}">{{var unsubscribe_url|raw}}</a>
+            </p>
+            {{/depend}}
         </td>
     </tr>
 </table>

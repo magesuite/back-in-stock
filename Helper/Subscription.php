@@ -5,6 +5,16 @@ namespace MageSuite\BackInStock\Helper;
 class Subscription
 {
     /**
+     * @var \Magento\Framework\UrlInterface
+     */
+    protected $url;
+
+    public function __construct(\Magento\Framework\UrlInterface $url)
+    {
+        $this->url = $url;
+    }
+
+    /**
      * @param bool $isConfirmed
      * @param bool $isUnsubscribed
      * @param string $subscriptionAddDate
@@ -41,5 +51,17 @@ class Subscription
                 sprintf('PT%dH', \MageSuite\BackInStock\Model\BackInStockSubscription::SUBSCRIPTION_CONFIRMATION_AWAITING_TIME_IN_HOURS)
             )
         );
+    }
+
+    public function getConfirmUrl($subscription)
+    {
+        return $this->url->setScope($subscription->getStoreId())
+            ->getUrl('backinstock/notification/confirm', ['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
+    }
+
+    public function getUnsubscribeUrl($subscription)
+    {
+        return $this->url->setScope($subscription->getStoreId())
+            ->getUrl('backinstock/notification/unsubscribe', ['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
     }
 }

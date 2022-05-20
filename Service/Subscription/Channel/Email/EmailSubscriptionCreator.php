@@ -45,11 +45,6 @@ class EmailSubscriptionCreator
     protected $emailSender;
 
     /**
-     * @var \Magento\Framework\UrlInterface
-     */
-    protected $url;
-
-    /**
      * @var \MageSuite\BackInStock\Service\Subscription\ProductResolver
      */
     protected $productResolver;
@@ -64,6 +59,11 @@ class EmailSubscriptionCreator
      */
     protected $backInStockSubscriptionFactory;
 
+    /**
+     * @var \MageSuite\BackInStock\Helper\Subscription
+     */
+    protected $subscriptionHelper;
+
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Customer\Model\SessionFactory $customerSession,
@@ -72,10 +72,10 @@ class EmailSubscriptionCreator
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
         \MageSuite\BackInStock\Service\EmailSender $emailSender,
-        \Magento\Framework\UrlInterface $url,
         \MageSuite\BackInStock\Service\Subscription\ProductResolver $productResolver,
         \MageSuite\BackInStock\Helper\Configuration $configuration,
-        \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory
+        \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory,
+        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
     ) {
         $this->productRepository = $productRepository;
         $this->customerSession = $customerSession;
@@ -84,10 +84,10 @@ class EmailSubscriptionCreator
         $this->storeManager = $storeManager;
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
         $this->emailSender = $emailSender;
-        $this->url = $url;
         $this->productResolver = $productResolver;
         $this->configuration = $configuration;
         $this->backInStockSubscriptionFactory = $backInStockSubscriptionFactory;
+        $this->subscriptionHelper = $subscriptionHelper;
     }
 
     public function subscribe($params)
@@ -156,12 +156,12 @@ class EmailSubscriptionCreator
 
     public function getConfirmUrl($subscription)
     {
-        return $this->url->getUrl('backinstock/notification/confirm', ['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
+        return $this->subscriptionHelper->getConfirmUrl($subscription);
     }
 
     public function getUnsubscribeUrl($subscription)
     {
-        return $this->url->getUrl('backinstock/notification/unsubscribe', ['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
+        return $this->subscriptionHelper->getUnsubscribeUrl($subscription);
     }
 
     public function validateEmail($email)
