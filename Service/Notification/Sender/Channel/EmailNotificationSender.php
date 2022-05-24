@@ -19,18 +19,31 @@ class EmailNotificationSender
      */
     protected $notificationProductDataResolver;
 
+    /**
+     * @var \MageSuite\BackInStock\Helper\Configuration
+     */
+    protected $configuration;
+
+    /**
+     * @var \MageSuite\BackInStock\Helper\Subscription
+     */
+    protected $subscriptionHelper;
+
     public function __construct(
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \MageSuite\BackInStock\Service\EmailSender $emailSender,
-        \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver
+        \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
+        \MageSuite\BackInStock\Helper\Configuration $configuration,
+        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
     ) {
         $this->emailSender = $emailSender;
         $this->notificationProductDataResolver = $notificationProductDataResolver;
+        $this->configuration = $configuration;
+        $this->subscriptionHelper = $subscriptionHelper;
     }
 
     public function send($notification, $subscription)
     {
-        return  $this->emailSender->sendMail(
+        return $this->emailSender->sendMail(
             $subscription->getCustomerEmail(),
             $this->getTemplateParams($notification, $subscription),
             $this->getEmailTemplateId($notification->getNotificationType()),
@@ -79,10 +92,16 @@ class EmailNotificationSender
     {
         $productData = $this->notificationProductDataResolver->getProductData($subscription);
 
-        return [
+        $params = [
             'product_name' => $productData->getName(),
             'product_sku' => $productData->getSku(),
             'product_url' => $productData->getProductUrl()
         ];
+
+        if (!$this->configuration->isRemoveSubscriptionAfterSendNotification()) {
+            $params['unsubscribe_url'] = $this->subscriptionHelper->getUnsubscribeUrl($subscription);
+        }
+
+        return $params;
     }
 }
