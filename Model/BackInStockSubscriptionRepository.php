@@ -55,23 +55,23 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return $collection->getFirstItem();
     }
 
-    public function save(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription)
+    public function save(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription)
     {
         try {
-            $this->backInStockSubscriptionResource->save($subscription);
+            $this->backInStockSubscriptionResource->save($backInStockSubscription);
         } catch (\Exception $exception) {
             throw new \Magento\Framework\Exception\CouldNotSaveException(__(
                 'Could not save this entity: %1',
                 $exception->getMessage()
             ));
         }
-        return $subscription;
+        return $backInStockSubscription;
     }
 
-    public function delete(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription)
+    public function delete(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription)
     {
         try {
-            $this->backInStockSubscriptionResource->delete($subscription);
+            $this->backInStockSubscriptionResource->delete($backInStockSubscription);
         } catch (\Exception $exception) {
             throw new \Magento\Framework\Exception\CouldNotDeleteException(__(
                 'Could not delete this entity: %1',
@@ -81,7 +81,18 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return true;
     }
 
-    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId) //phpcs:ignore
+    public function unsubscribe(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription, bool $isHistoricalDataKept = false)
+    {
+        if (!$isHistoricalDataKept) {
+            $this->delete($backInStockSubscription);
+            return;
+        }
+
+        $backInStockSubscription->setIsRemoved(true);
+        $this->save($backInStockSubscription);
+    }
+
+    public function subscriptionExist(int $productId, string $identifyByField, $identifyByValue, int $storeId) //phpcs:ignore
     {
         $collection = $this->subscriptionCollectionFactory->create();
 

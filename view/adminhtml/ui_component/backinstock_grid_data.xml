@@ -35,121 +35,70 @@
                 <item name="template" xsi:type="string">ui/grid/toolbar</item>
             </item>
         </argument>
-        <bookmark name="bookmarks">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/controls/bookmarks/bookmarks</item>
-                    <item name="displayArea" xsi:type="string">dataGridActions</item>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="saveUrl" xsi:type="url" path="mui/bookmark/save"/>
-                        <item name="deleteUrl" xsi:type="url" path="mui/bookmark/delete"/>
-                        <item name="namespace" xsi:type="string">backinstock_grid_data</item>
-                    </item>
-                </item>
-            </argument>
-        </bookmark>
-        <container name="columns_controls">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="columnsData" xsi:type="array">
-                        <item name="provider" xsi:type="string">backinstock_grid_data.backinstock_grid_data.backinstock_grid_data_columns</item>
-                    </item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/controls/columns</item>
-                    <item name="displayArea" xsi:type="string">dataGridActions</item>
-                </item>
-            </argument>
-        </container>
-        <paging name="listing_paging">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">backinstock_grid_data.backinstock_grid_data.listing_top.bookmarks</item>
-                        <item name="namespace" xsi:type="string">current.paging</item>
-                    </item>
-                    <item name="selectProvider" xsi:type="string">backinstock_grid_data.backinstock_grid_data.backinstock_grid_data_columns.ids</item>
-                    <item name="displayArea" xsi:type="string">bottom</item>
-                </item>
-            </argument>
-        </paging>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <paging name="listing_paging"/>
+        <massaction name="listing_massaction">
+            <action name="mass_remove">
+                <settings>
+                    <confirm>
+                        <message translate="true">Are you sure you want to remove selected subscriptions?</message>
+                        <title translate="true">Remove</title>
+                    </confirm>
+                    <url path="backinstock/grid/massRemove"/>
+                    <type>delete</type>
+                    <label translate="true">Remove</label>
+                </settings>
+            </action>
+        </massaction>
     </container>
     <columns name="backinstock_grid_data_columns">
-        <column name="id">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Id</item>
-                    <item name="sortOrder" xsi:type="number">10</item>
-                </item>
-            </argument>
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="id" sortOrder="10">
+            <settings>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
         </column>
-        <column name="customer_email">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Customer Email</item>
-                    <item name="sortOrder" xsi:type="number">20</item>
-                </item>
-            </argument>
+        <column name="customer_email" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Customer Email</label>
+            </settings>
         </column>
-        <column name="notification_channel" class="\MageSuite\BackInStock\Ui\Component\Listing\Column\NotificationChannel">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Channel</item>
-                    <item name="sortOrder" xsi:type="number">30</item>
-                </item>
-            </argument>
+        <column name="notification_channel" class="MageSuite\BackInStock\Ui\Component\Listing\Column\NotificationChannel" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Channel</label>
+            </settings>
         </column>
-        <column name="product_id" class="\MageSuite\BackInStock\Ui\Component\Listing\Column\ProductName">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Product</item>
-                    <item name="sortOrder" xsi:type="number">40</item>
-                </item>
-            </argument>
+        <column name="product_id" class="MageSuite\BackInStock\Ui\Component\Listing\Column\ProductName" sortOrder="40">
+            <settings>
+                <label translate="true">Product</label>
+            </settings>
         </column>
-        <column name="add_date" class="Magento\Ui\Component\Listing\Columns\Date">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">dateRange</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
-                    <item name="dataType" xsi:type="string">date</item>
-                    <item name="label" xsi:type="string" translate="true">Add Date</item>
-                    <item name="sortOrder" xsi:type="number">50</item>
-                </item>
-            </argument>
+        <column name="add_date" class="Magento\Ui\Component\Listing\Columns\Date" sortOrder="50">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Add Date</label>
+            </settings>
         </column>
-        <column name="status" class="\MageSuite\BackInStock\Ui\Component\Listing\Column\Status">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Status</item>
-                    <item name="sortOrder" xsi:type="number">60</item>
-                </item>
-            </argument>
+        <column name="status" class="MageSuite\BackInStock\Ui\Component\Listing\Column\Status" sortOrder="60">
+            <settings>
+                <label translate="true">Status</label>
+            </settings>
         </column>
-        <column name="confirmation_status" class="\MageSuite\BackInStock\Ui\Component\Listing\Column\ConfirmationStatus">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">text</item>
-                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="label" xsi:type="string" translate="true">Confirmation Status</item>
-                    <item name="sortOrder" xsi:type="number">70</item>
-                </item>
-            </argument>
+        <column name="confirmation_status" class="MageSuite\BackInStock\Ui\Component\Listing\Column\ConfirmationStatus" sortOrder="70">
+            <settings>
+                <label translate="true">Confirmation Status</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+            </settings>
         </column>
     </columns>
 </listing>

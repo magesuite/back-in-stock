@@ -5,6 +5,7 @@
             <general>
                 <enabled>0</enabled>
                 <remove_subscription_after_send_notification>0</remove_subscription_after_send_notification>
+                <is_historical_data_kept>1</is_historical_data_kept>
                 <is_confirmation_required>1</is_confirmation_required>
                 <success_with_confirmation_message>If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.</success_with_confirmation_message>
                 <success_without_confirmation_message>You are successfully subscribed for back in stock notification.</success_without_confirmation_message>

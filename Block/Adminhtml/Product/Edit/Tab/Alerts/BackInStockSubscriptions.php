@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Block\Adminhtml\Product\Edit\Tab\Alerts;
 
 class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
@@ -57,6 +58,7 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
         }
 
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
 
@@ -70,14 +72,35 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
 
         $this->addColumn('customer_email', ['header' => __('Email'), 'index' => 'customer_email']);
 
+        $this->addColumn('notification_channel', ['header' => __('Notification Channel'), 'index' => 'notification_channel']);
+
         $this->addColumn('add_date', ['header' => __('Subscribe Date'), 'index' => 'add_date', 'type' => 'date']);
 
-        $this->addColumn(
-            'send_date',
-            ['header' => __('Last Notified'), 'index' => 'send_date', 'type' => 'date']
-        );
+        $this->addColumn('send_date', ['header' => __('Last Notified'), 'index' => 'send_date', 'type' => 'date']);
 
         $this->addColumn('send_count', ['header' => __('Send Count'), 'index' => 'send_count']);
+
+        $this->addColumn('customer_confirmed', ['header' => __('Customer Confirmed'), 'index' => 'customer_confirmed']);
+
+        $this->addColumn('customer_unsubscribed', ['header' => __('Customer Unsubscribed'), 'index' => 'customer_unsubscribed']);
+
+        $this->addColumn('action', [
+            'header' => __('Remove'),
+            'type' => 'action',
+            'getter' => 'getId',
+            'actions' => [
+                [
+                    'caption' => __('Remove'),
+                    'url' => [
+                        'base' => 'backinstock/product/remove'
+
+                    ],
+                    'field' => 'id'
+                ]
+            ],
+            'filter' => false,
+            'sortable' => false
+        ]);
 
         return parent::_prepareColumns();
     }
@@ -93,6 +116,7 @@ class BackInStockSubscriptions extends \Magento\Backend\Block\Widget\Grid\Extend
         if ($storeId) {
             $storeId = $this->_storeManager->getStore($storeId)->getId();
         }
+
         return $this->getUrl('backinstock/product/grid', ['id' => $productId, 'store' => $storeId]);
     }
 }
