@@ -53,7 +53,7 @@ class NotificationQueueSender
         $this->sendersByChannel = $sendersByChannel;
     }
 
-    public function send($automaticRemoveSubscription = false)
+    public function send($automaticRemoveSubscription = false, $isHistoricalDataKept = true)
     {
         $notificationCollection = $this->notificationCollectionFactory->create();
 
@@ -80,11 +80,11 @@ class NotificationQueueSender
                 ->setSendCount($subscription->getSendCount() + 1)
                 ->setSendDate(date("Y-m-d H:i:s"))
                 ->setSendNotificationStatus($sendNotificationStatus);
-            if ($automaticRemoveSubscription) {
-                $subscription->setIsRemoved(true);
-            }
-
             $this->backInStockSubscriptionRepository->save($subscription);
+
+            if ($automaticRemoveSubscription) {
+                $this->backInStockSubscriptionRepository->unsubscribe($subscription, $isHistoricalDataKept);
+            }
 
             $this->notificationRepository->delete($notification);
         }

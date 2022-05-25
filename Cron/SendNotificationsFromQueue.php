@@ -28,7 +28,8 @@ class SendNotificationsFromQueue
         }
 
         $automaticRemoveSubscription = $this->configuration->isRemoveSubscriptionAfterSendNotification();
+        $isHistoricalDataKept = $this->configuration->isHistoricalDataKept();
 
-        $this->notificationQueueSender->send($automaticRemoveSubscription);
+        $this->notificationQueueSender->send($automaticRemoveSubscription, $isHistoricalDataKept);
     }
 }

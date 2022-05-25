@@ -12,9 +12,9 @@ interface BackInStockSubscriptionRepositoryInterface
     public function getById($id);
 
     /**
-     * @param string|int $productId
-     * @param string|int $identifyByField
-     * @param string $identifyByValue
+     * @param int $productId
+     * @param string $identifyByField
+     * @param mixed $identifyByValue
      * @param int $storeId
      * @return mixed
      */
@@ -27,19 +27,26 @@ interface BackInStockSubscriptionRepositoryInterface
     public function save(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription);
 
     /**
-     * @param \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
-     * @return void
+     * @param Data\BackInStockSubscriptionInterface $backInStockSubscription
+     * @return mixed
      */
     public function delete(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription);
 
     /**
-     * @param string|int $productId
-     * @param string|int $identifyByField
-     * @param string $identifyByValue
-     * @param string $storeId
+     * @param Data\BackInStockSubscriptionInterface $backInStockSubscription
+     * @param bool $isHistoricalDataKept
      * @return mixed
      */
-    public function subscriptionExist($productId, $identifyByField, $identifyByValue, $storeId); //phpcs:ignore
+    public function unsubscribe(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription, bool $isHistoricalDataKept = false);
+
+    /**
+     * @param int $productId
+     * @param string $identifyByField
+     * @param mixed $identifyByValue
+     * @param int $storeId
+     * @return mixed
+     */
+    public function subscriptionExist(int $productId, string $identifyByField, $identifyByValue, int $storeId); //phpcs:ignore
 
     /**
      * @param $email

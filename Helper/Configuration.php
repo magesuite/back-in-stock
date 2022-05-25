@@ -1,10 +1,12 @@
 <?php
+
 namespace MageSuite\BackInStock\Helper;
 
 class Configuration
 {
     const MODULE_ENABLED_CONFIG_PATH = 'back_in_stock/general/enabled';
     const AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH = 'back_in_stock/general/remove_subscription_after_send_notification';
+    const IS_HISTORICAL_DATA_KEPT_CONFIG_PATH = 'back_in_stock/general/is_historical_data_kept';
     const IS_CONFIRMATION_REQUIRED_CONFIG_PATH = 'back_in_stock/general/is_confirmation_required';
     const SUCCESS_WITH_CONFIRMATION_MESSAGE_CONFIG_PATH = 'back_in_stock/general/success_with_confirmation_message';
     const SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH = 'back_in_stock/general/success_without_confirmation_message';
@@ -18,9 +20,8 @@ class Configuration
      */
     protected $scopeConfig;
 
-    public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-    ) {
+    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
+    {
         $this->scopeConfig = $scopeConfig;
     }
 
@@ -41,6 +42,11 @@ class Configuration
     public function isRemoveSubscriptionAfterSendNotification()
     {
         return (bool)$this->getConfigValue(self::AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH);
+    }
+
+    public function isHistoricalDataKept()
+    {
+        return (bool)$this->getConfigValue(self::IS_HISTORICAL_DATA_KEPT_CONFIG_PATH);
     }
 
     public function isConfirmationRequired()
@@ -80,6 +86,7 @@ class Configuration
     public function getEmailSenderData($storeId)
     {
         $emailSenderValue = $this->getConfigValue(self::SENDER_TYPE_CONFIG_PATH, $storeId);
+
         return [
             'name' => $this->getConfigValue(sprintf(self::SENDER_NAME_CONFIG_PATH, $emailSenderValue), $storeId),
             'email' => $this->getConfigValue(sprintf(self::SENDER_EMAIL_CONFIG_PATH, $emailSenderValue), $storeId),
