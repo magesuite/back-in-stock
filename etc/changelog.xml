@@ -1,0 +1,13 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MageSuite_Changelog:etc/changelog.xsd">
+    <module id="MageSuite_BackInStock" name="MageSuite_BackInStock">
+        <changelog>
+            <tag version="1.8.2" date="2022-08-10">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Exclude BIS from product tile swatches</overview>
+                    <ticket_id>KRG-2240</ticket_id>
+                </entry>
+            </tag>
+        </changelog>
+    </module>
+</config>
