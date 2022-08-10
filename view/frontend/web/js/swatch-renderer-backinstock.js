@@ -1,16 +1,16 @@
 define([
-    'jquery', 
+    'jquery',
     'Magento_Ui/js/modal/modal',
     'mage/translate'
-], function($, modal, $t) {
+], function ($, modal, $t) {
     'use strict';
 
     /**
      * Extend swatches to inject some actions for back in stock alert
      */
 
-    return function(swatchRenderer) {
-        $.widget('magesuite.swatchRendererBackinstock', swatchRenderer, {
+    return function (swatchRenderer) {
+        $.widget('mage.swatchRendererBackinstock', swatchRenderer, {
             options: {
                 outOfStockSwatchesSelector: '.swatch-option[disabled]',
                 showSubscriptionInModal: false,
@@ -24,11 +24,15 @@ define([
                 },
             },
 
-            _init: function() {
+            _init: function () {
                 this._super();
 
                 this.$subscriptionForm = $('.' + this.options.subscriptionFormClass);
-                this.canApplyMixin = this.$subscriptionForm.length;
+                /**
+                 * With `inProductList` additional check we're making sure that back-in-stock
+                 * will be applied to buybox swatches only and omit the one in product tile.
+                 */
+                this.canApplyMixin = this.$subscriptionForm.length && !this.inProductList;
 
                 if (this.canApplyMixin) {
                     this._prepareBackInStockNotifications();
@@ -76,14 +80,14 @@ define([
              * Custom method.
              * If (newly introduced) showSubscriptionInModal option is true, create a modal to be ready
              */
-            _prepareBackInStockNotifications: function() {
+            _prepareBackInStockNotifications: function () {
                 var $form = this.$subscriptionForm,
                     popup;
 
                 if (this.options.showSubscriptionInModal) {
                     popup = $form.modal(this.options.modalOptions);
 
-                    popup.on('modalclosed', function() {
+                    popup.on('modalclosed', function () {
                         $('body').trigger('bis:modalclosed');
                     });
                 }
@@ -93,8 +97,8 @@ define([
              * Custom method
              * If (newly introduced) showSubscriptionInModal option is FALSE, on each change of value for any super attribute make sure Subscription Panel is closed until it's needed.
              */
-            _resetBiSFormOnOptionChange: function() {
-                this.element.on('click change', '.' + this.options.classes.optionClass, function() {
+            _resetBiSFormOnOptionChange: function () {
+                this.element.on('click change', '.' + this.options.classes.optionClass, function () {
                     $('body').trigger('bis:formclosed');
                     if (!this.options.showSubscriptionInModal) {
                         this.$subscriptionForm.addClass(this.options.subscriptionFormClass + '--hidden');
@@ -106,10 +110,10 @@ define([
              * Custom method.
              * On each (out of stock) swatch click set proper CSS class (remove from siblings first) and show panel (optionally in modal)
              */
-            _setEvent: function() {
+            _setEvent: function () {
                 var $widget = this;
 
-                this.$outOfStockOptions.on('click', function(e) {
+                this.$outOfStockOptions.on('click', function (e) {
                     e.preventDefault();
 
                     var $this = $(this),
@@ -134,6 +138,6 @@ define([
             }
         });
 
-        return $.magesuite.swatchRendererBackinstock;
+        return $.mage.swatchRendererBackinstock;
     }
 });
