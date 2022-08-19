@@ -15,13 +15,6 @@
                     <ticket_id>KRG-2240</ticket_id>
                 </entry>
             </tag>
-            <tag version="1.8.3" date="2022-08-16">
-                <entry>
-                    <type>FIX</type>
-                    <overview>Fixed issue when "Is Historical Data kept" setting was not taken into account when unsubscribing from subscriptions using the customer area subscriptions list</overview>
-                    <ticket_id>IPET-1510</ticket_id>
-                </entry>
-            </tag>
         </changelog>
     </module>
 </config>
