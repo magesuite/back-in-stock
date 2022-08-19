@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Model\ResourceModel\Notification;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection

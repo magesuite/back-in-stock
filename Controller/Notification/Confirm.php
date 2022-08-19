@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Notification;
 
 class Confirm extends \Magento\Framework\App\Action\Action

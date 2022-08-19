@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Customer;
 
 class Subscriptions extends \Magento\Customer\Controller\Adminhtml\Index

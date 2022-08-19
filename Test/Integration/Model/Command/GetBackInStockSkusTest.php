@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Test\Integration\Model\Command;
 
 class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase

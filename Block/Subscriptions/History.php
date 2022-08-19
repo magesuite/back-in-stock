@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Block\Subscriptions;
 
 class History extends \Magento\Framework\View\Element\Template

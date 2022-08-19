@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Product;
 
 class Grid extends \Magento\Catalog\Controller\Adminhtml\Product

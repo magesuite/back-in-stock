@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\Tab;
 
 class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
@@ -60,6 +61,26 @@ class Subscriptions extends \Magento\Backend\Block\Widget\Grid\Extended
         );
 
         $this->addColumn('send_count', ['header' => __('Amount of Notifications Sent'), 'index' => 'send_count']);
+
+        $this->addColumn('customer_unsubscribed', ['header' => __('Customer Unsubscribed'), 'index' => 'customer_unsubscribed']);
+
+        $this->addColumn('action', [
+            'header' => __('Remove'),
+            'type' => 'action',
+            'getter' => 'getId',
+            'actions' => [
+                [
+                    'caption' => __('Remove'),
+                    'url' => [
+                        'base' => 'backinstock/product/remove'
+
+                    ],
+                    'field' => 'id'
+                ]
+            ],
+            'filter' => false,
+            'sortable' => false
+        ]);
 
         return parent::_prepareColumns();
     }

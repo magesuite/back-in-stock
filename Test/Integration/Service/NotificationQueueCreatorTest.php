@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase

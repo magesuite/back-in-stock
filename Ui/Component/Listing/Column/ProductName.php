@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Ui\Component\Listing\Column;
 
 class ProductName extends \Magento\Ui\Component\Listing\Columns\Column

@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Test\Integration\Model;
 
 class AreProductsSalableTest extends \PHPUnit\Framework\TestCase

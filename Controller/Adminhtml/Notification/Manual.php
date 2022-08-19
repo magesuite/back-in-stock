@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Notification;
 
 class Manual extends \Magento\Backend\App\Action

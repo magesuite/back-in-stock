@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\Tab\Column;
 
 abstract class AbstractColumnRenderer extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer

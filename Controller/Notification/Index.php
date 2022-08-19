@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Notification;
 
 class Index extends \Magento\Framework\App\Action\Action

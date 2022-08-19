@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\ViewModel\Subscriptions;
 
 class History implements \Magento\Framework\View\Element\Block\ArgumentInterface

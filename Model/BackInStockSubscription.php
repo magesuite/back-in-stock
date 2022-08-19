@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Model;
 
 class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel implements \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
