@@ -36,3 +36,16 @@ SKU,Réf.
 Status,Statut
 Unsubscribe,Désabonner
 "Unsubscribe from this back in stock notification:","Désactiver cette notification de disponibilité:"
+"If you have not subscribed to this product yet, a request to confirm your subscription will be sent to your email. If you have subscribed to this product in the last %1 hours, check your email - the confirmation request should already be there.","Si vous n'avez pas encore souscrit à ce produit, une demande de confirmation de votre abonnement sera envoyée à votre e-mail. Si vous vous êtes abonné à ce produit au cours des dernières 24 heures, vérifiez votre e-mail - la demande de confirmation devrait déjà s'y trouver."
+"If your product comes back in stock, we'll email you.","Si votre produit revient en stock, nous vous enverrons un e-mail."
+"Your Email Address","Votre adresse e-mail"
+"The product you have subscribed for is back in stock:","Le produit pour lequel vous vous êtes abonné est de nouveau en stock :"
+"Please click following link to confirm your subscription:","Veuillez cliquer sur le lien suivant pour confirmer votre abonnement :"
+"Please click following link if you wish to decline the subscription:","Veuillez cliquer sur le lien suivant si vous souhaitez refuser l'abonnement :"
+"Back in stock subscription has been confirmed.","L'abonnement de retour en stock a été confirmé."
+"This subscription request has been already confirmed.","Cette demande d'abonnement a déjà été confirmée."
+"You have been already unsubscribed from back in stock notification.","Vous avez déjà été désabonné de la notification de rupture de stock."
+"Request Date","Date de la demande"
+"%store_name - product back in stock alert","$store_name - alerte sur le retour en stock du produit"
+"%store_name - product back in stock subscription confirmation","%store_name - Confirmation de l'abonnement pour les produits en rupture de stock"
+"Hello, %name","Bonjour, %name"
