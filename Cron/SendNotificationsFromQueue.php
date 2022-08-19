@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Cron;
 
 class SendNotificationsFromQueue

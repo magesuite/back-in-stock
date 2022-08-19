@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Model\Queue\Handler;
 
 class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterface

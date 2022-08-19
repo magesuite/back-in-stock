@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Notification;
 
 class Unsubscribe extends \Magento\Framework\App\Action\Action
@@ -15,15 +16,22 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
      */
     protected $backInStockSubscriptionRepository;
 
+    /**
+     * @var \MageSuite\BackInStock\Helper\Configuration
+     */
+    protected $configuration;
+
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory,
-        \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository
+        \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
+        \MageSuite\BackInStock\Helper\Configuration $configuration
     ) {
-        $this->pageFactory = $pageFactory;
         parent::__construct($context);
 
+        $this->pageFactory = $pageFactory;
         $this->backInStockSubscriptionRepository = $backInStockSubscriptionRepository;
+        $this->configuration = $configuration;
     }
 
     public function execute()
@@ -36,6 +44,7 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
 
         try {
             $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
+            $isHistoricalDataKept = $this->configuration->isHistoricalDataKept();
 
             if (!$this->validateToken($subscription, $params)) {
                 throw new \Magento\Framework\Exception\LocalizedException(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
@@ -49,8 +58,7 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
                 throw new \Magento\Framework\Exception\LocalizedException(__('This subscription does not exist.'));
             }
 
-            $subscription->setCustomerUnsubscribed(true);
-            $this->backInStockSubscriptionRepository->save($subscription);
+            $this->backInStockSubscriptionRepository->unsubscribe($subscription, $isHistoricalDataKept);
 
             $this->messageManager->addSuccessMessage(__('Correctly unsubscribed from back in stock notification.'));
         } catch (\Exception $e) {

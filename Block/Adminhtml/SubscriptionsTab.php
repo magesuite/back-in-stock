@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Block\Adminhtml;
 
 class SubscriptionsTab extends \Magento\Ui\Component\Layout\Tabs\TabWrapper implements \Magento\Ui\Component\Layout\Tabs\TabInterface

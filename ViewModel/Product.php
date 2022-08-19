@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\ViewModel;
 
 class Product implements \Magento\Framework\View\Element\Block\ArgumentInterface

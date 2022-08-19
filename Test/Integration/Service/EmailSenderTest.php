@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 class EmailSenderTest extends \PHPUnit\Framework\TestCase

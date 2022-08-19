@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 class PreviewNotificationSenderTest extends \PHPUnit\Framework\TestCase

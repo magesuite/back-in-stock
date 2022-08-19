@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Grid;
 
 class Index extends \Magento\Framework\App\Action\Action

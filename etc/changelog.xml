@@ -1,11 +1,25 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MageSuite_Changelog:etc/changelog.xsd">
     <module id="MageSuite_BackInStock" name="MageSuite_BackInStock">
         <changelog>
+            <tag version="1.0.0" date="2019-03-21">
+                <entry>
+                    <type>INIT</type>
+                    <overview>Initial release</overview>
+                    <description></description>
+                </entry>
+            </tag>
             <tag version="1.8.2" date="2022-08-10">
                 <entry>
                     <type>FIX</type>
                     <overview>Exclude BIS from product tile swatches</overview>
                     <ticket_id>KRG-2240</ticket_id>
+                </entry>
+            </tag>
+            <tag version="1.8.3" date="2022-08-16">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fixed issue when "Is Historical Data kept" setting was not taken into account when unsubscribing from subscriptions using the customer area subscriptions list</overview>
+                    <ticket_id>IPET-1510</ticket_id>
                 </entry>
             </tag>
         </changelog>

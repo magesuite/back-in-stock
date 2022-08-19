@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Notification;
 
 class Preview extends \Magento\Backend\App\Action

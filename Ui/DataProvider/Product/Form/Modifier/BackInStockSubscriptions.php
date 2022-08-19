@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Ui\DataProvider\Product\Form\Modifier;
 
 class BackInStockSubscriptions extends \Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier

@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Model;
 
 class NotificationRepository implements \MageSuite\BackInStock\Api\NotificationRepositoryInterface

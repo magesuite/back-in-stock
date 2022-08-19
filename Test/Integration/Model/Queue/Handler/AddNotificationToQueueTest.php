@@ -1,4 +1,5 @@
 <?php
+
 namespace MageSuite\BackInStock\Test\Integration\Model\Queue\Handler;
 
 class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
