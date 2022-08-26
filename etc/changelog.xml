@@ -26,14 +26,21 @@
                 <entry>
                     <type>FIX</type>
                     <overview>Back-in-Stock template not loading</overview>
+                    <description>"Back In Stock Manual Notification" template was not loading in admin panel in section "Marketing / Comunications / Email Templates."</description>
                     <ticket_id>HAKA-1634</ticket_id>
-                    <description>"Back In Stock Manual Notification" template was not loading in admin panel in section "Marketing / Comunications / Email Templates".</description>
                 </entry>
             </tag>
             <tag version="1.8.7" date="2022-08-26">
                 <entry>
                     <type>FIX</type>
                     <overview>Added missing changelog entry.</overview>
+                    <ticket_id>HAKA-1634</ticket_id>
+                </entry>
+            </tag>
+            <tag version="1.8.8" date="2022-08-26">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Updated missing changelog entry.</overview>
                     <ticket_id>HAKA-1634</ticket_id>
                 </entry>
             </tag>
