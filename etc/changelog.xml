@@ -22,6 +22,21 @@
                     <ticket_id>LP-1714</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.8.6" date="2022-08-25">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Back-in-Stock template not loading</overview>
+                    <ticket_id>HAKA-1634</ticket_id>
+                    <description>"Back In Stock Manual Notification" template was not loading in admin panel in section "Marketing / Comunications / Email Templates".</description>
+                </entry>
+            </tag>
+            <tag version="1.8.7" date="2022-08-26">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Added missing changelog entry.</overview>
+                    <ticket_id>HAKA-1634</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
