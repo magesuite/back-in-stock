@@ -44,6 +44,14 @@
                     <ticket_id>HAKA-1634</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.8.9" date="2022-11-16">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix showing of subscription panel.</overview>
+                    <description>Do not close subscription panel if click is triggered on disabled swatch (this swatch should back-in-stock alert functionality)</description>
+                    <ticket_id>MGS-48194</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
