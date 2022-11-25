@@ -96,9 +96,14 @@ define([
             /**
              * Custom method
              * If (newly introduced) showSubscriptionInModal option is FALSE, on each change of value for any super attribute make sure Subscription Panel is closed until it's needed.
+             * Do not close subscription panel if click is triggered on disabled swatch (this swatch should back-in-stock alert functionality)
              */
             _resetBiSFormOnOptionChange: function () {
-                this.element.on('click change', '.' + this.options.classes.optionClass, function () {
+                this.element.on('click change', '.' + this.options.classes.optionClass, function (e) {
+                    if ($(e.target).hasClass('disabled')) {
+                        return;
+                    }
+
                     $('body').trigger('bis:formclosed');
                     if (!this.options.showSubscriptionInModal) {
                         this.$subscriptionForm.addClass(this.options.subscriptionFormClass + '--hidden');
