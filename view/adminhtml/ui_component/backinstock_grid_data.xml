@@ -77,7 +77,7 @@
                 <label translate="true">Channel</label>
             </settings>
         </column>
-        <column name="product_id" class="MageSuite\BackInStock\Ui\Component\Listing\Column\ProductName" sortOrder="40">
+        <column name="product_name" class="MageSuite\BackInStock\Ui\Component\Listing\Column\ProductName" sortOrder="40">
             <settings>
                 <label translate="true">Product</label>
             </settings>

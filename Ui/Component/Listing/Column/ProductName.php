@@ -4,20 +4,17 @@ namespace MageSuite\BackInStock\Ui\Component\Listing\Column;
 
 class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
 {
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
+    protected Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection;
 
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
-        \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
-        $this->productRepository = $productRepository;
+        $this->productCollectionFactory = $productCollectionFactory;
     }
 
     /**
@@ -27,11 +24,27 @@ class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        if (isset($dataSource['data']['items'])) {
-            foreach ($dataSource['data']['items'] as & $item) {
-                $product = $this->productRepository->getById((int)$item['product_id']);
-                $item['product_id'] = $product->getName();
-            }
+        if (empty($dataSource['data']['items'])) {
+            return $dataSource;
+        }
+
+        $productIds = [];
+        foreach ($dataSource['data']['items'] as $item) {
+            $productIds[] = $item['entity_id'];
+        }
+        if (empty($products)) {
+            return $dataSource;
+        }
+
+        $productCollection = $this->productCollectionFactory->create();
+        $products = $productCollection
+            ->addAttributeToSelect('entity_id')
+            ->addAttributeToSelect('name')
+            ->addFieldToFilter('entity_id', ['in' => $productIds])
+            ->getItems();
+
+        foreach ($dataSource['data']['items'] as &$item) {
+            $item['product_name'] = $products[$item['entity_id']]->getName();
         }
 
         return $dataSource;
