@@ -4,12 +4,12 @@ namespace MageSuite\BackInStock\Ui\Component\Listing\Column;
 
 class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
 {
-    protected Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection;
+    protected \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory;
 
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
+        \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
-        \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection,
         array $components = [],
         array $data = []
     ) {
@@ -24,15 +24,17 @@ class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
      */
     public function prepareDataSource(array $dataSource)
     {
-        if (empty($dataSource['data']['items'])) {
+        if (!isset($dataSource['data']['items'])) {
             return $dataSource;
         }
 
         $productIds = [];
+
         foreach ($dataSource['data']['items'] as $item) {
-            $productIds[] = $item['entity_id'];
+            $productIds[] = $item['product_id'];
         }
-        if (empty($products)) {
+
+        if (empty($productIds)) {
             return $dataSource;
         }
 
@@ -44,7 +46,11 @@ class ProductName extends \Magento\Ui\Component\Listing\Columns\Column
             ->getItems();
 
         foreach ($dataSource['data']['items'] as &$item) {
-            $item['product_name'] = $products[$item['entity_id']]->getName();
+            if (!isset($products[$item['product_id']])) {
+                continue;
+            }
+
+            $item['product_name'] = $products[$item['product_id']]->getName();
         }
 
         return $dataSource;
