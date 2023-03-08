@@ -10,7 +10,7 @@ define([
      */
 
     return function (swatchRenderer) {
-        $.widget('mage.swatchRendererBackinstock', swatchRenderer, {
+        $.widget('mage.SwatchRenderer', swatchRenderer, {
             options: {
                 outOfStockSwatchesSelector: '.swatch-option[disabled]',
                 showSubscriptionInModal: false,
@@ -143,6 +143,6 @@ define([
             }
         });
 
-        return $.mage.swatchRendererBackinstock;
+        return $.mage.SwatchRenderer;
     }
 });
