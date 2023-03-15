@@ -1,4 +1,4 @@
-define(['jquery', 'mage/mage', 'loader'], function ($) {
+define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], function ($, customerData) {
     'use strict';
 
     /**
@@ -15,6 +15,7 @@ define(['jquery', 'mage/mage', 'loader'], function ($) {
                 'message-success success cs-messages__message--success',
             errorClass: 'message-error error cs-messages__message--error',
             loaderIcon: '',
+            fillEmailAddressForLoggedIn: true,
         },
 
         _create: function () {
@@ -56,6 +57,25 @@ define(['jquery', 'mage/mage', 'loader'], function ($) {
             $('body').on('bis:modalclosed bis:formclosed', function() {
                 this._clearOldOutput();
             }.bind(this));
+
+            if (this.options.fillEmailAddressForLoggedIn) {
+                this._prefillCustomerEmail();
+            }
+        },
+
+        /**
+         * Fills the input with customer email address if available.
+         */
+        _prefillCustomerEmail: function () {
+            var $widget = this;
+            customerData.getInitCustomerData().done(function() {
+
+                const customer = customerData.get('customer')();
+
+                if (customer.hasOwnProperty('email')) {
+                    $widget.element.find('.cs-product-stock-subscription__input').val(customer.email);
+                }
+            })
         },
 
         /**
