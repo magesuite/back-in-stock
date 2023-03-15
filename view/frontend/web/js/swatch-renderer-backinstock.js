@@ -1,8 +1,9 @@
 define([
     'jquery',
     'Magento_Ui/js/modal/modal',
+    'Magento_Customer/js/customer-data',
     'mage/translate'
-], function ($, modal, $t) {
+], function ($, modal, customerData, $t) {
     'use strict';
 
     /**
@@ -22,6 +23,7 @@ define([
                     modalClass: 'cs-product-stock-subscription__modal',
                     buttons: [],
                 },
+                fillEmailAddressForLoggedIn: true
             },
 
             _init: function () {
@@ -91,6 +93,25 @@ define([
                         $('body').trigger('bis:modalclosed');
                     });
                 }
+
+                if (this.options.fillEmailAddressForLoggedIn) {
+                    this._prefillCustomerEmailForBiS();
+                }
+            },
+
+            /**
+             * Fills the input with customer email address if available.
+             */
+            _prefillCustomerEmailForBiS: function() {
+                var $widget = this;
+
+                customerData.getInitCustomerData().done(function() {
+                    const customer = customerData.get('customer')();
+
+                    if (customer.hasOwnProperty('email')) {
+                        this.$subscriptionForm.find(`.${$widget.options.subscriptionFormClass}__input`).val(customer.email);
+                    }
+                })
             },
 
             /**
