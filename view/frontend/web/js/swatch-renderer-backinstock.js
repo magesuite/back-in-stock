@@ -109,7 +109,7 @@ define([
                     const customer = customerData.get('customer')();
 
                     if (customer.hasOwnProperty('email')) {
-                        this.$subscriptionForm.find(`.${$widget.options.subscriptionFormClass}__input`).val(customer.email);
+                        $widget.$subscriptionForm.find(`.${$widget.options.subscriptionFormClass}__input`).val(customer.email);
                     }
                 })
             },
