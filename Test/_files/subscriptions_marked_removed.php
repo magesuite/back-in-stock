@@ -18,7 +18,7 @@ $removedSubscriptions = [1, 3, 8];
 
 foreach ($removedSubscriptions as $i) {
     /** @var  \MageSuite\BackInStock\Model\BackInStockSubscription $subscription */
-    $subscription = $backInStockSubscriptionRepository->get($product->getId(), 'customer_email', 'test+'. $i .'@test.com', 1);
+    $subscription = $backInStockSubscriptionRepository->get($product->getId(), 'customer_email', 'test+' . $i . '@test.com', 1);
     $subscription->setIsRemoved(true);
     $backInStockSubscriptionRepository->save($subscription);
 }

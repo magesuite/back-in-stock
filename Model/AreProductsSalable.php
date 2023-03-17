@@ -4,15 +4,9 @@ namespace MageSuite\BackInStock\Model;
 
 class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalableInterface
 {
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\Stock
-     */
-    protected $resourceModel;
+    protected \MageSuite\BackInStock\Model\ResourceModel\Stock $resourceModel;
 
-    /**
-     * @var \MageSuite\BackInStock\Api\Data\IsProductSalableResultInterfaceFactory
-     */
-    protected $isProductSalableResultFactory;
+    protected \MageSuite\BackInStock\Api\Data\IsProductSalableResultInterfaceFactory $isProductSalableResultFactory;
 
     public function __construct(
         \MageSuite\BackInStock\Model\ResourceModel\Stock $resourceModel,
@@ -33,7 +27,7 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
                 $salableQty = $this->getSalableQty($sku, $stockId, $stockData);
 
                 $isSalable = $salableQty >= 0;
-                $wasSalable = !$isSalable ? false : $this->checkPreviousSalableStatus($salableQty, $itemInfo);
+                $wasSalable = $isSalable && $this->checkPreviousSalableStatus($salableQty, $itemInfo);
 
                 $result[$sku][$stockId] = $this->isProductSalableResultFactory->create(
                     [
@@ -50,7 +44,7 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
     /**
      * Product is salable if stock quantity minus reservations minus minimum quantity
      * is equal or bigger than 0.
-     * Important: reservations have negative sign in database so we are "adding" them.
+     * Important: reservations have negative sign in database, so we are "adding" them.
      */
     protected function getSalableQty($sku, $stockId, $stockData)
     {
@@ -73,7 +67,7 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
         $wasSalable = $salableQty - $qtyDelta >= 0;
 
         if (!$wasSalable) {
-            return $wasSalable;
+            return false;
         }
 
         return $itemInfo['old_status'] == \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_IN_STOCK;
