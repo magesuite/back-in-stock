@@ -4,10 +4,7 @@ namespace MageSuite\BackInStock\Model\Command;
 
 class GetBackInStockItems
 {
-    /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $resourceConnection;
+    protected \Magento\Framework\App\ResourceConnection $resourceConnection;
 
     public function __construct(\Magento\Framework\App\ResourceConnection $resourceConnection)
     {

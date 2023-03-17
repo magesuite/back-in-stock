@@ -4,36 +4,28 @@ namespace MageSuite\BackInStock\Model\Queue\Handler;
 
 class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterface
 {
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription
-     */
-    protected $subscriptionResourceModel;
+    protected \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription $subscriptionResourceModel;
 
-    /**
-     * @var \MageSuite\BackInStock\Model\StockInfo
-     */
-    protected $stockInfo;
+    protected \MageSuite\BackInStock\Model\StockInfo $stockInfo;
 
-    /**
-     * @var \MageSuite\BackInStock\Api\AreProductsSalableInterface
-     */
-    protected $areProductsSalable;
+    protected \MageSuite\BackInStock\Api\AreProductsSalableInterface $areProductsSalable;
 
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\Notification
-     */
-    protected $notificationResourceModel;
+    protected \MageSuite\BackInStock\Model\ResourceModel\Notification $notificationResourceModel;
+
+    protected \MageSuite\BackInStock\Model\Command\GetDisabledProductSkus $getDisabledProductSkus;
 
     public function __construct(
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription $subscriptionResourceModel,
         \MageSuite\BackInStock\Model\StockInfo $stockInfo,
         \MageSuite\BackInStock\Api\AreProductsSalableInterface $areProductsSalable,
-        \MageSuite\BackInStock\Model\ResourceModel\Notification $notificationResourceModel
+        \MageSuite\BackInStock\Model\ResourceModel\Notification $notificationResourceModel,
+        \MageSuite\BackInStock\Model\Command\GetDisabledProductSkus $getDisabledProductSkus
     ) {
         $this->subscriptionResourceModel = $subscriptionResourceModel;
         $this->stockInfo = $stockInfo;
         $this->areProductsSalable = $areProductsSalable;
         $this->notificationResourceModel = $notificationResourceModel;
+        $this->getDisabledProductSkus = $getDisabledProductSkus;
     }
 
     public function execute($items)
@@ -72,10 +64,16 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
 
         $subscriptions = $this->subscriptionResourceModel->getSubscriptionsBySkus(array_keys($items));
 
+        $skus = $this->getSkus($subscriptions);
         $storeIdStockIdMap = $this->stockInfo->getStoreIdStockIdMap();
-        $areProductsSalable = $this->areProductsSalable->execute($this->getSkus($subscriptions), $items);
+        $areProductsSalable = $this->areProductsSalable->execute($skus, $items);
+        $disabledProductSkus = $this->getDisabledProductSkus->execute($skus);
 
         foreach ($subscriptions as $subscription) {
+            if (in_array($subscription['sku'], $disabledProductSkus)) {
+                continue;
+            }
+
             $stockId = $storeIdStockIdMap[$subscription['store_id']] ?? null;
             $isProductSalableItem = $areProductsSalable[$subscription['sku']][$stockId] ?? null;
 
@@ -103,7 +101,7 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
     }
 
     /*
-     * Group items by sku and stock Id
+     * Group items by sku and stock ID
      *
      * Data added to the MageSuite queue is grouped by source_code.
      * We need to group data by stock_id to validate stock status
