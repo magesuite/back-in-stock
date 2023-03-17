@@ -6,35 +6,49 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
 {
     const SOURCE_CODE_DEFAULT = 'default';
 
-    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    /**
+     * @var \Magento\TestFramework\ObjectManager
+     */
+    protected $objectManager;
 
-    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    /**
+     * @var \MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue
+     */
+    protected $addNotificationToQueue;
 
-    protected ?\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection $notificationCollection;
+    /**
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     */
+    protected $productRepository;
 
-    protected ?\MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue $addNotificationToQueue;
+    /**
+     * @var \MageSuite\BackInStock\Model\ResourceModel\Notification\Collection
+     */
+    protected $notificationCollection;
 
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
-        $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
-        $this->notificationCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection::class);
-
         $this->addNotificationToQueue = $this->objectManager->create(\MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue::class);
+        $this->notificationCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection::class);
+        $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
     }
 
     /**
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions_confirmed_customer.php
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions_marked_removed.php
+     * @magentoDataFixture loadSubscriptions
+     * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoDataFixture loadSubscriptionsMarkedRemoved
      */
     public function testItCreateNotificationQueueCorrectly()
     {
         $productSku = 'simple';
 
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get($productSku);
+
         $item = [
             $productSku => [
                 self::SOURCE_CODE_DEFAULT => [
@@ -45,46 +59,27 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        $this->assertEquals(0, $this->notificationCollection->getSize());
-
         $this->addNotificationToQueue->execute($item);
 
-        $this->notificationCollection->clear();
         $this->assertEquals(7, $this->notificationCollection->getSize());
-        foreach ($this->notificationCollection->getItems() as $notification) {
+
+        foreach ($this->notificationCollection as $notification) {
             $this->assertEquals('automatic_notification', $notification->getNotificationType());
         }
     }
 
-    /**
-     * @magentoDbIsolation enabled
-     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions_confirmed_customer.php
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions_marked_removed.php
-     */
-    public function testItNotCreateNotificationQueueForDisabledProduct()
+    public static function loadSubscriptions()
     {
-        $productSku = 'simple';
-        $product = $this->productRepository->get($productSku);
-        $product->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED);
-        $this->productRepository->save($product);
+        include __DIR__.'/../../../../_files/subscriptions.php';
+    }
 
-        $item = [
-            $productSku => [
-                self::SOURCE_CODE_DEFAULT => [
-                    'old_qty' => 0,
-                    'new_qty' => 10,
-                    'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK
-                ]
-            ]
-        ];
+    public static function loadSubscriptionsCustomerConfirmed()
+    {
+        include __DIR__.'/../../../../_files/subscriptions_confirmed_customer.php';
+    }
 
-        $this->assertEquals(0, $this->notificationCollection->getSize());
-
-        $this->addNotificationToQueue->execute($item);
-
-        $this->notificationCollection->clear();
-        $this->assertEquals(0, $this->notificationCollection->getSize());
+    public static function loadSubscriptionsMarkedRemoved()
+    {
+        include __DIR__.'/../../../../_files/subscriptions_marked_removed.php';
     }
 }

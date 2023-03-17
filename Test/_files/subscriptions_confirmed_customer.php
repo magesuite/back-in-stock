@@ -11,6 +11,7 @@ $backInStockSubscriptionRepository = $objectManager->create(\MageSuite\BackInSto
 /** @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection $backInStockSubscriptionCollection */
 $backInStockSubscriptionCollection = $objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection::class);
 
+
 foreach ($backInStockSubscriptionCollection as $subscription) {
     $subscription->setCustomerConfirmed(true);
     $backInStockSubscriptionRepository->save($subscription);
