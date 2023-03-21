@@ -1,28 +1,46 @@
-"Product ID","ID prodotto"
-"There are no customers for this alert.","Non ci sono clienti per questo avviso."
+"Add Date","Aggiungi data"
+"Back in stock subscription has been confirmed.","È stato confermato il ritorno in stock dell'abbonamento."
+"Confirmation Email Template","Template Email conferma"
+"Correctly unsubscribed from back in stock notification.","La notifica di ritorno in magazzino è stata cancellata correttamente."
+"Customer Email","Email cliente"
 "Customer ID","ID cliente"
-Email,Email
-"Subscribe Date","Data di iscrizione"
-"Last Notified","Notificato ultima volta"
-"Send Count","Invia totale"
-Sent,Inviato
 "Email Address","Indirizzo Email"
-SKU,SKU
-Name,Nome
-"Stock Status","Status inventario"
-Action,Azione
+"Email Sender","Mittente email"
+"Hello, %name","Ciao, %name"
 "In Stock",Disponibile
+"Last Notified","Notificato ultima volta"
+"My Back In Stock Notifications","Le mie notifiche di ritorno in magazzino"
 "Out of Stock","Non Disponibile"
+"Please click following link if you wish to decline the subscription:","Se si desidera rifiutare l'abbonamento, cliccare sul seguente link:"
+"Please click following link to confirm your subscription:","Fare clic sul seguente link per confermare l'iscrizione:"
+"Please click the following link to purchase the product:","Per acquistare il prodotto, fare clic sul seguente link:"
+"Please enter email to subscribe for stock alert","Inserisci l'e-mail per abbonarti all'avviso sulle scorte"
+"Product ID","ID prodotto"
+"Request Date","Data della richiesta"
+"Send Count","Invia totale"
+"Stock Status","Status inventario"
+"Subscribe Date","Data di iscrizione"
+"The product you have subscribed for is back in stock:","Il prodotto per il quale ci si è abbonati è di nuovo disponibile:"
+"There are no customers for this alert.","Non ci sono clienti per questo avviso."
+"This option is currently out of stock. You can subscribe for stock alert below to get notified once it's back in our shop.","Questa opzione è attualmente esaurita. È possibile abbonarsi all'avviso di stock qui sotto per essere avvisati quando sarà di nuovo disponibile nel nostro negozio."
+"This subscription request has been already confirmed.","La richiesta di abbonamento è già stata confermata."
+"to back-in-stock notifications.","alle notifiche di disponibilità di magazzino."
+"Unsubscribe from this back in stock notification","Annullamento della notifica di ritorno in magazzino"
+"You have been already unsubscribed from back in stock notification.","Sei già stato cancellato dalla notifica di disponibilità."
+"You have been unsubscribed from back in stock notification.","Non è stata effettuata la sottoscrizione per l'avviso di disponibilità di magazzino."
+"You have no back in stock subscriptions yet.","Non ci sono ancora abbonamenti in stock."
+"You have subscribed with your e-mail address","Vi siete iscritti con il vostro indirizzo e-mail"
+Action,Azione
 Actions,Azioni
 Delete,Elimina
-Unsubscribe,"Annulla Iscrizione"
-Send,Invio
-General,Generale
+Email,Email
 Enabled,Abilitato
-"Email Sender","Mittente email"
-"Confirmation Email Template","Template Email conferma"
+General,Generale
 Id,Id
-"Customer Email","Email cliente"
+Name,Nome
 Product,Prodotto
-"Add Date","Aggiungi data"
+Send,Invio
+Sent,Inviato
+SKU,SKU
 Status,Status
+Unsubscribe,"Annulla Iscrizione"
