@@ -65,10 +65,17 @@
                     <overview>Prefill subscription form with customer email if available</overview>
                 </entry>
             </tag>
-            <tag version="1.11.0" date="2022-11-21">
+            <tag version="1.11.0" date="2023-03-21">
                 <entry>
                     <type>FEAT</type>
                     <overview>Update missing translations</overview>
+                    <ticket_id>HAAR-3504</ticket_id>
+                </entry>
+            </tag>
+            <tag version="1.11.1" date="2023-03-28">
+                <entry>
+                    <type>FEAT</type>
+                    <overview>Update missing translations for IT</overview>
                     <ticket_id>HAAR-3504</ticket_id>
                 </entry>
             </tag>
