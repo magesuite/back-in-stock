@@ -79,6 +79,12 @@
                     <ticket_id>HAAR-3504</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.11.2" date="2023-03-28">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Deprecataed jQuery handler</overview>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
