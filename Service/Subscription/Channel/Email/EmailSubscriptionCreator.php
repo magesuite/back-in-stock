@@ -64,6 +64,11 @@ class EmailSubscriptionCreator
      */
     protected $subscriptionHelper;
 
+    /**
+     * @var \Laminas\Validator\EmailAddress
+     */
+    protected $emailAddressValidator;
+
     public function __construct(
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Customer\Model\SessionFactory $customerSession,
@@ -75,7 +80,8 @@ class EmailSubscriptionCreator
         \MageSuite\BackInStock\Service\Subscription\ProductResolver $productResolver,
         \MageSuite\BackInStock\Helper\Configuration $configuration,
         \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory,
-        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
+        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
+        \Laminas\Validator\EmailAddress $emailAddressValidator
     ) {
         $this->productRepository = $productRepository;
         $this->customerSession = $customerSession;
@@ -88,6 +94,7 @@ class EmailSubscriptionCreator
         $this->configuration = $configuration;
         $this->backInStockSubscriptionFactory = $backInStockSubscriptionFactory;
         $this->subscriptionHelper = $subscriptionHelper;
+        $this->emailAddressValidator = $emailAddressValidator;
     }
 
     public function subscribe($params)
@@ -166,7 +173,7 @@ class EmailSubscriptionCreator
 
     public function validateEmail($email)
     {
-        return \Zend_Validate::is(trim($email), 'EmailAddress');
+        return $this->emailAddressValidator->isValid(trim($email));
     }
 
     public function subscriptionExist($productId, $customerId, $email, $storeId) //phpcs:ignore
