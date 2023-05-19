@@ -13,7 +13,7 @@ class Grouped implements ProductResolverInterface
     {
         $allAssignedProductIdsGroupedByType = $product->getTypeInstance()->getChildrenIds($product->getId());
         $allAssignedProductIds = $allAssignedProductIdsGroupedByType[\Magento\GroupedProduct\Model\ResourceModel\Product\Link::LINK_TYPE_GROUPED] ?? [];
-        
+
         $salableAssignedProductCount = 0;
 
         foreach ($product->getTypeInstance()->getAssociatedProducts($product) as $associatedProduct) {

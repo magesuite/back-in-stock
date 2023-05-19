@@ -1,5 +1,5 @@
 define([
-    'jquery', 
+    'jquery',
     'Magento_Ui/js/modal/modal',
     'mage/translate'
 ], function($, modal, $t) {
@@ -70,7 +70,7 @@ define([
                 $widget._modifyForm(simpleId);
                 $widget.$subscriptionForm.modal('openModal');
             });
-        } 
+        }
 
     });
 

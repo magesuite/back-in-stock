@@ -25,11 +25,11 @@ $viewModel = $block->getViewModel();
                 <label class="label cs-product-stock-subscription__label" for="email"><?= /* @noEscape */ $block->getEmailLabel() ?></label>
                 <input type="hidden" name="product_id" id="product_id" value="<?= /* @noEscape */ $viewModel->getProductId();?>"/>
                 <div class="cs-product-stock-subscription__input-wrapper">
-                    <input class="input-text cs-product-stock-subscription__input" 
-                           data-validate="{required:true, 'validate-email':true}" 
+                    <input class="input-text cs-product-stock-subscription__input"
+                           data-validate="{required:true, 'validate-email':true}"
                            title="<?= /* @noEscape */ $block->getEmailLabel() ?>"
-                           type="text" 
-                           name="email" 
+                           type="text"
+                           name="email"
                            id="email"
                            <?php if ($placeholder) : ?> placeholder="<?= /* @noEscape */ $placeholder ?>"<?php endif ?>
                     />
