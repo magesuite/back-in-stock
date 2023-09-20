@@ -16,3 +16,5 @@ bin/magento queue:consumers:start magesuite.consumer.db
 ```bash
 bin/magento queue:consumers:start magesuite.consumer.amqp
 ```
+
+documentation: https://creativestyle.atlassian.net/wiki/spaces/MGSDEV/pages/2312929281/BackInStock+optional
