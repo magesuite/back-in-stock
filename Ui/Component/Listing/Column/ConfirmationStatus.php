@@ -13,19 +13,19 @@ class ConfirmationStatus extends \Magento\Ui\Component\Listing\Columns\Column
     public const STATUS_PENDING = 'pending';
 
     /**
-     * @var \MageSuite\BackInStock\Helper\Subscription
+     * @var \MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus
      */
-    protected $subscriptionHelper;
+    protected $confirmationStatusSource;
 
     public function __construct(
         \Magento\Framework\View\Element\UiComponent\ContextInterface $context,
         \Magento\Framework\View\Element\UiComponentFactory $uiComponentFactory,
-        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
+        \MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus $confirmationStatusSource,
         array $components = [],
         array $data = []
     ) {
-        $this->subscriptionHelper = $subscriptionHelper;
         parent::__construct($context, $uiComponentFactory, $components, $data);
+        $this->confirmationStatusSource = $confirmationStatusSource;
     }
 
     /**
@@ -35,8 +35,7 @@ class ConfirmationStatus extends \Magento\Ui\Component\Listing\Columns\Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                $status = $this->getConfirmationStatus($item);
-                $columnContent = sprintf('<span class="%s">%s</span>', $this->getStatusClass($status), $this->getReadableStatus($status));
+                $columnContent = sprintf('<span class="%s">%s</span>', $this->getStatusClass($item['confirmation_status']), $this->getReadableStatus($item['confirmation_status']));
                 $item['confirmation_status'] = $columnContent;
             }
         }
@@ -45,38 +44,14 @@ class ConfirmationStatus extends \Magento\Ui\Component\Listing\Columns\Column
     }
 
     /**
-     * @param array $subscriptionItem
-     * @return string
-     */
-    public function getConfirmationStatus(array $subscriptionItem): string
-    {
-        if ($subscriptionItem['customer_confirmed'] && !$subscriptionItem['customer_unsubscribed']) {
-            return self::STATUS_CONFIRMED;
-        }
-        if ($subscriptionItem['customer_unsubscribed']) {
-            return self::STATUS_UNSUBSCRIBED;
-        }
-        if ($this->subscriptionHelper->isSubscriptionRejected($subscriptionItem['customer_confirmed'], $subscriptionItem['customer_unsubscribed'], $subscriptionItem['add_date'])) {
-            return self::STATUS_REJECTED;
-        }
-
-        return self::STATUS_PENDING;
-    }
-
-    /**
      * @param string $status
      * @return string
      */
     public function getReadableStatus(string $status): string
     {
-        $statuses = [
-            self::STATUS_CONFIRMED => __('Confirmed'),
-            self::STATUS_REJECTED => __('Rejected'),
-            self::STATUS_UNSUBSCRIBED => __('Unsubscribed'),
-            self::STATUS_PENDING => __('Pending')
-        ];
+        $statuses = $this->confirmationStatusSource->getStatuses();
 
-        return $statuses[$status];
+        return $statuses[$status] ?? $statuses[\MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus::STATUS_PENDING];
     }
 
     /**
@@ -86,12 +61,12 @@ class ConfirmationStatus extends \Magento\Ui\Component\Listing\Columns\Column
     public function getStatusClass(string $status): string
     {
         $statusClasses = [
-            self::STATUS_CONFIRMED => 'grid-severity-notice',
-            self::STATUS_REJECTED => 'grid-severity-critical',
-            self::STATUS_UNSUBSCRIBED => 'grid-severity-critical',
-            self::STATUS_PENDING => 'grid-severity-minor'
+            \MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus::STATUS_CONFIRMED => 'grid-severity-notice',
+            \MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus::STATUS_REJECTED => 'grid-severity-critical',
+            \MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus::STATUS_UNSUBSCRIBED => 'grid-severity-critical',
+            \MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus::STATUS_PENDING => 'grid-severity-minor'
         ];
 
-        return $statusClasses[$status];
+        return $statusClasses[$status] ?? 'grid-severity-minor';
     }
 }

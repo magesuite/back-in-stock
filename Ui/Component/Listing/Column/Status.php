@@ -12,12 +12,7 @@ class Status extends \Magento\Ui\Component\Listing\Columns\Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                if (empty($item['send_notification_status'])) {
-                    $item['status'] = __('Not sent');
-                    continue;
-                }
-
-                $item['status'] = $this->formatSendNotificationStatus($item['send_notification_status']);
+                $item['status'] = $this->formatSendNotificationStatus($item['status']);
             }
         }
 

@@ -77,8 +77,9 @@
                 <label translate="true">Channel</label>
             </settings>
         </column>
-        <column name="product_name" class="MageSuite\BackInStock\Ui\Component\Listing\Column\ProductName" sortOrder="40">
+        <column name="product_name" sortOrder="40">
             <settings>
+                <filter>text</filter>
                 <label translate="true">Product</label>
             </settings>
         </column>
@@ -91,11 +92,15 @@
         </column>
         <column name="status" class="MageSuite\BackInStock\Ui\Component\Listing\Column\Status" sortOrder="60">
             <settings>
+                <filter>text</filter>
                 <label translate="true">Status</label>
             </settings>
         </column>
         <column name="confirmation_status" class="MageSuite\BackInStock\Ui\Component\Listing\Column\ConfirmationStatus" sortOrder="70">
             <settings>
+                <filter>select</filter>
+                <options class="MageSuite\BackInStock\Model\Source\Subscriptions\ConfirmationStatus"/>
+                <dataType>select</dataType>
                 <label translate="true">Confirmation Status</label>
                 <bodyTmpl>ui/grid/cells/html</bodyTmpl>
             </settings>
