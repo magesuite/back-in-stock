@@ -24,7 +24,7 @@ class GetDisabledProductSkus
             return $this->disabledProductSkus;
         }
 
-        $linkField = $this->metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)->getLinkField();;
+        $linkField = $this->metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)->getLinkField();
 
         $select = $this->connection
             ->select()

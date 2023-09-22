@@ -85,6 +85,13 @@
                     <overview>Deprecataed jQuery handler</overview>
                 </entry>
             </tag>
+            <tag version="1.12.2" date="2023-09-22">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fixed infinite loading when changing the sort option on confirmation_status, product_name, status columns and added filters to those columns.</overview>
+                    <ticket_id>IPET-2194</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
