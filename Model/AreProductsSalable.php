@@ -51,8 +51,9 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
         $stockQty = $stockData->getStockQtys()[$sku][$stockId] ?? 0;
         $reservationQty = $stockData->getReservations()[$sku][$stockId] ?? 0;
         $minimumQty = $stockData->getMinimumQtys()[$sku] ?? 0;
+        $outOfStockThreshold = $stockData->getOutOfStockThreshold()[$sku] ?? 0;
 
-        return $stockQty + $reservationQty - $minimumQty;
+        return $stockQty + $reservationQty - $minimumQty - $outOfStockThreshold;
     }
 
     /**

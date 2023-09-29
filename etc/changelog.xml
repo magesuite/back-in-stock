@@ -92,6 +92,13 @@
                     <ticket_id>IPET-2194</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.12.3" date="2023-09-29">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fixed the product salable qty retrieval by adding Out-of-Stock Threshold to calculation</overview>
+                    <ticket_id>IPET-1907</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

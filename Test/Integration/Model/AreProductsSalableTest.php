@@ -68,11 +68,13 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
         $stockQtys[self::PRODUCT_SKU][self::STOCK_ID] = $stockInfo['new_qty'];
         $reservation[self::PRODUCT_SKU][self::STOCK_ID] = $stockInfo['reservation_qty'];
         $minimumQtys[self::PRODUCT_SKU] = $stockInfo['minimum_qty'];
+        $outOfStockThreshold[self::PRODUCT_SKU] = $stockInfo['stock_threshold'];
 
         return new \Magento\Framework\DataObject([
             'stock_qtys' => $stockQtys,
             'reservations' => $reservation,
-            'minimum_qtys' => $minimumQtys
+            'minimum_qtys' => $minimumQtys,
+            'out_of_stock_threshold' => $outOfStockThreshold,
         ]);
     }
 
@@ -82,30 +84,37 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
         $inStock = \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_IN_STOCK;
 
         return [
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 5, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 1], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 1], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 1], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 1], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 1], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => -1, 'minimum_qty' => 1], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => -1, 'minimum_qty' => 1], ['is_salable' => true, 'was_salable' => true]],
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 4, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 4, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2], ['is_salable' => true, 'was_salable' => true]]
+            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 5, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 3, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 3, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => true]],
+            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 3, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 3, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 4, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 4, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => true]],
+            [['old_qty' => 0, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 2], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 2], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 2], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 0, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 2], ['is_salable' => true, 'was_salable' => false]],
+            [['old_qty' => 4, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 2], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 1], ['is_salable' => false, 'was_salable' => false]],
+            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 1], ['is_salable' => true, 'was_salable' => false]],
         ];
     }
 }
