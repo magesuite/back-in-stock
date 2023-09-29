@@ -14,12 +14,19 @@ class Stock
      */
     protected $stockIndexTableNameResolver;
 
+    /**
+     * @var \Magento\CatalogInventory\Api\StockConfigurationInterface
+     */
+    protected $stockConfiguration;
+
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Magento\InventoryIndexer\Model\StockIndexTableNameResolverInterface $stockIndexTableNameResolver
+        \Magento\InventoryIndexer\Model\StockIndexTableNameResolverInterface $stockIndexTableNameResolver,
+        \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration
     ) {
         $this->connection = $resourceConnection->getConnection();
         $this->stockIndexTableNameResolver = $stockIndexTableNameResolver;
+        $this->stockConfiguration = $stockConfiguration;
     }
 
     public function getStockIdSourceCodeMap()
@@ -44,7 +51,8 @@ class Stock
         return new \Magento\Framework\DataObject([
             'stock_qtys' => $this->getStockQtys($skus),
             'reservations' => $this->getReservations($skus),
-            'minimum_qtys' => $this->getMinimumQtys($skus)
+            'minimum_qtys' => $this->getMinimumQtys($skus),
+            'out_of_stock_threshold' => $this->getOutOfStockThreshold($skus),
         ]);
     }
 
@@ -130,6 +138,26 @@ class Stock
             ->from(['stock_item' => $this->connection->getTableName('cataloginventory_stock_item')], ['e.sku', 'stock_item.min_sale_qty'])
             ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 'stock_item.product_id = e.entity_id')
             ->where('e.sku IN (?)', $skus);
+
+        return $this->connection->fetchPairs($query);
+    }
+
+    protected function getOutOfStockThreshold($skus)
+    {
+        $configStockThreshold = $this->stockConfiguration->getMinQty();
+        $query = $this->connection
+            ->select()
+            ->from(
+                ['stock_item' => $this->connection->getTableName('cataloginventory_stock_item')],
+                [
+                    'e.sku',
+                    'stock_threshold' => new \Zend_Db_Expr(sprintf("IF (`stock_item`.`use_config_min_qty` = 1, %s, `stock_item`.`min_qty`)", $configStockThreshold)),
+                ]
+            )->joinLeft(
+                ['e' => $this->connection->getTableName('catalog_product_entity')],
+                'stock_item.product_id = e.entity_id',
+                []
+            )->where('e.sku IN (?)', $skus);
 
         return $this->connection->fetchPairs($query);
     }
