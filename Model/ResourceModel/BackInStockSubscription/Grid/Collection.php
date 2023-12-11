@@ -9,11 +9,14 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
      */
     protected $aggregations;
 
+    protected \Magento\Framework\EntityManager\MetadataPool $metadataPool;
+
     /**
      * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
+     * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
      * @param mixed|null $mainTable
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $eventPrefix
      * @param mixed $eventObject
@@ -29,6 +32,7 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         $mainTable,
         $eventPrefix,
         $eventObject,
@@ -45,6 +49,8 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
             $connection,
             $resource
         );
+
+        $this->metadataPool = $metadataPool;
         $this->_eventPrefix = $eventPrefix;
         $this->_eventObject = $eventObject;
         $this->_init($model, $resourceModel);
@@ -137,10 +143,12 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
 
         $attributeId = $this->getConnection()->fetchOne($attributeIdSelect);
 
+        $linkField = $this->metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)->getLinkField();
+
         $this->getSelect()
             ->joinLeft(
                 ['cpe' => $this->getTable('catalog_product_entity_varchar')],
-                'main_table.product_id = cpe.entity_id',
+                sprintf('main_table.product_id = cpe.%s', $linkField),
                 ['product_name' => 'cpe.value']
             )->where('cpe.attribute_id = ? and cpe.store_id = 0', $attributeId);
     }
