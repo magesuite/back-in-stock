@@ -148,7 +148,7 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
         $this->getSelect()
             ->joinLeft(
                 ['cpe' => $this->getTable('catalog_product_entity_varchar')],
-                'main_table.product_id = cpe.' . $linkField,
+                sprintf('main_table.product_id = cpe.%s', $linkField),
                 ['product_name' => 'cpe.value']
             )->where('cpe.attribute_id = ? and cpe.store_id = 0', $attributeId);
     }
