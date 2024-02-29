@@ -99,6 +99,13 @@
                     <ticket_id>IPET-1907</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.12.7" date="2024-02-29">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Added missing description on back in stock variant modal notification on configurable product from wishlist product edit</overview>
+                    <ticket_id>HAAR-4011</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
