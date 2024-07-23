@@ -85,30 +85,34 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], f
          */
         _getFormData: function (notificationChannel) {
             var formData = new FormData(this.$addToCartForm[0]),
-                $selectedOutOfStockSwatch =
+                $selectedOutOfStockSwatches =
                     this.$addToCartForm.find('.bis-selected');
 
-            if ($selectedOutOfStockSwatch.length) {
-                var optionId = $selectedOutOfStockSwatch.data('option-id'),
-                    attributeId = $selectedOutOfStockSwatch
-                        .parents('.swatch-attribute')
-                        .first()
-                        .data('attribute-id');
+            if ($selectedOutOfStockSwatches.length) {
+                $selectedOutOfStockSwatches.each((index, selectedOutOfStockSwatch) => {
+                    const $selectedOutOfStockSwatch = $(selectedOutOfStockSwatch);
 
-                if (
-                    formData.get('super_attribute[' + attributeId + ']') !==
-                    null
-                ) {
-                    formData.set(
-                        'super_attribute[' + attributeId + ']',
-                        optionId
-                    );
-                } else {
-                    formData.append(
-                        'super_attribute[' + attributeId + ']',
-                        optionId
-                    );
-                }
+                    var optionId = $selectedOutOfStockSwatch.data('option-id'),
+                        attributeId = $selectedOutOfStockSwatch
+                            .parents('.swatch-attribute')
+                            .first()
+                            .data('attribute-id');
+
+                    if (
+                        formData.get('super_attribute[' + attributeId + ']') !==
+                        null
+                    ) {
+                        formData.set(
+                            'super_attribute[' + attributeId + ']',
+                            optionId
+                        );
+                    } else {
+                        formData.append(
+                            'super_attribute[' + attributeId + ']',
+                            optionId
+                        );
+                    }
+                });
             }
 
             // If no argument is passed, set default
