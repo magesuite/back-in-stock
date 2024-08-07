@@ -113,6 +113,13 @@
                     <ticket_id>LOWA-376</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.12.10" date="2024-08-07">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Disable submit button until script loads</overview>
+                    <ticket_id>HAAR-4231</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

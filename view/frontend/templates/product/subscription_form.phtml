@@ -34,7 +34,7 @@ $viewModel = $block->getViewModel();
                            <?php if ($placeholder) : ?> placeholder="<?= /* @noEscape */ $placeholder ?>"<?php endif ?>
                     />
                 </div>
-                <button type="submit" class="action submit primary cs-product-stock-subscription__submit">
+                <button type="submit" class="action submit primary cs-product-stock-subscription__submit" disabled>
                     <span class="cs-product-stock-subscription__submit-label"><?= /* @noEscape */ $block->getSubmitLabel() ?></span>
                     <?= $block->getChildHtml('product.backinstock.subscription.icon'); ?>
                 </button>

@@ -47,6 +47,8 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], f
                 },
             });
 
+            this.$submitButton.prop('disabled', false);
+
             // Catch potential push notification event to trigger form submission
             $('body').on('push:subscribed',
                 function () {
