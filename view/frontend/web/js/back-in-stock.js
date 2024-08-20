@@ -1,4 +1,4 @@
-define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], function ($, customerData) {
+define(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation', 'mage/mage', 'loader'], function ($, customerData) {
     'use strict';
 
     /**
@@ -19,7 +19,7 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], f
         },
 
         _create: function () {
-            var _self = this;
+            const $form = $(this.element);
 
             this.$submitButton = this.element.find('button[type="submit"]');
             this.$responseElWrapper = $(
@@ -38,16 +38,13 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], f
                 });
             }
 
-            // Set submit handler for the form. Validation is initialized directly in template.
-            this.element.mage('validation', {
-                errorClass: 'mage-error',
-                submitHandler: function (form, e) {
-                    e.preventDefault();
-                    _self._submitHandler();
-                },
+            $form.on('submit', (e) => {
+                e.preventDefault();
+            
+                if ($form.validation() && $form.validation('isValid')) {
+                    this._submitHandler();
+                }
             });
-
-            this.$submitButton.prop('disabled', false);
 
             // Catch potential push notification event to trigger form submission
             $('body').on('push:subscribed',
@@ -63,6 +60,8 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/mage', 'loader'], f
             if (this.options.fillEmailAddressForLoggedIn) {
                 this._prefillCustomerEmail();
             }
+
+            this.$submitButton.prop('disabled', false);
         },
 
         /**
