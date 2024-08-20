@@ -120,6 +120,13 @@
                     <ticket_id>HAAR-4231</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.12.11" date="2024-08-16">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Improve validation on submit</overview>
+                    <ticket_id>HAAR-4231</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
