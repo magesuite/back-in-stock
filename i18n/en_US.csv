@@ -52,6 +52,7 @@ Action,Action
 "Out of Stock","Out of Stock"
 Actions,Actions
 Delete,Delete
+Subscribe,Subscribe
 Unsubscribe,Unsubscribe
 "You have no back in stock subscriptions yet.","You have no back in stock subscriptions yet."
 "%store_name - product back in stock notification","%store_name - product back in stock notification"
