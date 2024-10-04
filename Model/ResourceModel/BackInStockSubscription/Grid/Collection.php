@@ -116,6 +116,13 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
         return $this;
     }
 
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+
+        $this->addFilterToMap('product_name', 'cpe.value');
+    }
+
     protected function joinStatusColumn()
     {
         $columnExpr = new \Zend_Db_Expr('IF(send_notification_status != "", send_notification_status, "Not send")');
