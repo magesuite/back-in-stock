@@ -29,25 +29,16 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $params = $this->_request->getParams();
-
         $resultRedirect = $this->resultRedirectFactory->create();
         $url = $this->_redirect->getRefererUrl();
         $resultRedirect->setPath($url);
 
         try {
-            $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
+            $subscritpionId = (int)$this->_request->getParam('id');
+            $subscription = $this->backInStockSubscriptionRepository->getById($subscritpionId);
 
-            if (!$this->validateToken($subscription, $params)) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
-            }
-
-            if ($subscription->isCustomerUnsubscribed()) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('You have been already unsubscribed from back in stock notification.'));
-            }
-
-            if ($subscription->isRemoved()) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('This subscription does not exist.'));
+            if (!$this->validateSubscription($subscription)) {
+                return $resultRedirect;
             }
 
             $subscription->setCustomerUnsubscribed(true);
@@ -61,13 +52,35 @@ class Unsubscribe extends \Magento\Framework\App\Action\Action
         return $resultRedirect;
     }
 
-    public function validateToken($subscription, $params)
+    protected function validateSubscription(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription): bool
+    {
+        try {
+            if (!$this->validateToken($subscription)) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('Something went wrong while processing unsubscribe. Please contact store owner.'));
+            }
+
+            if ($subscription->isCustomerUnsubscribed()) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('You have been already unsubscribed from back in stock notification.'));
+            }
+
+            if ($subscription->isRemoved()) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('This subscription does not exist.'));
+            }
+
+            return true;
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+            return false;
+        }
+    }
+
+    public function validateToken(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription): bool
     {
         if ($subscription->getNotificationChannel() != self::NOTIFICATION_CHANNEL_EMAIL) {
             return true;
         }
 
-        $token = $params['token'] ?? null;
+        $token = $this->_request->getParam('token');
 
         if (!$token || $subscription->getToken() !== $token) {
             return false;
