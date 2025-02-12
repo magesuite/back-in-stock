@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Model;
 
 class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
 {
     const PRODUCT_SKU = 'simple';
     const STOCK_ID = 1;
+    const DEFAULT_SOURCE = 'default';
 
     /**
      * @var \Magento\TestFramework\ObjectManager
@@ -20,19 +23,19 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject
      */
-    protected $resourceModelStub;
+    protected $getSalableStatusesStub;
 
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
-        $this->resourceModelStub = $this->getMockBuilder(\MageSuite\BackInStock\Model\ResourceModel\Stock::class)
+        $this->getSalableStatusesStub = $this->getMockBuilder(\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->areProductsSalable = $this->objectManager->create(
             \MageSuite\BackInStock\Model\AreProductsSalable::class,
-            ['resourceModel' => $this->resourceModelStub]
+            ['getSalableStatuses' => $this->getSalableStatusesStub]
         );
     }
 
@@ -41,17 +44,25 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
      * @param array $expectedData
      * @dataProvider dataProvider
      */
-    public function testItReturnsCorrectInformationData($stockInfo, $expectedData)
+    public function testItReturnsCorrectInformationData(array $stockInfo, array $expectedData)
     {
-        $stockData = $this->prepareStockData($stockInfo);
-        $this->resourceModelStub->method('getStockDataForSkus')->willReturn($stockData);
+        $statuses = [
+            self::PRODUCT_SKU => [
+                self::STOCK_ID => $stockInfo['salable_status_after']
+            ]
+        ];
+
+        $this->getSalableStatusesStub->method('execute')->willReturn($statuses);
 
         $backInStockItems = [
             self::PRODUCT_SKU => [
-                self::STOCK_ID => [
-                    'old_qty' => $stockInfo['old_qty'],
-                    'new_qty' => $stockInfo['new_qty'],
-                    'old_status' => $stockInfo['old_status']
+                'salable_status_before' => [
+                    self::STOCK_ID => $stockInfo['salable_status_before']
+                ],
+                'source_items' => [
+                    self::DEFAULT_SOURCE => [
+                        'item_id' => $stockInfo['item_id'],
+                    ]
                 ]
             ]
         ];
@@ -63,58 +74,13 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedData['was_salable'], $isProductSalable->wasSalable());
     }
 
-    protected function prepareStockData($stockInfo)
+    public function dataProvider(): array
     {
-        $stockQtys[self::PRODUCT_SKU][self::STOCK_ID] = $stockInfo['new_qty'];
-        $reservation[self::PRODUCT_SKU][self::STOCK_ID] = $stockInfo['reservation_qty'];
-        $minimumQtys[self::PRODUCT_SKU] = $stockInfo['minimum_qty'];
-        $outOfStockThreshold[self::PRODUCT_SKU] = $stockInfo['stock_threshold'];
-
-        return new \Magento\Framework\DataObject([
-            'stock_qtys' => $stockQtys,
-            'reservations' => $reservation,
-            'minimum_qtys' => $minimumQtys,
-            'out_of_stock_threshold' => $outOfStockThreshold,
-        ]);
-    }
-
-    public function dataProvider()
-    {
-        $outOfStock = \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK;
-        $inStock = \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_IN_STOCK;
-
         return [
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 5, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => true]],
-            [['old_qty' => 0, 'new_qty' => 1, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 3, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 4, 'new_qty' => 3, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 4, 'new_qty' => 4, 'old_status' => $inStock, 'reservation_qty' => -2, 'minimum_qty' => 2, 'stock_threshold' => 0], ['is_salable' => true, 'was_salable' => true]],
-            [['old_qty' => 0, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 0, 'new_qty' => 4, 'old_status' => $outOfStock, 'reservation_qty' => 0, 'minimum_qty' => 2, 'stock_threshold' => 2], ['is_salable' => true, 'was_salable' => false]],
-            [['old_qty' => 4, 'new_qty' => 2, 'old_status' => $inStock, 'reservation_qty' => 0, 'minimum_qty' => 1, 'stock_threshold' => 2], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 2, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 1], ['is_salable' => false, 'was_salable' => false]],
-            [['old_qty' => 2, 'new_qty' => 3, 'old_status' => $outOfStock, 'reservation_qty' => -1, 'minimum_qty' => 1, 'stock_threshold' => 1], ['is_salable' => true, 'was_salable' => false]],
+            [['item_id' => 123, 'salable_status_before' => false, 'salable_status_after' => true], ['is_salable' => true, 'was_salable' => false]],
+            [['item_id' => 123, 'salable_status_before' => false, 'salable_status_after' => false], ['is_salable' => false, 'was_salable' => false]],
+            [['item_id' => 123, 'salable_status_before' => true, 'salable_status_after' => false], ['is_salable' => false, 'was_salable' => true]],
+            [['item_id' => 123, 'salable_status_before' => true, 'salable_status_after' => true], ['is_salable' => true, 'was_salable' => true]],
         ];
     }
 }
