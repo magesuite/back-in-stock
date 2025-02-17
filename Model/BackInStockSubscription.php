@@ -310,4 +310,14 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
     {
         return $this->subscriptionHelper->isConfirmationDeadlinePassed($this->getAddDate());
     }
+
+    public function getSendCountDaily(): int
+    {
+        return (int)$this->getData(self::SEND_COUNT_DAILY);
+    }
+
+    public function setSendCountDaily(int $sendCountDaily): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
+        return $this->setData(self::SEND_COUNT_DAILY, $sendCountDaily);
+    }
 }

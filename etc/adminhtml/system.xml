@@ -69,6 +69,17 @@
                     <comment>This setting determines how often emails with notifications will be sent. Please put cron schedule expression (Ex. * * * * *). By default emails are sent every minute.</comment>
                 </field>
             </group>
+            <group id="limits" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Notification Limits Configuration</label>
+                <field id="min_time" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Minimum time before next notification is sent</label>
+                    <comment>Specify minimum time (in seconds) between back in stock notifiactions for the same subscriptions. If empty, no minimum time is checked.</comment>
+                </field>
+                <field id="daily_limit" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Daily Limit (per subscription)</label>
+                    <comment>Specify limit of email notifications per subscription. If empty, no limit will be applied.</comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>

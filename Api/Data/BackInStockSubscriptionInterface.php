@@ -13,6 +13,7 @@ interface BackInStockSubscriptionInterface
     public const ADD_DATE = 'add_date';
     public const SEND_DATE = 'send_date';
     public const SEND_COUNT = 'send_count';
+    public const SEND_COUNT_DAILY = 'send_count_daily';
     public const SEND_NOTIFICATION_STATUS = 'send_notification_status';
     public const CUSTOMER_CONFIRMED = 'customer_confirmed';
     public const CUSTOMER_UNSUBSCRIBED = 'customer_unsubscribed';
@@ -183,4 +184,8 @@ interface BackInStockSubscriptionInterface
      * @param bool $isRemoved
      */
     public function setIsRemoved(bool $isRemoved);
+
+    public function getSendCountDaily(): int;
+
+    public function setSendCountDaily(int $sendCountDaily): \MageSuite\BackInStock\Model\BackInStockSubscription;
 }

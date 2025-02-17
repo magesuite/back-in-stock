@@ -187,6 +187,101 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
+     * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoConfigFixture current_store back_in_stock/limits/min_time 0
+     */
+    public function testNotificationSendWithoutMinTimeLimit()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        for ($i = 0; $i < 2; $i++) {
+            $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION, 'test message');
+            $this->notificationQueueSender->send(false);
+        }
+
+        foreach ($this->subscriptionCollection as $subscription) {
+            $this->assertNotNull($subscription->getSendNotificationStatus());
+            $this->assertEquals(2, $subscription->getSendCount());
+        }
+    }
+
+    /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
+     * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoConfigFixture current_store back_in_stock/limits/min_time 3600
+     */
+    public function testNotificationSendWithMinTimeLimit()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        for ($i = 0; $i < 2; $i++) {
+            $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION, 'test message');
+            $this->notificationQueueSender->send(false);
+        }
+
+        foreach ($this->subscriptionCollection as $subscription) {
+            $this->assertNotNull($subscription->getSendNotificationStatus());
+            $this->assertEquals(1, $subscription->getSendCount());
+        }
+    }
+
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
+     * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoConfigFixture current_store back_in_stock/limits/daily_limit 0
+     */
+    public function testNotificationSendWithoutDailyLimitCount()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        for ($i = 0; $i < 3; $i++) {
+            $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION, 'test message');
+            $this->notificationQueueSender->send(false);
+        }
+
+        foreach ($this->subscriptionCollection as $subscription) {
+            $this->assertNotNull($subscription->getSendNotificationStatus());
+            $this->assertEquals(3, $subscription->getSendCount());
+            $this->assertEquals(3, $subscription->getSendCountDaily());
+        }
+    }
+
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
+     * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoConfigFixture current_store back_in_stock/limits/daily_limit 2
+     */
+    public function testNotificationSendWithDailyLimitCount()
+    {
+        /** @var \Magento\Catalog\Model\Product $product */
+        $product = $this->productRepository->get('simple');
+
+        for ($i = 0; $i < 3; $i++) {
+            $this->notificationQueueCreator->addNotificationsToQueue($product->getId(), 1, \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION, 'test message');
+            $this->notificationQueueSender->send(false);
+        }
+
+        foreach ($this->subscriptionCollection as $subscription) {
+            $this->assertNotNull($subscription->getSendNotificationStatus());
+            $this->assertEquals(2, $subscription->getSendCount());
+            $this->assertEquals(2, $subscription->getSendCountDaily());
+        }
+    }
+
     public static function loadSubscriptions()
     {
         include __DIR__ . '/../../_files/subscriptions.php';
