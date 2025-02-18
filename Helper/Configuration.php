@@ -24,7 +24,7 @@ class Configuration
     {
     }
 
-    public function getConfigValue($path, $storeId = null)
+    public function getConfigValue($path, $storeId = \Magento\Store\Model\Store::DEFAULT_STORE_ID)
     {
         return $this->scopeConfig->getValue(
             $path,

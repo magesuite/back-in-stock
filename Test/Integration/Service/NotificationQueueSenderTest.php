@@ -192,7 +192,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
-     * @magentoConfigFixture current_store back_in_stock/limits/min_time 0
+     * @magentoConfigFixture admin_store back_in_stock/limits/min_time 0
      */
     public function testNotificationSendWithoutMinTimeLimit()
     {
@@ -216,7 +216,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
-     * @magentoConfigFixture current_store back_in_stock/limits/min_time 3600
+     * @magentoConfigFixture admin_store back_in_stock/limits/min_time 3600
      */
     public function testNotificationSendWithMinTimeLimit()
     {
@@ -239,7 +239,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
-     * @magentoConfigFixture current_store back_in_stock/limits/daily_limit 0
+     * @magentoConfigFixture admin_store back_in_stock/limits/daily_limit 0
      */
     public function testNotificationSendWithoutDailyLimitCount()
     {
@@ -263,7 +263,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscription_single_simple.php
      * @magentoDataFixture loadSubscriptionsCustomerConfirmed
-     * @magentoConfigFixture current_store back_in_stock/limits/daily_limit 2
+     * @magentoConfigFixture admin_store back_in_stock/limits/daily_limit 2
      */
     public function testNotificationSendWithDailyLimitCount()
     {
