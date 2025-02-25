@@ -15,6 +15,7 @@
         <column xsi:type="varchar" name="token" nullable="false" length="255" comment="Token" />
         <column xsi:type="varchar" name="notification_channel" nullable="false" length="255" default="email" comment="Notification channel" />
         <column xsi:type="boolean" name="is_removed" nullable="false" default="0" comment="Is subscription removed"/>
+        <column xsi:type="smallint" name="send_count_daily" unsigned="true" nullable="false" identity="false" default="0" comment="Daily Send Count"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>

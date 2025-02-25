@@ -16,7 +16,8 @@
             "token": true,
             "notification_channel": true,
             "customer_unsubscribed": true,
-            "is_removed": true
+            "is_removed": true,
+            "send_count_daily": true
         },
         "index": {
             "BACK_IN_STOCK_SUBSCRIPTION_ENTITY_PRODUCT_ID": true,
