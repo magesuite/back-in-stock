@@ -30,13 +30,11 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
 
     public function execute($items)
     {
-        $groupedItems = $this->groupItemsByStockId($items);
-
-        if (empty($groupedItems)) {
+        if (empty($items)) {
             return;
         }
 
-        $notificationToInsert = $this->getNotificationToInsert($groupedItems);
+        $notificationToInsert = $this->getNotificationToInsert($items);
 
         if (empty($notificationToInsert)) {
             return;
@@ -112,7 +110,7 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
         $sourceCodeStockIdMap = $this->stockInfo->getSourceCodeStockIdMap();
 
         foreach ($items as $sku => $item) {
-            foreach ($item as $sourceCode => $itemInfo) {
+            foreach ($item['source_items'] as $sourceCode => $itemInfo) {
                 $stockIds = $sourceCodeStockIdMap[$sourceCode] ?? null;
 
                 if (!$stockIds) {
@@ -120,14 +118,14 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
                 }
 
                 foreach ($stockIds as $stockId) {
-                    $oldQty = $preparedItems[$sku][$stockId]['old_qty'] ?? 0;
-                    $newQty = $preparedItems[$sku][$stockId]['new_qty'] ?? 0;
-                    $oldStatus = $preparedItems[$sku][$stockId]['old_status'] ?? true;
+                    $salableStatusBefore = $items['salable_status_before'][$sku][$stockId] ?? null;
+
+                    if (!$salableStatusBefore) {
+                        continue;
+                    }
 
                     $preparedItems[$sku][$stockId] = [
-                        'old_qty' => $oldQty + $itemInfo['old_qty'],
-                        'new_qty' => $newQty + $itemInfo['new_qty'],
-                        'old_status' => !$oldStatus ? $oldStatus : $itemInfo['old_status']
+                        'salable_status_before' => $salableStatusBefore,
                     ];
                 }
             }

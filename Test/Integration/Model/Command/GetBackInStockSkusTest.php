@@ -5,6 +5,7 @@ namespace MageSuite\BackInStock\Test\Integration\Model\Command;
 class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
 {
     const SOURCE_CODE_DEFAULT = 'default';
+    const STOCK_DEFAULT_ID = 1;
 
     /**
      * @var \Magento\TestFramework\ObjectManager
@@ -21,6 +22,11 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
      */
     protected $getBackInStockItems;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $getSalableStatusesStub;
+
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
@@ -28,7 +34,13 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->sourceItemFactory = $objectManager->get(\Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory::class);
-        $this->getBackInStockItems = $objectManager->get(\MageSuite\BackInStock\Model\Command\GetBackInStockItems::class);
+        $this->getSalableStatusesStub = $this->getMockBuilder(\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->getBackInStockItems = $this->objectManager->create(
+            \MageSuite\BackInStock\Model\Command\GetBackInStockItems::class,
+            ['getSalableStatuses' => $this->getSalableStatusesStub]
+        );
     }
 
     /**
@@ -54,15 +66,24 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
         $productSku = 'product_out_of_stock';
         $newQty = 100;
 
+        $statuses = [
+            $productSku => [
+                self::STOCK_DEFAULT_ID => false
+            ]
+        ];
+
+        $this->getSalableStatusesStub->method('execute')->willReturn($statuses);
+
         $sourceItem = $this->prepareSourceItem($productSku, $newQty, \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_IN_STOCK);
         $items = $this->getBackInStockItems->execute([$sourceItem]);
 
         $this->assertNotEmpty($items);
         $this->assertArrayHasKey($productSku, $items);
-        $this->assertArrayHasKey(self::SOURCE_CODE_DEFAULT, $items[$productSku]);
-        $this->assertEquals(0.0000, $items[$productSku][self::SOURCE_CODE_DEFAULT]['old_qty']);
-        $this->assertEquals($newQty, $items[$productSku][self::SOURCE_CODE_DEFAULT]['new_qty']);
-        $this->assertEquals(\Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK, $items[$productSku][self::SOURCE_CODE_DEFAULT]['old_status']);
+        $this->assertArrayHasKey('source_items', $items[$productSku]);
+        $this->assertArrayHasKey(self::SOURCE_CODE_DEFAULT, $items[$productSku]['source_items']);
+        $this->assertEquals(0.0000, $items[$productSku]['source_items'][self::SOURCE_CODE_DEFAULT]['old_qty']);
+        $this->assertEquals($newQty, $items[$productSku]['source_items'][self::SOURCE_CODE_DEFAULT]['new_qty']);
+        $this->assertEquals(\Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK, $items[$productSku]['source_items'][self::SOURCE_CODE_DEFAULT]['old_status']);
     }
 
     protected function prepareSourceItem($productSku, $quantity, $status)
@@ -73,7 +94,8 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
                     \Magento\InventoryApi\Api\Data\SourceItemInterface::SOURCE_CODE => self::SOURCE_CODE_DEFAULT,
                     \Magento\InventoryApi\Api\Data\SourceItemInterface::SKU => $productSku,
                     \Magento\InventoryApi\Api\Data\SourceItemInterface::QUANTITY => $quantity,
-                    \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS => $status
+                    \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS => $status,
+                    'item_id' => 1001
                 ]
             ]
         );

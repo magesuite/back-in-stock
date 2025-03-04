@@ -5,6 +5,7 @@ namespace MageSuite\BackInStock\Test\Integration\Model\Queue\Handler;
 class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
 {
     const SOURCE_CODE_DEFAULT = 'default';
+    const STOCK_DEFAULT_ID = 1;
 
     protected ?\Magento\TestFramework\ObjectManager $objectManager;
 
@@ -12,7 +13,9 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
 
     protected ?\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection $notificationCollection;
 
-    protected ?\MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue $addNotificationToQueue;
+    protected ?\MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue $addNotificationToQueue = null;
+    protected ?\MageSuite\BackInStock\Model\AreProductsSalable $areProductsSalable = null;
+    protected ?\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses $getSalableStatusesStub = null;
 
     public function setUp(): void
     {
@@ -21,7 +24,20 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
         $this->productRepository = $this->objectManager->create(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->notificationCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection::class);
 
-        $this->addNotificationToQueue = $this->objectManager->create(\MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue::class);
+
+        $this->getSalableStatusesStub = $this->getMockBuilder(\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->areProductsSalable = $this->objectManager->create(
+            \MageSuite\BackInStock\Model\AreProductsSalable::class,
+            ['getSalableStatuses' => $this->getSalableStatusesStub]
+        );
+
+        $this->addNotificationToQueue = $this->objectManager->create(
+            \MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue::class,
+            ['areProductsSalable' => $this->areProductsSalable]
+        );
     }
 
     /**
@@ -34,18 +50,31 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
     public function testItCreateNotificationQueueCorrectly()
     {
         $productSku = 'simple';
-
         $item = [
             $productSku => [
-                self::SOURCE_CODE_DEFAULT => [
-                    'old_qty' => 0,
-                    'new_qty' => 10,
-                    'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK
+                'source_items' => [
+                    self::SOURCE_CODE_DEFAULT => [
+                        'item_id' => 10001,
+                        'old_qty' => 0,
+                        'new_qty' => 10,
+                        'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK
+                    ]
+                ],
+                'salable_status_before' => [
+                    self::STOCK_DEFAULT_ID => false
                 ]
             ]
         ];
 
         $this->assertEquals(0, $this->notificationCollection->getSize());
+
+        $statuses = [
+            $productSku => [
+                self::STOCK_DEFAULT_ID  => true
+            ]
+        ];
+
+        $this->getSalableStatusesStub->method('execute')->willReturn($statuses);
 
         $this->addNotificationToQueue->execute($item);
 
@@ -72,15 +101,29 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
 
         $item = [
             $productSku => [
-                self::SOURCE_CODE_DEFAULT => [
-                    'old_qty' => 0,
-                    'new_qty' => 10,
-                    'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK
+                'source_items' => [
+                    self::SOURCE_CODE_DEFAULT => [
+                        'item_id' => 10001,
+                        'old_qty' => 0,
+                        'new_qty' => 10,
+                        'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK
+                    ]
+                ],
+                'salable_status_before' => [
+                    self::STOCK_DEFAULT_ID => false
                 ]
             ]
         ];
 
         $this->assertEquals(0, $this->notificationCollection->getSize());
+
+        $statuses = [
+            $productSku => [
+                self::STOCK_DEFAULT_ID  => true
+            ]
+        ];
+
+        $this->getSalableStatusesStub->method('execute')->willReturn($statuses);
 
         $this->addNotificationToQueue->execute($item);
 
