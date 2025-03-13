@@ -8,16 +8,14 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
 {
     public function __construct(
         protected \MageSuite\BackInStock\Api\Data\IsProductSalableResultInterfaceFactory $isProductSalableResultFactory,
-        protected \Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses $getSalableStatuses
+        protected \MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses $getSalableStatuses
     ) {
     }
 
     public function execute(array $skus, array $backInStockItems): array
     {
         $result = [];
-
-        $sourceItemIds = $this->getSourceItemsIds($backInStockItems);
-        $salableStatusesAfter = $this->getSalableStatuses(array_values($sourceItemIds));
+        $salableStatusesAfter = $this->getSalableStatuses($skus);
 
         foreach ($backInStockItems as $sku => $backInStockItem) {
             $salableStatusBefore = $backInStockItem['salable_status_before'];
@@ -25,7 +23,7 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
                 $result[$sku][$stockId] = $this->isProductSalableResultFactory->create(
                     [
                         'wasSalable' => $wasSalable,
-                        'isSalable' => $salableStatusesAfter[$sku][$stockId],
+                        'isSalable' => $salableStatusesAfter[$sku][$stockId] ?? false,
                     ]
                 );
             }
@@ -34,21 +32,8 @@ class AreProductsSalable implements \MageSuite\BackInStock\Api\AreProductsSalabl
         return $result;
     }
 
-    protected function getSourceItemsIds(array $backInStockItems): array
+    protected function getSalableStatuses(array $skus): array
     {
-        $sourceItemIds = [];
-
-        foreach ($backInStockItems as $backInStockItem) {
-            foreach ($backInStockItem['source_items'] as $sourceItem) {
-                $sourceItemIds[$sourceItem['item_id']] = $sourceItem['item_id'];
-            }
-        }
-
-        return $sourceItemIds;
-    }
-
-    protected function getSalableStatuses(array $sourceItemIds): array
-    {
-        return $this->getSalableStatuses->execute($sourceItemIds);
+        return $this->getSalableStatuses->execute($skus);
     }
 }
