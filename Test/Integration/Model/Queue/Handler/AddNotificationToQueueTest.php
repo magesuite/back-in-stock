@@ -15,7 +15,7 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
 
     protected ?\MageSuite\BackInStock\Model\Queue\Handler\AddNotificationToQueue $addNotificationToQueue = null;
     protected ?\MageSuite\BackInStock\Model\AreProductsSalable $areProductsSalable = null;
-    protected ?\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses $getSalableStatusesStub = null;
+    protected ?\MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses $getSalableStatusesStub = null;
 
     public function setUp(): void
     {
@@ -25,7 +25,7 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
         $this->notificationCollection = $this->objectManager->create(\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection::class);
 
 
-        $this->getSalableStatusesStub = $this->getMockBuilder(\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses::class)
+        $this->getSalableStatusesStub = $this->getMockBuilder(\MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -54,7 +54,6 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
             $productSku => [
                 'source_items' => [
                     self::SOURCE_CODE_DEFAULT => [
-                        'item_id' => 10001,
                         'old_qty' => 0,
                         'new_qty' => 10,
                         'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK
@@ -103,7 +102,6 @@ class AddNotificationToQueueTest extends \PHPUnit\Framework\TestCase
             $productSku => [
                 'source_items' => [
                     self::SOURCE_CODE_DEFAULT => [
-                        'item_id' => 10001,
                         'old_qty' => 0,
                         'new_qty' => 10,
                         'old_status' => \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK

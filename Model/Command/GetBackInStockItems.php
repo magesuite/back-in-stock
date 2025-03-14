@@ -8,7 +8,7 @@ class GetBackInStockItems
 {
     public function __construct(
         protected \Magento\Framework\App\ResourceConnection $resourceConnection,
-        protected \Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses $getSalableStatuses
+        protected \MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses $getSalableStatuses
     ) {
     }
 
@@ -30,7 +30,6 @@ class GetBackInStockItems
     protected function getInStockSourceItemsData($sourceItems): \Magento\Framework\DataObject
     {
         $skus = [];
-        $itemIds = [];
         $sourceItemsMap = [];
 
         foreach ($sourceItems as $sourceItem) {
@@ -38,26 +37,24 @@ class GetBackInStockItems
                 continue;
             }
 
-            $skus[] = $sourceItem->getSku();
-            $itemIds[] = $sourceItem->getId();
+            $skus[$sourceItem->getSku()] = $sourceItem->getSku();
+
             $sourceItemsMap[$sourceItem->getSku()][$sourceItem->getSourceCode()] = [
                 'new_qty' => $sourceItem->getQuantity(),
-                'new_status' => $sourceItem->getStatus(),
-                'item_id' => $sourceItem->getId()
+                'new_status' => $sourceItem->getStatus()
             ];
         }
 
         return new \Magento\Framework\DataObject([
-            'skus' => $skus,
-            'item_ids' => $itemIds,
+            'skus' => array_values($skus),
             'source_items_map' => $sourceItemsMap
         ]);
     }
 
-    protected function collectBackInStockItems($inStockSourceItemsData): array
+    protected function collectBackInStockItems(\Magento\Framework\DataObject $inStockSourceItemsData): array
     {
         //returns array [sku][stockId] => salable_status
-        $salableStatusesBefore = $this->getSalableStatuses($inStockSourceItemsData->getItemIds());
+        $salableStatusesBefore = $this->getSalableStatuses($inStockSourceItemsData->getSkus());
 
         $currentSourceItems = $this->getCurrentSourceItems($inStockSourceItemsData->getSkus());
 
@@ -76,21 +73,19 @@ class GetBackInStockItems
                 'old_qty' => $currentSourceItem['quantity'],
                 'new_qty' => $updatedItem['new_qty'],
                 'old_status' => $currentSourceItem['status'],
-                'new_status' => $updatedItem['new_status'],
-                'item_id' => $updatedItem['item_id'],
+                'new_status' => $updatedItem['new_status']
             ];
 
             $result[$currentSourceItem['sku']] = [
                 'source_items' => $sourceItems[$currentSourceItem['sku']],
-                'salable_status_before' => $salableStatusesBefore[$currentSourceItem['sku']]
+                'salable_status_before' => $salableStatusesBefore[$currentSourceItem['sku']] ?? []
             ];
-
         }
 
         return $result;
     }
 
-    protected function getCurrentSourceItems($skus)
+    protected function getCurrentSourceItems(array $skus): array
     {
         $connection = $this->resourceConnection->getConnection();
 
@@ -102,7 +97,7 @@ class GetBackInStockItems
         return $connection->fetchAll($query);
     }
 
-    protected function getUpdatedSourceItem($currentSourceItem, $inStockSourceItemsData)
+    protected function getUpdatedSourceItem(array $currentSourceItem, \Magento\Framework\DataObject $inStockSourceItemsData)
     {
         $updatedItem = $inStockSourceItemsData->getSourceItemsMap()[$currentSourceItem['sku']][$currentSourceItem['source_code']] ?? null;
 
@@ -119,8 +114,8 @@ class GetBackInStockItems
         return $updatedItem;
     }
 
-    protected function getSalableStatuses(array $sourceItemIds): array
+    protected function getSalableStatuses(array $sourceItemSkus): array
     {
-        return $this->getSalableStatuses->execute($sourceItemIds);
+        return $this->getSalableStatuses->execute($sourceItemSkus);
     }
 }

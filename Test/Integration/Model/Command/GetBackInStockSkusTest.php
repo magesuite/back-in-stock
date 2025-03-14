@@ -34,7 +34,7 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->sourceItemFactory = $objectManager->get(\Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory::class);
-        $this->getSalableStatusesStub = $this->getMockBuilder(\Magento\InventoryIndexer\Indexer\SourceItem\GetSalableStatuses::class)
+        $this->getSalableStatusesStub = $this->getMockBuilder(\MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->getBackInStockItems = $this->objectManager->create(
@@ -94,8 +94,7 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
                     \Magento\InventoryApi\Api\Data\SourceItemInterface::SOURCE_CODE => self::SOURCE_CODE_DEFAULT,
                     \Magento\InventoryApi\Api\Data\SourceItemInterface::SKU => $productSku,
                     \Magento\InventoryApi\Api\Data\SourceItemInterface::QUANTITY => $quantity,
-                    \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS => $status,
-                    'item_id' => 1001
+                    \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS => $status
                 ]
             ]
         );
