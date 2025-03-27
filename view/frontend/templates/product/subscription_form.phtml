@@ -21,9 +21,9 @@ $viewModel = $block->getViewModel();
         <?= $block->getChildHtml('configurables.introduction') ?>
         <?= $block->getChildHtml('product.backinstock.subscription.hotspot.aboveemail') ?>
         <fieldset class="fieldset">
+            <input type="hidden" name="product_id" id="product_id" value="<?= /* @noEscape */ $viewModel->getProductId();?>"/>
             <div class="field cs-product-stock-subscription__field">
                 <label class="label cs-product-stock-subscription__label" for="email"><?= /* @noEscape */ $block->getEmailLabel() ?></label>
-                <input type="hidden" name="product_id" id="product_id" value="<?= /* @noEscape */ $viewModel->getProductId();?>"/>
                 <div class="cs-product-stock-subscription__input-wrapper">
                     <input class="input-text cs-product-stock-subscription__input"
                            data-validate="{required:true, 'validate-email':true}"
