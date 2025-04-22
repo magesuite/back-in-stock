@@ -14,15 +14,18 @@ class LimitationValidatorTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
+        $allowedMethodName = method_exists(\PHPUnit\Framework\MockObject\MockBuilder::class, 'onlyMethods')
+            ? 'onlyMethods'
+            : 'setMethods';
 
         $this->dateTimeMock = $this->getMockBuilder(\Magento\Framework\Stdlib\DateTime\DateTime::class)
             ->disableOriginalConstructor()
-            ->setMethods(['gmtTimestamp'])
+            ->$allowedMethodName(['gmtTimestamp'])
             ->getMock();
 
         $this->configurationMock = $this->getMockBuilder(\MageSuite\BackInStock\Helper\Configuration::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getMinTimeBetweenNotifications', 'getDailyNotificationLimit'])
+            ->$allowedMethodName(['getMinTimeBetweenNotifications', 'getDailyNotificationLimit'])
             ->getMock();
 
         $this->limitationValidator = $this->objectManager->create(
