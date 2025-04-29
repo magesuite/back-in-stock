@@ -23,8 +23,8 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
