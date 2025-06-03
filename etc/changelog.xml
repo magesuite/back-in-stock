@@ -127,6 +127,13 @@
                     <ticket_id>HAAR-4231</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.13.6" date="2025-06-02">
+                <entry>
+                    <type>FEAT</type>
+                    <overview>A11y - Add legend tag to subscription form in order to improve accessibility</overview>
+                    <ticket_id>KRG-3067</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
