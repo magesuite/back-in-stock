@@ -29,6 +29,9 @@
         <index referenceId="BIS_SUBSCRIPTION_ENTITY_CUSTOMER_ID" indexType="btree">
             <column name="customer_id"/>
         </index>
+        <index referenceId="BIS_SUBSCRIPTION_ENTITY_CUSTOMER_EMAIL" indexType="btree">
+            <column name="customer_email"/>
+        </index>
         <index referenceId="BIS_SUBSCRIPTION_ENTITY_CUSTOMER_CONFIRMED" indexType="btree">
             <column name="customer_confirmed"/>
         </index>
