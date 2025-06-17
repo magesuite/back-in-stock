@@ -134,6 +134,13 @@
                     <ticket_id>KRG-3067</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.13.7" date="2025-06-06">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix for checking product salable status, return false if exception is thrown instead of removing entire block</overview>
+                    <ticket_id>DOG-2040</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>
