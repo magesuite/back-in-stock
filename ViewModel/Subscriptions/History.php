@@ -4,64 +4,17 @@ namespace MageSuite\BackInStock\ViewModel\Subscriptions;
 
 class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
 {
-    /**
-     * @var \Magento\Customer\Model\Session
-     */
-    protected $customerSession;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory
-     */
-    protected $subscriptionCollectionFactory;
-
-    /**
-     * @var \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface
-     */
-    protected $notificationProductDataResolver;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\Product
-     */
-    protected $productResource;
-
-    /**
-     * @var \Magento\Framework\UrlInterface
-     */
-    protected $url;
-
-    /**
-     * @var \Magento\Store\Model\StoreManager
-     */
-    protected $storeManager;
-
-    /**
-     * @var \Magento\InventorySales\Model\StockResolver
-     */
-    protected $stockResolver;
-
-    /**
-     * @var \Magento\InventorySales\Model\GetProductSalableQty
-     */
-    protected $getProductSalableQty;
-
     public function __construct(
-        \Magento\Customer\Model\Session $customerSession,
-        \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
-        \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
-        \MageSuite\BackInStock\Model\ResourceModel\Product $productResource,
-        \Magento\Framework\UrlInterface $url,
-        \Magento\Store\Model\StoreManager $storeManager,
-        \Magento\InventorySales\Model\StockResolver $stockResolver,
-        \Magento\InventorySales\Model\GetProductSalableQty $getProductSalableQty
+        protected \Magento\Customer\Model\Session $customerSession,
+        protected \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
+        protected \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
+        protected \MageSuite\BackInStock\Model\ResourceModel\Product $productResource,
+        protected \Magento\Framework\UrlInterface $url,
+        protected \Magento\Store\Model\StoreManager $storeManager,
+        protected \Magento\InventorySales\Model\StockResolver $stockResolver,
+        protected \Magento\InventorySales\Model\GetProductSalableQty $getProductSalableQty,
+        protected \Psr\Log\LoggerInterface $logger
     ) {
-        $this->customerSession = $customerSession;
-        $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
-        $this->notificationProductDataResolver = $notificationProductDataResolver;
-        $this->productResource = $productResource;
-        $this->url = $url;
-        $this->storeManager = $storeManager;
-        $this->stockResolver = $stockResolver;
-        $this->getProductSalableQty = $getProductSalableQty;
     }
 
     public function getSubscriptions()
@@ -82,12 +35,12 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
             ->setOrder('add_date', 'desc');
     }
 
-    public function getProductData($subscription)
+    public function getProductData(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription): \Magento\Framework\DataObject
     {
         return $this->notificationProductDataResolver->getProductData($subscription);
     }
 
-    public function isProductSaleable($subscription)
+    public function isProductSaleable(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription): bool
     {
         $sku = $this->productResource->getSkuByProductId($subscription->getProductId());
 
@@ -98,11 +51,18 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
         $websiteCode = $this->storeManager->getWebsite()->getCode();
         $stockId = $this->stockResolver->execute(\Magento\InventorySalesApi\Api\Data\SalesChannelInterface::TYPE_WEBSITE, $websiteCode)->getStockId();
 
-        $qty = $this->getProductSalableQty->execute($sku, $stockId);
-        return $qty > 0;
+        try {
+            $qty = $this->getProductSalableQty->execute($sku, $stockId);
+            return $qty > 0;
+        } catch (\Exception $e) {
+            $this->logger->critical(
+                __('Error checking product salable status for SKU %1: %2', $sku, $e->getMessage())
+            );
+            return false;
+        }
     }
 
-    public function getUnsubscribeUrl($notification)
+    public function getUnsubscribeUrl(\MageSuite\BackInStock\Model\BackInStockSubscription $notification): string
     {
         return $this->url->getUrl(
             'backinstock/notification/unsubscribe',
