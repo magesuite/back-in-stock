@@ -55,17 +55,15 @@ class EmailSubscriptionCreator
         //update subscription when customer subscribes second time as logged-in user
         if ($customerId && $guestSubscriptionExists) {
             $subscription = $this->updateSubscriptionCustomerId($productId, $customerId, $email, $storeId);
-            $subscription = $this->resetExistingSubscription($subscription, $customerId, $email);
-            $this->sendConfirmationEmail($subscription, $product, $params, $storeId, $customerId);
+        } else {
+            $subscription = $this->getExistingSubscription($productId, $customerId, $email, $storeId);
+        }
+
+        if (!$this->canSubscriptionBeReset($subscription)) {
             return;
         }
 
-        $subscription = $this->getExistingSubscription($productId, $customerId, $email, $storeId);
-
-        if ($this->canSubscriptionBeReset($subscription)) {
-            $subscription = $this->resetExistingSubscription($subscription, $customerId, $email);
-        }
-
+        $subscription = $this->resetExistingSubscription($subscription, $customerId, $email);
         $this->sendConfirmationEmail($subscription, $product, $params, $storeId, $customerId);
     }
 
