@@ -40,7 +40,7 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation', 'mage/
 
             $form.on('submit', (e) => {
                 e.preventDefault();
-            
+
                 if ($form.validation() && $form.validation('isValid')) {
                     this._submitHandler();
                 }
@@ -219,7 +219,7 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation', 'mage/
             }
 
             if (this.$responseElText.length) {
-                this.$responseElText.html(response.message);
+                this.$responseElText.text(response.message);
             }
         },
 

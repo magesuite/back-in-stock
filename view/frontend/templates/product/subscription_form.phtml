@@ -17,7 +17,7 @@ $viewModel = $block->getViewModel();
         }'
     >
         <div class="cs-product-stock-subscription__msg">
-            <div class="message cs-messages__message"><div class="cs-messages__text"></div></div>
+            <div class="message cs-messages__message"><div role="status" aria-live="polite" class="cs-messages__text"></div></div>
         </div>
         <?= $block->getChildHtml('configurables.introduction') ?>
         <?= $block->getChildHtml('product.backinstock.subscription.hotspot.aboveemail') ?>
@@ -29,10 +29,10 @@ $viewModel = $block->getViewModel();
                 <div class="cs-product-stock-subscription__input-wrapper">
                     <input class="input-text cs-product-stock-subscription__input"
                            data-validate="{required:true, 'validate-email':true}"
-                           title="<?= /* @noEscape */ $block->getEmailLabel() ?>"
                            type="text"
                            name="email"
                            id="email"
+                           autocomplete="email"
                            <?php if ($placeholder) : ?> placeholder="<?= /* @noEscape */ $placeholder ?>"<?php endif ?>
                     />
                 </div>
