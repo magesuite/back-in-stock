@@ -61,7 +61,7 @@ class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
 
         $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
 
-        $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
+        $subscription = $this->backInStockSubscriptionRepository->getById((int)$subscription->getId());
 
         $this->assertEquals(true, $subscription->isCustomerConfirmed());
     }
@@ -82,7 +82,7 @@ class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
 
         $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
 
-        $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
+        $subscription = $this->backInStockSubscriptionRepository->getById((int)$subscription->getId());
 
         $this->assertEquals(false, $subscription->isCustomerConfirmed());
     }

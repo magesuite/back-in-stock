@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Controller\Notification;
 
 /**
@@ -44,13 +46,13 @@ class ConfirmTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItConfirmsSubscriptionCorrectly()
+    public function testItConfirmsSubscriptionCorrectly(): void
     {
         $product = $this->productRepository->get('simple');
 
         $subscription = $this->subscription;
 
-        $token = $this->subscriptionRepository->generateToken('test@confirm.com', '0');
+        $token = $this->subscriptionRepository->generateToken('test@confirm.com', 0);
 
         $subscription
             ->setCustomerEmail('test@confirm.com')
@@ -61,13 +63,20 @@ class ConfirmTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $subscription = $this->subscriptionRepository->save($subscription);
 
-        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test@confirm.com', 1));
+        $this->assertTrue(
+            $this->subscriptionRepository->subscriptionExist(
+                (int) $product->getId(),
+                'customer_email',
+                'test@confirm.com',
+                1
+            )
+        );
 
         $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $token]);
 
         $this->dispatch('backinstock/notification/confirm');
 
-        $this->assertEquals(true, $this->subscriptionRepository->getById($subscription->getId())->isCustomerConfirmed());
+        $this->assertEquals(true, $this->subscriptionRepository->getById((int)$subscription->getId())->isCustomerConfirmed());
     }
 
     /**
@@ -75,14 +84,14 @@ class ConfirmTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItNotConfirmsRemovedSubscription()
+    public function testItNotConfirmsRemovedSubscription(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
 
         $subscription = $this->subscription;
 
-        $token = $this->subscriptionRepository->generateToken('test+c@confirm.com', '0');
+        $token = $this->subscriptionRepository->generateToken('test+c@confirm.com', 0);
 
         $subscription
             ->setCustomerEmail('test+c@confirm.com')
@@ -94,12 +103,19 @@ class ConfirmTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $subscription = $this->subscriptionRepository->save($subscription);
 
-        $this->assertFalse($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test+c@confirm.com', 1));
+        $this->assertFalse(
+            $this->subscriptionRepository->subscriptionExist(
+                (int) $product->getId(),
+                'customer_email',
+                'test+c@confirm.com',
+                1
+            )
+        );
 
         $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $token]);
 
         $this->dispatch('backinstock/notification/confirm');
 
-        $this->assertEquals(false, $this->subscriptionRepository->getById($subscription->getId())->isCustomerConfirmed());
+        $this->assertEquals(false, $this->subscriptionRepository->getById((int)$subscription->getId())->isCustomerConfirmed());
     }
 }

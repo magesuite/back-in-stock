@@ -15,7 +15,7 @@ $backInStockSubscriptionRepository = $objectManager->create(\MageSuite\BackInSto
 /** @var \Magento\Catalog\Model\Product $product */
 $product = $productRepository->get('simple');
 
-$token = $backInStockSubscriptionRepository->generateToken('testsubscription@test.com', '0');
+$token = $backInStockSubscriptionRepository->generateToken('testsubscription@test.com', 0);
 /** @var \MageSuite\BackInStock\Model\BackInStockSubscription $backInStockSubscription */
 $backInStockSubscription = $objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);
 

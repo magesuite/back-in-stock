@@ -28,7 +28,7 @@ class ConfirmationUpdater
                 throw new \Magento\Framework\Exception\LocalizedException(__('Missing required arguments in request URL.'));
             }
 
-            $subscription = $this->backInStockSubscriptionRepository->getById($params['id']);
+            $subscription = $this->backInStockSubscriptionRepository->getById((int) $params['id']);
 
             if (!$this->validateToken($subscription->getToken(), $params['token'])) {
                 throw new \Magento\Framework\Exception\LocalizedException(__('Something went wrong while confirming your subscription. Please contact store owner.'));

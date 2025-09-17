@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Service;
 
 class NotificationProductDataResolver implements \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface
 {
-    /**
-     * @var \MageSuite\BackInStock\Model\NotificationProductDataResolverPool
-     */
-    protected $notificationProductDataResolverPool;
-
-    public function __construct(\MageSuite\BackInStock\Model\NotificationProductDataResolverPool $notificationProductDataResolverPool)
-    {
-        $this->notificationProductDataResolverPool = $notificationProductDataResolverPool;
+    public function __construct(
+        protected \MageSuite\BackInStock\Model\NotificationProductDataResolverPool $notificationProductDataResolverPool
+    ) {
     }
 
-    public function getProductData($subscription)
-    {
+    public function getProductData(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription
+    ): \Magento\Framework\DataObject {
         $result = new \Magento\Framework\DataObject();
-        $notificationProductDataResolver = $this->notificationProductDataResolverPool->getProductDataResolver($subscription->getParentProductId());
+        $notificationProductDataResolver = $this->notificationProductDataResolverPool->getProductDataResolver(
+            (int) $subscription->getParentProductId()
+        );
 
         if (!$notificationProductDataResolver) {
             return $result;

@@ -19,7 +19,7 @@ foreach ($productSkus as $sku) {
     }
 
     for ($i = 0; $i < 10; $i++) {
-        $token = $backInStockSubscriptionRepository->generateToken('test+'.$i.'@test.com', '0');
+        $token = $backInStockSubscriptionRepository->generateToken('test+' . $i . '@test.com', 0);
     /** @var \MageSuite\BackInStock\Model\BackInStockSubscription $backInStockSubscription */
         $backInStockSubscription = $objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);
 
@@ -27,7 +27,7 @@ foreach ($productSkus as $sku) {
         ->setProductId($product->getId())
         ->setStoreId(1)
         ->setCustomerId(0)
-        ->setCustomerEmail('test+'.$i.'@test.com')
+        ->setCustomerEmail('test+' . $i . '@test.com')
         ->setToken($token);
 
         $backInStockSubscriptionRepository->save($backInStockSubscription);

@@ -1,20 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Service;
 
 class SubscriptionEntityCreator
 {
-    /**
-     * @var array
-     */
-    protected $creatorsByChannel;
-
-    public function __construct($creatorsByChannel = [])
-    {
-        $this->creatorsByChannel = $creatorsByChannel;
+    public function __construct(
+        protected array $creatorsByChannel = []
+    ) {
     }
 
-    public function subscribe($params)
+    public function subscribe(array $params): void
     {
         $channel = $params['notification_channel'] ?? null;
 

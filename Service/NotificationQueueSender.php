@@ -6,8 +6,8 @@ namespace MageSuite\BackInStock\Service;
 
 class NotificationQueueSender
 {
-    const MANUAL_NOTIFICATION = 'manual_notification';
-    const AUTOMATIC_NOTIFICATION = 'automatic_notification';
+    public const MANUAL_NOTIFICATION = 'manual_notification';
+    public const AUTOMATIC_NOTIFICATION = 'automatic_notification';
 
     public function __construct(
         protected \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository,
@@ -19,13 +19,13 @@ class NotificationQueueSender
     ) {
     }
 
-    public function send($automaticRemoveSubscription = false, $isHistoricalDataKept = true): void
+    public function send(bool $automaticRemoveSubscription = false, bool $isHistoricalDataKept = true): void
     {
         $notificationCollection = $this->notificationCollectionFactory->create();
 
         /** @var \MageSuite\BackInStock\Model\Notification $notification */
         foreach ($notificationCollection as $notification) {
-            $subscriptionId = $notification->getSubscriptionId();
+            $subscriptionId = (int)$notification->getSubscriptionId();
             $subscription = $this->backInStockSubscriptionRepository->getById($subscriptionId);
 
             if (!$this->validate($notification, $subscription)) {
@@ -50,13 +50,17 @@ class NotificationQueueSender
         }
     }
 
-    protected function validate($notification, $subscription): bool
-    {
-        if ($subscription->isCustomerUnsubscribed()
+    protected function validate(
+        \MageSuite\BackInStock\Api\Data\NotificationInterface $notification,
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription
+    ): bool {
+        if (
+            $subscription->isCustomerUnsubscribed()
             || $subscription->isRemoved()
             || $this->subscriptionHelper->isSubscriptionRejected($subscription->isCustomerConfirmed(), $subscription->isCustomerUnsubscribed(), $subscription->getAddDate())
         ) {
             $this->notificationRepository->delete($notification);
+
             return false;
         }
 
@@ -64,8 +68,12 @@ class NotificationQueueSender
             return false;
         }
 
-        if (!$this->limitsValidator->isMinTimeValid($subscription) || $this->limitsValidator->isDailyLimitExceeded($subscription)) {
+        if (
+            !$this->limitsValidator->isMinTimeValid($subscription) ||
+            $this->limitsValidator->isDailyLimitExceeded($subscription)
+        ) {
             $this->notificationRepository->delete($notification);
+
             return false;
         }
 

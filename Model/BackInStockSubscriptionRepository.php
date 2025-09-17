@@ -1,38 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model;
 
 class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
 {
-    /**
-     * @var ResourceModel\BackInStockSubscription
-     */
-    protected $backInStockSubscriptionResource;
-
-    /**
-     * @var BackInStockSubscriptionFactory
-     */
-    protected $backInStockSubscriptionFactory;
-
-    /**
-     * @var ResourceModel\BackInStockSubscription\CollectionFactory
-     */
-    protected $subscriptionCollectionFactory;
-
     public function __construct(
-        \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription $backInStockSubscriptionResource,
-        \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory,
-        \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory
+        protected \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription $backInStockSubscriptionResource,
+        protected \MageSuite\BackInStock\Model\BackInStockSubscriptionFactory $backInStockSubscriptionFactory,
+        protected \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory
     ) {
-        $this->backInStockSubscriptionResource = $backInStockSubscriptionResource;
-        $this->backInStockSubscriptionFactory = $backInStockSubscriptionFactory;
-        $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
     }
 
-    public function getById($id)
+    public function getById(int $id): \MageSuite\BackInStock\Model\BackInStockSubscription
     {
         $subscription = $this->backInStockSubscriptionFactory->create();
         $subscription->load($id);
+
         if (!$subscription->getId()) {
             throw new \Magento\Framework\Exception\NoSuchEntityException(__('Back in stock subscription with id "%1" does not exist.', $id));
         }
@@ -40,11 +25,12 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return $subscription;
     }
 
-    /**
-     * @inheirtDoc
-     */
-    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription //phpcs:ignore
-    {
+    public function get( //phpcs:ignore
+        int $productId,
+        string $identifyByField,
+        string $identifyByValue,
+        int $storeId
+    ): \MageSuite\BackInStock\Model\BackInStockSubscription {
         $collection = $this->subscriptionCollectionFactory->create();
 
         $collection->addFieldToFilter('product_id', ['eq' => $productId]);
@@ -55,8 +41,9 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return $collection->getFirstItem();
     }
 
-    public function save(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription)
-    {
+    public function save(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
+    ): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface {
         try {
             $this->backInStockSubscriptionResource->save($backInStockSubscription);
         } catch (\Exception $exception) {
@@ -68,8 +55,9 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return $backInStockSubscription;
     }
 
-    public function delete(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription)
-    {
+    public function delete(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
+    ): bool {
         try {
             $this->backInStockSubscriptionResource->delete($backInStockSubscription);
         } catch (\Exception $exception) {
@@ -81,19 +69,26 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return true;
     }
 
-    public function unsubscribe(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription, bool $isHistoricalDataKept = false)
-    {
+    public function unsubscribe(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription,
+        bool $isHistoricalDataKept = false
+    ): ?\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface {
         if (!$isHistoricalDataKept) {
             $this->delete($backInStockSubscription);
-            return;
+            return null;
         }
 
         $backInStockSubscription->setIsRemoved(true);
-        $this->save($backInStockSubscription);
+
+        return $this->save($backInStockSubscription);
     }
 
-    public function subscriptionExist(int $productId, string $identifyByField, $identifyByValue, int $storeId) //phpcs:ignore
-    {
+    public function subscriptionExist( //phpcs:ignore
+        int $productId,
+        string $identifyByField,
+        string $identifyByValue,
+        int $storeId
+    ): bool {
         $collection = $this->subscriptionCollectionFactory->create();
 
         $collection->addFieldToFilter('product_id', ['eq' => $productId]);
@@ -108,8 +103,14 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         return false;
     }
 
-    public function generateToken($email, $customerId)
+    public function generateToken(string $email, int $customerId): string
     {
-        return substr(md5(json_encode(['customer_email' => $email, 'customer_id' => $customerId, 'token' => md5(random_bytes(20))])), 0, 8); //phpcs:ignore
+        $data = [
+            'customer_email' => $email,
+            'customer_id' => $customerId,
+            'token' => hash('sha256', random_bytes(20))
+        ];
+
+        return substr(hash('sha256', json_encode($data)), 0, 8);
     }
 }

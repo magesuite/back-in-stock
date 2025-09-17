@@ -8,11 +8,11 @@ interface NotificationProductDataResolverInterface
      * @param int $productParentId
      * @return bool
      */
-    public function isApplicable($productParentId);
+    public function isApplicable(int $productParentId): bool;
 
     /**
      * @param \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription
      * @return array
      */
-    public function getProductData($subscription);
+    public function getProductData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription): array;
 }

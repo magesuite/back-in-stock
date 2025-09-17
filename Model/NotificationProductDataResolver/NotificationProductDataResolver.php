@@ -1,30 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model\NotificationProductDataResolver;
 
 class NotificationProductDataResolver
 {
-    const PRODUCT_IMAGE_ID = 'product_page_image_small';
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \Magento\Catalog\Helper\Image
-     */
-    protected $imageHelper;
+    protected const PRODUCT_IMAGE_ID = 'product_page_image_small';
 
     public function __construct(
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Catalog\Helper\Image $imageHelper
+        protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        protected \Magento\Catalog\Helper\Image $imageHelper
     ) {
-        $this->productRepository = $productRepository;
-        $this->imageHelper = $imageHelper;
     }
 
-    public function getProduct($productId, $storeId)
+    public function getProduct(int $productId, int $storeId): ?\Magento\Catalog\Api\Data\ProductInterface
     {
         try {
             return $this->productRepository->getById($productId, false, $storeId);
@@ -33,8 +23,10 @@ class NotificationProductDataResolver
         }
     }
 
-    public function getProductImageUrl($product, $imageId = self::PRODUCT_IMAGE_ID)
-    {
+    public function getProductImageUrl(
+        \Magento\Catalog\Api\Data\ProductInterface $product,
+        string $imageId = self::PRODUCT_IMAGE_ID
+    ): string {
         return $this->imageHelper->init($product, $imageId)->getUrl();
     }
 }
