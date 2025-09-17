@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model\NotificationProductDataResolver;
 
 class Simple extends NotificationProductDataResolver implements NotificationProductDataResolverInterface
 {
-    public function isApplicable($productParentId)
+    public function isApplicable(int $productParentId): bool
     {
         return empty($productParentId);
     }
 
-    public function getProductData($subscription)
+    public function getProductData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription): array
     {
-        $product = $this->getProduct($subscription->getProductId(), $subscription->getStoreId());
+        $product = $this->getProduct(
+            (int)$subscription->getProductId(),
+            (int)$subscription->getStoreId()
+        );
 
         if (empty($product)) {
             return [];

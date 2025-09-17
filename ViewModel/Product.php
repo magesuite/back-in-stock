@@ -1,28 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\ViewModel;
 
 class Product implements \Magento\Framework\View\Element\Block\ArgumentInterface
 {
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $registry;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ProductResolverPool
-     */
-    protected $productResolverPool;
-
     public function __construct(
-        \Magento\Framework\Registry $registry,
-        \MageSuite\BackInStock\Model\ProductResolverPool $productResolverPool
+        protected \MageSuite\BackInStock\Model\ProductResolverPool $productResolverPool,
+        protected \Magento\Framework\Registry $registry
     ) {
-        $this->registry = $registry;
-        $this->productResolverPool = $productResolverPool;
     }
 
-    public function canRenderBackInStockForm()
+    public function canRenderBackInStockForm(): bool
     {
         $product = $this->getProduct();
 
@@ -40,7 +30,7 @@ class Product implements \Magento\Framework\View\Element\Block\ArgumentInterface
         return $productResolver->canRenderForm($product);
     }
 
-    public function getProductId()
+    public function getProductId(): ?int
     {
         $product = $this->getProduct();
 
@@ -48,10 +38,10 @@ class Product implements \Magento\Framework\View\Element\Block\ArgumentInterface
             return null;
         }
 
-        return $product->getId();
+        return (int) $product->getId();
     }
 
-    protected function getProduct()
+    protected function getProduct(): ?\Magento\Catalog\Api\Data\ProductInterface
     {
         $product = $this->registry->registry('current_product');
 
@@ -59,6 +49,6 @@ class Product implements \Magento\Framework\View\Element\Block\ArgumentInterface
             return $product;
         }
 
-        return false;
+        return null;
     }
 }

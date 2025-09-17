@@ -1,20 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\Tab\Column;
 
 class ProductName extends \MageSuite\BackInStock\Block\Adminhtml\Customer\Edit\Tab\Column\AbstractColumnRenderer
 {
-    /**
-     * @param $columnId
-     * @param $entityId
-     * @return mixed
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function getColumnValue($columnId, $entityId)
+    public function getColumnValue(int $columnId, int $entityId): string
     {
         $backInStock = $this->getBackInStockData($entityId);
 
-        $product = $this->productRepository->getById($backInStock->getProductId());
+        $product = $this->productRepository->getById((int) $backInStock->getProductId());
 
         return $product->getName();
     }

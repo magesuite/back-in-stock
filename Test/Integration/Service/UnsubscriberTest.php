@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 /**
@@ -43,17 +45,22 @@ class UnsubscriberTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
      */
-    public function testItMarkAsRemoved()
+    public function testItMarkAsRemoved(): void
     {
         $productSku = 'simple';
         $product = $this->productRepository->get($productSku);
 
-        $subscription = $this->backInStockSubscriptionRepository->get($product->getId(), 'customer_email', 'test+0@test.com', 1);
+        $subscription = $this->backInStockSubscriptionRepository->get(
+            (int)$product->getId(),
+            'customer_email',
+            'test+0@test.com',
+            1
+        );
         $this->assertFalse($subscription->isRemoved());
 
         $this->unsubscriber->execute([$subscription->getId()]);
 
-        $subscription = $this->backInStockSubscriptionRepository->getById($subscription->getId());
+        $subscription = $this->backInStockSubscriptionRepository->getById((int)$subscription->getId());
         $this->assertTrue($subscription->isRemoved());
     }
 
@@ -63,16 +70,21 @@ class UnsubscriberTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
      */
-    public function testItRemovedFromDatabase()
+    public function testItRemovedFromDatabase(): void
     {
         $this->expectException(\Magento\Framework\Exception\NoSuchEntityException::class);
 
         $productSku = 'simple';
         $product = $this->productRepository->get($productSku);
 
-        $subscription = $this->backInStockSubscriptionRepository->get($product->getId(), 'customer_email', 'test+0@test.com', 1);
+        $subscription = $this->backInStockSubscriptionRepository->get(
+            (int)$product->getId(),
+            'customer_email',
+            'test+0@test.com',
+            1
+        );
         $this->unsubscriber->execute([$subscription->getId()]);
 
-        $this->backInStockSubscriptionRepository->getById($subscription->getId());
+        $this->backInStockSubscriptionRepository->getById((int)$subscription->getId());
     }
 }

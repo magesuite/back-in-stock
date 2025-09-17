@@ -144,7 +144,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
         $emailNotificationSender = $this->emailNotificationSender;
 
         foreach ($notificationCollection as $notification) {
-            $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
+            $subscription = $this->backInStockSubscriptionRepository->getById((int)$notification->getSubscriptionId());
 
             $this->assertEquals('back_in_stock/email_configuration/automatic_notification_email_template', $emailNotificationSender->getEmailTemplateId($notification->getNotificationType()));
 
@@ -177,7 +177,7 @@ class NotificationQueueSenderTest extends \PHPUnit\Framework\TestCase
         $emailNotificationSender = $this->emailNotificationSender;
 
         foreach ($notificationCollection as $notification) {
-            $subscription = $this->backInStockSubscriptionRepository->getById($notification->getSubscriptionId());
+            $subscription = $this->backInStockSubscriptionRepository->getById((int)$notification->getSubscriptionId());
 
             $this->assertEquals('back_in_stock/email_configuration/manual_notification_email_template', $emailNotificationSender->getEmailTemplateId($notification->getNotificationType()));
 

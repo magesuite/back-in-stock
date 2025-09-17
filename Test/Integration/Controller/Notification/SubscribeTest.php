@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Controller\Notification;
 
 /**
@@ -38,7 +40,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItSubscribeCorrectly()
+    public function testItSubscribeCorrectly(): void
     {
         $email = 'subscribe_test@test.com';
 
@@ -51,9 +53,16 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/subscribe');
 
-        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', $email, 1));
+        $this->assertTrue(
+            $this->subscriptionRepository->subscriptionExist(
+                (int) $product->getId(),
+                'customer_email',
+                $email,
+                1
+            )
+        );
 
-        $subscription = $this->getSubscriptionByProductIdAndEmail($product->getId(), $email);
+        $subscription = $this->getSubscriptionByProductIdAndEmail((int)$product->getId(), $email);
         $this->assertFalse($subscription->isCustomerConfirmed());
     }
 
@@ -63,7 +72,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoConfigFixture admin_store back_in_stock/general/is_confirmation_required 0
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItSubscribeCorrectlyWithoutConfirmation()
+    public function testItSubscribeCorrectlyWithoutConfirmation(): void
     {
         $email = 'subscribe2_test@test.com';
 
@@ -76,7 +85,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/subscribe');
 
-        $subscription = $this->getSubscriptionByProductIdAndEmail($product->getId(), $email);
+        $subscription = $this->getSubscriptionByProductIdAndEmail((int)$product->getId(), $email);
         $this->assertTrue($subscription->isCustomerConfirmed());
     }
 
@@ -87,12 +96,12 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoDataFixture loadResetSubscriptions
      * @dataProvider provideResetSubscriptions
      */
-    public function testItResetSubscriptionCorrectly(string $email, bool $expectedResult)
+    public function testItResetSubscriptionCorrectly(string $email, bool $expectedResult): void
     {
         $product = $this->productRepository->get('product_out_of_stock');
 
         $subscription = $this->subscriptionRepository->get(
-            $product->getId(),
+            (int) $product->getId(),
             'customer_email',
             $email,
             1
@@ -106,7 +115,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/subscribe');
 
-        $resetedSubscription = $this->subscriptionRepository->getById($subscription->getId());
+        $resetedSubscription = $this->subscriptionRepository->getById((int)$subscription->getId());
         $this->assertEquals($expectedResult, $subscription->getToken() !== $resetedSubscription->getToken());
     }
 
@@ -117,7 +126,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoDataFixture loadRemovedSubscriptions
      * @dataProvider provideRemovedSubscriptions
      */
-    public function testItCreateNewSubscriptionCorrectlyWhenPreviousIsRemoved(string $email)
+    public function testItCreateNewSubscriptionCorrectlyWhenPreviousIsRemoved(string $email): void
     {
         $product = $this->productRepository->get('simple');
 
@@ -129,11 +138,11 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/subscribe');
 
-        $newSubscription = $this->getSubscriptionByProductIdAndEmail($product->getId(), $email);
+        $newSubscription = $this->getSubscriptionByProductIdAndEmail((int) $product->getId(), $email);
         $this->assertEquals(false, $newSubscription->isRemoved());
     }
 
-    private function getSubscriptionByProductIdAndEmail($productId, $email)
+    private function getSubscriptionByProductIdAndEmail(int $productId, string $email): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
     {
         $storeId = 1;
         return $this->subscriptionRepository->get($productId, 'customer_email', $email, $storeId);

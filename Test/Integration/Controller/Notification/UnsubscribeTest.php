@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Controller\Notification;
 
 /**
@@ -47,13 +49,13 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItUnsubscribesCorrectly()
+    public function testItUnsubscribesCorrectly(): void
     {
         $product = $this->productRepository->get('simple');
 
         $subscription = $this->subscription;
 
-        $token = $this->subscriptionRepository->generateToken('test@unsubscribe.com', '0');
+        $token = $this->subscriptionRepository->generateToken('test@unsubscribe.com', 0);
 
         $subscription
             ->setCustomerEmail('test@unsubscribe.com')
@@ -64,13 +66,20 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $subscription = $this->subscriptionRepository->save($subscription);
 
-        $this->assertTrue($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test@unsubscribe.com', 1));
+        $this->assertTrue(
+            $this->subscriptionRepository->subscriptionExist(
+                (int) $product->getId(),
+                'customer_email',
+                'test@unsubscribe.com',
+                1
+            )
+        );
 
         $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $token]);
 
         $this->dispatch('backinstock/notification/unsubscribe');
 
-        $this->assertEquals(true, $this->subscriptionRepository->getById($subscription->getId())->isCustomerUnsubscribed());
+        $this->assertEquals(true, $this->subscriptionRepository->getById((int)$subscription->getId())->isCustomerUnsubscribed());
     }
 
     /**
@@ -78,12 +87,12 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItNotUnsubscribesRemovedSubscription()
+    public function testItNotUnsubscribesRemovedSubscription(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
 
-        $token = $this->subscriptionRepository->generateToken('test+u@confirm.com', '0');
+        $token = $this->subscriptionRepository->generateToken('test+u@confirm.com', 0);
 
         $subscription = $this->subscription;
 
@@ -99,17 +108,19 @@ class UnsubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
         $subscription = $this->subscriptionRepository->save($subscription);
 
         $this->assertEquals(false, $subscription->isCustomerUnsubscribed());
-        $this->assertFalse($this->subscriptionRepository->subscriptionExist($product->getId(), 'customer_email', 'test+u@confirm.com', 1));
+        $this->assertFalse(
+            $this->subscriptionRepository->subscriptionExist(
+                (int)$product->getId(),
+                'customer_email',
+                'test+u@confirm.com',
+                1
+            )
+        );
 
         $this->getRequest()->setParams(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
 
         $this->dispatch('backinstock/notification/unsubscribe');
 
-        $this->assertEquals(false, $this->subscriptionRepository->getById($subscription->getId())->isCustomerUnsubscribed());
-    }
-
-    public static function loadExpiredSubscriptions()
-    {
-        include __DIR__.'/../../../_files/expired_subscriptions.php';
+        $this->assertEquals(false, $this->subscriptionRepository->getById((int)$subscription->getId())->isCustomerUnsubscribed());
     }
 }

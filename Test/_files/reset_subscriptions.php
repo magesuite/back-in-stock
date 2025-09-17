@@ -31,8 +31,8 @@ $subscriptionsData = [
 
 for ($i = 0; $i < 8; $i++) {
 
-    $email = 'test+'. $i .'@test.com';
-    $token = $backInStockSubscriptionRepository->generateToken($email, '0');
+    $email = 'test+' . $i . '@test.com';
+    $token = $backInStockSubscriptionRepository->generateToken($email, 0);
 
     /** @var \MageSuite\BackInStock\Model\BackInStockSubscription $backInStockSubscription */
     $backInStockSubscription = $objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);

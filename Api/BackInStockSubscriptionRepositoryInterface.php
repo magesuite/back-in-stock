@@ -9,49 +9,66 @@ interface BackInStockSubscriptionRepositoryInterface
      * @return \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getById($id);
+    public function getById(int $id): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 
     /**
      * @param int $productId
      * @param string $identifyByField
-     * @param mixed $identifyByValue
+     * @param string $identifyByValue
      * @param int $storeId
-     * @return mixed
+     * @return \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
      */
-    public function get(int $productId, string $identifyByField, $identifyByValue, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription; //phpcs:ignore
+    public function get( //phpcs:ignore
+        int $productId, 
+        string $identifyByField,
+        string $identifyByValue, 
+        int $storeId
+    ): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 
     /**
      * @param \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
      * @return \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
      */
-    public function save(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription);
+    public function save(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
+    ): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 
     /**
      * @param Data\BackInStockSubscriptionInterface $backInStockSubscription
-     * @return mixed
+     * @return bool
      */
-    public function delete(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription);
+    public function delete(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
+    ): bool;
 
     /**
      * @param Data\BackInStockSubscriptionInterface $backInStockSubscription
      * @param bool $isHistoricalDataKept
-     * @return mixed
+     * @return ?\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
      */
-    public function unsubscribe(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription, bool $isHistoricalDataKept = false);
+    public function unsubscribe(
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription, 
+        bool $isHistoricalDataKept = false
+    ): ?\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 
     /**
      * @param int $productId
      * @param string $identifyByField
-     * @param mixed $identifyByValue
+     * @param string $identifyByValue
      * @param int $storeId
-     * @return mixed
+     * @return bool
      */
-    public function subscriptionExist(int $productId, string $identifyByField, $identifyByValue, int $storeId); //phpcs:ignore
+    public function subscriptionExist( //phpcs:ignore
+        int $productId,
+        string $identifyByField,
+        string $identifyByValue,
+        int $storeId
+    ): bool;
 
     /**
-     * @param $email
-     * @param $customerId
-     * @return mixed
+     * @param string $email
+     * @param int $customerId
+     * @return string
      */
-    public function generateToken($email, $customerId);
+    public function generateToken(string $email, int $customerId): string;
 }

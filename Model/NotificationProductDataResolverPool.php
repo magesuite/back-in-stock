@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model;
 
 class NotificationProductDataResolverPool
 {
-    protected $productDataResolvers;
-
-    public function __construct(array $productDataResolvers)
-    {
-        $this->productDataResolvers = $productDataResolvers;
+    public function __construct(
+        protected array $productDataResolvers
+    ) {
     }
 
-    public function getProductDataResolver($productParentId)
-    {
+    public function getProductDataResolver(
+        int $productParentId
+    ): ?\MageSuite\BackInStock\Model\NotificationProductDataResolver\NotificationProductDataResolverInterface {
         foreach ($this->productDataResolvers as $productDataResolver) {
             if (!$productDataResolver->isApplicable($productParentId)) {
                 continue;

@@ -1,30 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model\Command;
 
 class GetDisabledProductSkus
 {
     protected \Magento\Framework\DB\Adapter\AdapterInterface $connection;
-
-    protected \Magento\Framework\EntityManager\MetadataPool $metadataPool;
-
     protected array $disabledProductSkus = [];
 
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool
+        protected \Magento\Framework\EntityManager\MetadataPool $metadataPool
     ) {
         $this->connection = $resourceConnection->getConnection();
-        $this->metadataPool = $metadataPool;
     }
 
-    public function execute(array $skus): array
+    public function execute(array $skus, int $storeId): array
     {
-        if (!empty($this->disabledProductSkus)) {
-            return $this->disabledProductSkus;
+        if (!empty($this->disabledProductSkus[$storeId])) {
+            return $this->disabledProductSkus[$storeId];
         }
 
-        $linkField = $this->metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)->getLinkField();
+        $linkField = $this->metadataPool
+            ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+            ->getLinkField();
 
         $select = $this->connection
             ->select()
@@ -40,11 +40,12 @@ class GetDisabledProductSkus
                 []
             )
             ->where('cpe.sku IN (?)', $skus)
-            ->where('ea.attribute_code = "status"')
-            ->where('cpei.value = ?', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED);
+            ->where('ea.attribute_code = ?', 'status')
+            ->where('cpei.value = ?', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED)
+            ->where('cpei.store_id = ?', $storeId);
 
-        $this->disabledProductSkus = $this->connection->fetchCol($select);
+        $this->disabledProductSkus[$storeId] = $this->connection->fetchCol($select);
 
-        return $this->disabledProductSkus;
+        return $this->disabledProductSkus[$storeId];
     }
 }

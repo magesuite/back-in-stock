@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Grid;
 
-class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection implements \Magento\Framework\Api\Search\SearchResultInterface
+class Collection
+    extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection
+    implements \Magento\Framework\Api\Search\SearchResultInterface
 {
-    /**
-     * @var AggregationInterface
-     */
-    protected $aggregations;
-
-    protected \Magento\Framework\EntityManager\MetadataPool $metadataPool;
+    protected ?\Magento\Framework\Api\Search\AggregationInterface $aggregations;
 
     /**
      * @param \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory
@@ -17,22 +16,22 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param mixed|null $mainTable
+     * @param string $mainTable
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb $eventPrefix
-     * @param mixed $eventObject
-     * @param mixed $resourceModel
+     * @param string $eventObject
+     * @param string $resourceModel
      * @param string $model
-     * @param null $connection
+     * @param \Magento\Framework\DB\Adapter\AdapterInterface|null $connection
      * @param \Magento\Framework\Model\ResourceModel\Db\AbstractDb|null $resource
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
-    public function __construct(
+    public function __construct( //phpcs:ignore
         \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Framework\EntityManager\MetadataPool $metadataPool,
+        protected \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         $mainTable,
         $eventPrefix,
         $eventObject,
@@ -50,7 +49,6 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
             $resource
         );
 
-        $this->metadataPool = $metadataPool;
         $this->_eventPrefix = $eventPrefix;
         $this->_eventObject = $eventObject;
         $this->_init($model, $resourceModel);
@@ -139,7 +137,7 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
             );
     }
 
-    protected function joinProductNameColumn()
+    protected function joinProductNameColumn(): void
     {
         $attributeIdSelect = $this->getConnection()
             ->select()
@@ -149,18 +147,22 @@ class Collection extends \MageSuite\BackInStock\Model\ResourceModel\BackInStockS
             ->where('eet.entity_type_code = ?', \Magento\Catalog\Model\Product::ENTITY);
 
         $attributeId = $this->getConnection()->fetchOne($attributeIdSelect);
-
         $linkField = $this->metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)->getLinkField();
 
         $this->getSelect()
             ->joinLeft(
-                ['cpe' => $this->getTable('catalog_product_entity_varchar')],
-                sprintf('main_table.product_id = cpe.%s', $linkField),
-                ['product_name' => 'cpe.value']
-            )->where('cpe.attribute_id = ? and cpe.store_id = 0', $attributeId);
+                ['cpe' => $this->getTable('catalog_product_entity')],
+                'main_table.product_id = cpe.entity_id',
+                []
+            )
+            ->joinLeft(
+                ['cpev' => $this->getTable('catalog_product_entity_varchar')],
+                sprintf('cpe.%s = cpev.%s', $linkField, $linkField),
+                ['product_name' => 'cpev.value']
+            )->where('cpev.attribute_id = ? and cpev.store_id = 0', $attributeId);
     }
 
-    protected function joinConfirmationStatusColumn()
+    protected function joinConfirmationStatusColumn(): void
     {
         $columnExpr = sprintf(
             "(CASE
