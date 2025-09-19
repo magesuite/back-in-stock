@@ -8,9 +8,11 @@ class GetDisabledProductSkus
 {
     protected \Magento\Framework\DB\Adapter\AdapterInterface $connection;
     protected array $disabledProductSkus = [];
+    protected ?bool $isStatusAttributeGlobal = null;
 
     public function __construct(
         \Magento\Framework\App\ResourceConnection $resourceConnection,
+        protected \Magento\Eav\Model\Config $eavConfig,
         protected \Magento\Framework\EntityManager\MetadataPool $metadataPool
     ) {
         $this->connection = $resourceConnection->getConnection();
@@ -18,6 +20,8 @@ class GetDisabledProductSkus
 
     public function execute(array $skus, int $storeId): array
     {
+        $storeId = $this->isStatusAttributeGlobal() ? 0 : $storeId;
+
         if (!empty($this->disabledProductSkus[$storeId])) {
             return $this->disabledProductSkus[$storeId];
         }
@@ -47,5 +51,17 @@ class GetDisabledProductSkus
         $this->disabledProductSkus[$storeId] = $this->connection->fetchCol($select);
 
         return $this->disabledProductSkus[$storeId];
+    }
+
+    protected function isStatusAttributeGlobal(): bool
+    {
+        if (is_bool($this->isStatusAttributeGlobal)) {
+            return $this->isStatusAttributeGlobal;
+        }
+
+        $attribute = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'status');
+        $this->isStatusAttributeGlobal = (int)$attribute->getIsGlobal() === \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL;
+
+        return $this->isStatusAttributeGlobal;
     }
 }
