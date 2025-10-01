@@ -75,6 +75,8 @@ define([
                 if (this.canApplyMixin) {
                     controls.find('div[data-option-id], option[data-option-id]').removeClass(this.options.swatchAlertClass);
                     controls.find('div[data-option-empty], option[data-option-empty]').addClass(this.options.swatchAlertClass);
+
+                    controls.find('div.' + this.options.swatchAlertClass + ', option.' + this.options.swatchAlertClass).attr('tabindex', '0');
                 }
             },
 
@@ -117,29 +119,39 @@ define([
             /**
              * Custom method
              * If (newly introduced) showSubscriptionInModal option is FALSE, on each change of value for any super attribute make sure Subscription Panel is closed until it's needed.
-             * Do not close subscription panel if click is triggered on disabled swatch (this swatch should back-in-stock alert functionality)
+             * Do not close subscription panel if click/keydown is triggered on disabled swatch (this swatch should back-in-stock alert functionality)
              */
             _resetBiSFormOnOptionChange: function () {
-                this.element.on('click change', '.' + this.options.classes.optionClass, function (e) {
+                var $widget = this;
+                
+                var handleOptionChange = function (e) {
                     if ($(e.target).hasClass('disabled')) {
                         return;
                     }
 
                     $('body').trigger('bis:formclosed');
-                    if (!this.options.showSubscriptionInModal) {
-                        this.$subscriptionForm.addClass(this.options.subscriptionFormClass + '--hidden');
+                    if (!$widget.options.showSubscriptionInModal) {
+                        $widget.$subscriptionForm.addClass($widget.options.subscriptionFormClass + '--hidden');
                     }
-                }.bind(this));
+                };
+
+                this.element.on('click change', '.' + this.options.classes.optionClass, handleOptionChange);
+                
+                this.element.on('keydown', '.' + this.options.classes.optionClass, function (e) {
+                    if (e.keyCode === 13) {
+                        handleOptionChange.call(this, e);
+                    }
+                });
             },
 
             /**
              * Custom method.
-             * On each (out of stock) swatch click set proper CSS class (remove from siblings first) and show panel (optionally in modal)
+             * On each (out of stock) swatch click or Enter key press set proper CSS class (remove from siblings first) and show panel (optionally in modal)
              */
             _setEvent: function () {
                 var $widget = this;
 
-                this.$outOfStockOptions.on('click', function (e) {
+                var handleBackInStockEvent = function (e) {
                     e.preventDefault();
 
                     var $this = $(this),
@@ -159,6 +171,14 @@ define([
                         $widget.$subscriptionForm.modal('openModal');
                     } else {
                         $widget.$subscriptionForm.removeClass($widget.options.subscriptionFormClass + '--hidden');
+                    }
+                };
+
+                this.$outOfStockOptions.on('click', handleBackInStockEvent);
+                
+                this.$outOfStockOptions.on('keydown', function (e) {
+                    if (e.keyCode === 13) {
+                        handleBackInStockEvent.call(this, e);
                     }
                 });
             }
