@@ -30,23 +30,28 @@ class GetDisabledProductSkus
             ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
             ->getLinkField();
 
+        $attribute = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'status');
+        $attributeId = (int)$attribute->getAttributeId();
+
         $select = $this->connection
             ->select()
             ->from(['cpe' => $this->connection->getTableName('catalog_product_entity')], ['cpe.sku'])
             ->joinLeft(
-                ['cpei' => $this->connection->getTableName('catalog_product_entity_int')],
-                sprintf('cpei.%s = cpe.%s', $linkField, $linkField),
-                []
+                ['cpei_default' => $attribute->getBackendTable()],
+                sprintf(
+                    'cpei_default.%1$s = cpe.%1$s AND cpei_default.attribute_id = %2$d AND cpei_default.store_id = 0',
+                    $linkField, $attributeId
+                ), []
             )
             ->joinLeft(
-                ['ea' => $this->connection->getTableName('eav_attribute')],
-                'ea.attribute_id = cpei.attribute_id',
-                []
+                ['cpei_store' => $attribute->getBackendTable()],
+                sprintf(
+                    'cpei_store.%1$s = cpe.%1$s AND cpei_store.attribute_id = %2$d AND cpei_store.store_id = %3$d',
+                    $linkField, $attributeId, (int)$storeId
+                ), []
             )
             ->where('cpe.sku IN (?)', $skus)
-            ->where('ea.attribute_code = ?', 'status')
-            ->where('cpei.value = ?', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED)
-            ->where('cpei.store_id = ?', $storeId);
+            ->where(sprintf('COALESCE(cpei_store.value, cpei_default.value) = %d', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED));
 
         $this->disabledProductSkus[$storeId] = $this->connection->fetchCol($select);
 
