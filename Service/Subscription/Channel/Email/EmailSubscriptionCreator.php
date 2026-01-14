@@ -138,7 +138,7 @@ class EmailSubscriptionCreator
         return $this->backInStockSubscriptionRepository->get(
             $productId,
             $identifyByField,
-            $identifyByValue,
+            (string) $identifyByValue,
             $storeId
         );
     }
