@@ -6,13 +6,24 @@ namespace MageSuite\BackInStock\Test\Integration\Model;
 
 class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
 {
-    public const PRODUCT_SKU = 'simple';
-    public const STOCK_ID = 1;
-    public const DEFAULT_SOURCE = 'default';
+    const PRODUCT_SKU = 'simple';
+    const STOCK_ID = 1;
+    const DEFAULT_SOURCE = 'default';
 
-    protected ?\Magento\TestFramework\ObjectManager $objectManager;
-    protected ?\MageSuite\BackInStock\Model\AreProductsSalable $areProductsSalable;
-    protected ?\PHPUnit\Framework\MockObject\MockObject $getSalableStatusesStub;
+    /**
+     * @var \Magento\TestFramework\ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var \MageSuite\BackInStock\Model\AreProductsSalable
+     */
+    protected $areProductsSalable;
+
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $getSalableStatusesStub;
 
     public function setUp(): void
     {
@@ -29,9 +40,11 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @param array $stockInfo
+     * @param array $expectedData
      * @dataProvider dataProvider
      */
-    public function testItReturnsCorrectInformationData(array $stockInfo, array $expectedData): void
+    public function testItReturnsCorrectInformationData(array $stockInfo, array $expectedData)
     {
         $statuses = [
             self::PRODUCT_SKU => [
@@ -56,13 +69,13 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedData['was_salable'], $isProductSalable->wasSalable());
     }
 
-    public static function dataProvider(): array
+    public function dataProvider(): array
     {
         return [
             [['salable_status_before' => false, 'salable_status_after' => true], ['is_salable' => true, 'was_salable' => false]],
             [['salable_status_before' => false, 'salable_status_after' => false], ['is_salable' => false, 'was_salable' => false]],
             [['salable_status_before' => true, 'salable_status_after' => false], ['is_salable' => false, 'was_salable' => true]],
-            [['salable_status_before' => true, 'salable_status_after' => true], ['is_salable' => true, 'was_salable' => true]]
+            [['salable_status_before' => true, 'salable_status_after' => true], ['is_salable' => true, 'was_salable' => true]],
         ];
     }
 }
