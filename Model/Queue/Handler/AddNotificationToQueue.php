@@ -37,7 +37,19 @@ class AddNotificationToQueue implements \MageSuite\Queue\Api\Queue\HandlerInterf
         $notificationToInsert = [];
         $subscriptions = $this->getSubscriptions($items);
 
+        if (empty($subscriptions)) {
+            return [];
+        }
+
+        $subscriptionIds = array_column($subscriptions, 'id');
+        $existingSubscriptionIds = $this->notificationResourceModel->getExistingSubscriptionIds($subscriptionIds);
+
         foreach ($subscriptions as $subscription) {
+            $subscriptionId = (int)$subscription['id'];
+            if (in_array($subscriptionId, $existingSubscriptionIds, true)) {
+                continue;
+            }
+
             $notificationToInsert[] = $this->notificationItemBuilder($subscription);
         }
 
