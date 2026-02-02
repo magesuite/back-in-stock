@@ -31,4 +31,26 @@ class Notification extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
         return $this->connection->insertMultiple($tableName, $notifications);
     }
+
+    /**
+     * Get subscription IDs that already have notifications in queue
+     *
+     * @param array $subscriptionIds
+     * @return array
+     */
+    public function getExistingSubscriptionIds(array $subscriptionIds): array
+    {
+        if (empty($subscriptionIds)) {
+            return [];
+        }
+
+        $tableName = $this->connection->getTableName($this->getMainTable());
+        $select = $this->connection->select()
+            ->from($tableName, ['subscription_id'])
+            ->where('subscription_id IN (?)', $subscriptionIds);
+
+        $existingIds = $this->connection->fetchCol($select);
+
+        return array_map('intval', $existingIds);
+    }
 }

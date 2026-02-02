@@ -28,14 +28,23 @@ class BackInStockSubscription extends \Magento\Framework\Model\ResourceModel\Db\
     public function getSubscriptionsBySkus($skus)
     {
         $tableName = $this->connection->getTableName($this->getMainTable());
+        $notificationTableName = $this->connection->getTableName('back_in_stock_notification_queue');
 
         $query = $this->connection
             ->select()
             ->from(['s' => $tableName], 's.*')
             ->joinLeft(['e' => $this->connection->getTableName('catalog_product_entity')], 's.product_id = e.entity_id', 'e.sku')
+            ->joinLeft(
+                ['n' => $notificationTableName],
+                's.id = n.subscription_id',
+                []
+            )
             ->where('e.sku IN (?)', $skus)
             ->where('s.customer_confirmed = ?', 1)
-            ->where('s.is_removed = ?', 0);
+            ->where('s.is_removed = ?', 0)
+            ->where('s.send_date IS NULL')
+            ->where('n.id IS NULL')
+            ->group('s.id');
 
         return $this->connection->fetchAll($query);
     }
