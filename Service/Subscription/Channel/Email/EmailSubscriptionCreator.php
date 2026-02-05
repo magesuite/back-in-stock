@@ -214,7 +214,7 @@ class EmailSubscriptionCreator
         return $subscription;
     }
 
-    protected function sendConfirmationEmail( //phpcs:ignore
+    public function sendConfirmationEmail( //phpcs:ignore
         \MageSuite\BackInStock\Model\BackInStockSubscription $subscription,
         array $params,
         int $storeId,
