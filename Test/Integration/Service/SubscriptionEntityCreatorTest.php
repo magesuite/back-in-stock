@@ -1,43 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \MageSuite\BackInStock\Service\SubscriptionEntityCreator
-     */
-    protected $subscriptionEntityCreator;
-
-    /**
-     * @var \MageSuite\BackInStock\Service\NotificationQueueCreator
-     */
-    protected $notificationQueueCreator;
-
-    /**
-     * @var \MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender
-     */
-    protected $notificationQueueSender;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory
-     */
-    protected $notificationCollection;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection
-     */
-    protected $subscriptionCollection;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\MageSuite\BackInStock\Service\SubscriptionEntityCreator $subscriptionEntityCreator;
+    protected ?\MageSuite\BackInStock\Service\NotificationQueueCreator $notificationQueueCreator;
+    protected ?\MageSuite\BackInStock\Service\Notification\Sender\Channel\EmailNotificationSender $notificationQueueSender;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\BackInStock\Model\ResourceModel\Notification\CollectionFactory $notificationCollection;
+    protected ?\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection $subscriptionCollection;
 
     public function setUp(): void
     {
@@ -54,9 +29,9 @@ class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadSubscriptions
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
      */
-    public function testItSubscribeCorrectly()
+    public function testItSubscribeCorrectly(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
@@ -73,10 +48,5 @@ class SubscriptionEntityCreatorTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('test_email@test.com', $subscription->getCustomerEmail());
         $this->assertEquals($product->getId(), $subscription->getProductId());
-    }
-
-    public static function loadSubscriptions()
-    {
-        include __DIR__.'/../../_files/subscriptions.php';
     }
 }
