@@ -1,40 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\MageSuite\BackInStock\Service\ConfirmationUpdater $confirmationUpdater;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $backInStockSubscriptionRepository;
+    protected ?\MageSuite\BackInStock\Model\BackInStockSubscription $backInStockSubscription;
+    protected ?\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection $subscriptionCollection;
 
-    /**
-     * @var \MageSuite\BackInStock\Service\ConfirmationUpdater
-     */
-    protected $confirmationUpdater;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
-     */
-    protected $backInStockSubscriptionRepository;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
-    protected $backInStockSubscription;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection
-     */
-    protected $subscriptionCollection;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
@@ -48,19 +27,17 @@ class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadSubscriptions
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
      */
-    public function testItConfirmsSubscriptionCorrectly()
+    public function testItConfirmsSubscriptionCorrectly(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
-
         $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
 
         $this->assertEquals(false, $subscription->isCustomerConfirmed());
 
         $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
-
         $subscription = $this->backInStockSubscriptionRepository->getById((int)$subscription->getId());
 
         $this->assertEquals(true, $subscription->isCustomerConfirmed());
@@ -69,31 +46,19 @@ class ConfirmationUpdaterTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadExpiredSubscriptions
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/expired_subscriptions.php
      */
-    public function testItNotConfirmsExpiredSubscription()
+    public function testItNotConfirmsExpiredSubscription(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
-
         $subscription = $this->subscriptionCollection->addFieldToFilter('product_id', ['eq' => $product->getId()])->getFirstItem();
 
         $this->assertEquals(false, $subscription->isCustomerConfirmed());
 
         $this->confirmationUpdater->update(['id' => $subscription->getId(), 'token' => $subscription->getToken()]);
-
         $subscription = $this->backInStockSubscriptionRepository->getById((int)$subscription->getId());
 
         $this->assertEquals(false, $subscription->isCustomerConfirmed());
-    }
-
-    public static function loadSubscriptions()
-    {
-        include __DIR__.'/../../_files/subscriptions.php';
-    }
-
-    public static function loadExpiredSubscriptions()
-    {
-        include __DIR__.'/../../_files/expired_subscriptions.php';
     }
 }

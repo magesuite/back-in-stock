@@ -1,30 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Service;
 
 class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\MageSuite\BackInStock\Service\NotificationQueueCreator $notificationQueueCreator;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\BackInStock\Model\ResourceModel\Notification\Collection $notificationCollection;
 
-    /**
-     * @var \MageSuite\BackInStock\Service\NotificationQueueCreator
-     */
-    protected $notificationQueueCreator;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\Notification\Collection
-     */
-    protected $notificationCollection;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
@@ -36,10 +23,10 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadSubscriptions
-     * @magentoDataFixture loadSubscriptionsCustomerConfirmed
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions.php
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/subscriptions_confirmed_customer.php
      */
-    public function testItCreateNotificationQueueCorrectly()
+    public function testItCreateNotificationQueueCorrectly(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
@@ -59,9 +46,9 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadRemovedSubscriptions
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/removed_subscriptions.php
      */
-    public function testItDoesNotAddRemovedSubscriptionToNotificationQueue()
+    public function testItDoesNotAddRemovedSubscriptionToNotificationQueue(): void
     {
         /** @var \Magento\Catalog\Model\Product $product */
         $product = $this->productRepository->get('simple');
@@ -71,20 +58,5 @@ class NotificationQueueCreatorTest extends \PHPUnit\Framework\TestCase
         $notificationCollection = $this->notificationCollection;
 
         $this->assertEquals(0, $notificationCollection->getSize());
-    }
-
-    public static function loadSubscriptions()
-    {
-        include __DIR__.'/../../_files/subscriptions.php';
-    }
-
-    public static function loadSubscriptionsCustomerConfirmed()
-    {
-        include __DIR__.'/../../_files/subscriptions_confirmed_customer.php';
-    }
-
-    public static function loadRemovedSubscriptions()
-    {
-        include __DIR__.'/../../_files/removed_subscriptions.php';
     }
 }

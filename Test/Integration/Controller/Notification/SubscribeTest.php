@@ -10,20 +10,9 @@ namespace MageSuite\BackInStock\Test\Integration\Controller\Notification;
  */
 class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface
-     */
-    protected $subscriptionRepository;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface $subscriptionRepository;
 
     protected function setUp(): void
     {
@@ -92,8 +81,8 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadProduct
-     * @magentoDataFixture loadResetSubscriptions
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/product_out_of_stock.php
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/reset_subscriptions.php
      * @dataProvider provideResetSubscriptions
      */
     public function testItResetSubscriptionCorrectly(string $email, bool $expectedResult): void
@@ -123,7 +112,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
-     * @magentoDataFixture loadRemovedSubscriptions
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/removed_subscriptions.php
      * @dataProvider provideRemovedSubscriptions
      */
     public function testItCreateNewSubscriptionCorrectlyWhenPreviousIsRemoved(string $email): void
@@ -146,21 +135,6 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $storeId = 1;
         return $this->subscriptionRepository->get($productId, 'customer_email', $email, $storeId);
-    }
-
-    public static function loadProduct()
-    {
-        include __DIR__.'/../../../_files/product_out_of_stock.php';
-    }
-
-    public static function loadResetSubscriptions()
-    {
-        include __DIR__.'/../../../_files/reset_subscriptions.php';
-    }
-
-    public static function loadRemovedSubscriptions()
-    {
-        include __DIR__.'/../../../_files/removed_subscriptions.php';
     }
 
     /**

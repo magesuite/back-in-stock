@@ -1,31 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Test\Integration\Model\Command;
 
 class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
 {
-    const SOURCE_CODE_DEFAULT = 'default';
-    const STOCK_DEFAULT_ID = 1;
+    protected const SOURCE_CODE_DEFAULT = 'default';
+    protected const STOCK_DEFAULT_ID = 1;
 
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory
-     */
-    protected $sourceItemFactory;
-
-    /**
-     * @var \MageSuite\BackInStock\Model\Command\GetBackInStockItems
-     */
-    protected $getBackInStockItems;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $getSalableStatusesStub;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory $sourceItemFactory;
+    protected ?\MageSuite\BackInStock\Model\Command\GetBackInStockItems $getBackInStockItems;
+    protected ?\PHPUnit\Framework\MockObject\MockObject $getSalableStatusesStub;
 
     public function setUp(): void
     {
@@ -47,7 +34,7 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
-    public function testItDoesNotAddSkuToQueueIfProductIsOutStock()
+    public function testItDoesNotAddSkuToQueueIfProductIsOutStock(): void
     {
         $productSku = 'simple';
 
@@ -59,9 +46,9 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoDataFixture productOutOfStock
+     * @magentoDataFixture MageSuite_BackInStock::Test/_files/product_out_of_stock.php
      */
-    public function testItAddsSkuToQueueIfProductIsOutOfStock()
+    public function testItAddsSkuToQueueIfProductIsOutOfStock(): void
     {
         $productSku = 'product_out_of_stock';
         $newQty = 100;
@@ -86,7 +73,7 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(\Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK, $items[$productSku]['source_items'][self::SOURCE_CODE_DEFAULT]['old_status']);
     }
 
-    protected function prepareSourceItem($productSku, $quantity, $status)
+    protected function prepareSourceItem(string $productSku, int $quantity, int $status): \Magento\InventoryApi\Api\Data\SourceItemInterface
     {
         return $this->sourceItemFactory->create(
             [
@@ -98,15 +85,5 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
                 ]
             ]
         );
-    }
-
-    public static function productOutOfStock()
-    {
-        include __DIR__ . '/../../../_files/product_out_of_stock.php';
-    }
-
-    public static function productOutOfStockRollback()
-    {
-        include __DIR__ . '/../../../_files/product_out_of_stock_rollback.php';
     }
 }
