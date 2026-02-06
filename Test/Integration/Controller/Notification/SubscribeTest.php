@@ -134,13 +134,11 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     private function getSubscriptionByProductIdAndEmail(int $productId, string $email): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
     {
         $storeId = 1;
+
         return $this->subscriptionRepository->get($productId, 'customer_email', $email, $storeId);
     }
 
-    /**
-     * @return array
-     */
-    public function provideResetSubscriptions(): array
+    public static function provideResetSubscriptions(): array
     {
         return [
             ['test+0@test.com', true],
@@ -154,10 +152,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function provideRemovedSubscriptions(): array
+    public static function provideRemovedSubscriptions(): array
     {
         return [
             ['test+0@test.com'],
