@@ -118,7 +118,7 @@ class Collection
     {
         parent::_initSelect();
 
-        $this->addFilterToMap('product_name', 'cpe.value');
+        $this->addFilterToMap('product_name', 'cpev.value');
     }
 
     protected function joinStatusColumn()
