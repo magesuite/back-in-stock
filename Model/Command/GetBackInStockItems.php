@@ -8,9 +8,11 @@ class GetBackInStockItems
 {
     public function __construct(
         protected \Magento\Framework\App\ResourceConnection $resourceConnection,
-        protected \MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses $getSalableStatuses
-    ) {
-    }
+        protected \MageSuite\BackInStock\Model\SourceItem\GetSalableStatuses $getSalableStatuses,
+        protected \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription $subscriptionResourceModel,
+        protected \MageSuite\BackInStock\Model\Command\GetDisabledProductSkus $getDisabledProductSkus,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
+    ) {}
 
     public function execute($sourceItems): array
     {
@@ -18,6 +20,8 @@ class GetBackInStockItems
             return [];
         }
 
+        $sourceItems = $this->filterSourceItemsWithoutValidSubscriptions($sourceItems);
+        $sourceItems = $this->filterDisabledProducts($sourceItems);
         $inStockSourceItemsData = $this->getInStockSourceItemsData($sourceItems);
 
         if (empty($inStockSourceItemsData->getSkus())) {
@@ -117,5 +121,22 @@ class GetBackInStockItems
     protected function getSalableStatuses(array $sourceItemSkus): array
     {
         return $this->getSalableStatuses->execute($sourceItemSkus);
+    }
+
+    protected function filterSourceItemsWithoutValidSubscriptions(array $sourceItems): array
+    {
+        $skus = array_unique(array_map(fn($sourceItem) => $sourceItem->getSku(), $sourceItems));
+        $subscriptions = $this->subscriptionResourceModel->getSubscriptionsBySkus($skus);
+        $subscribedSkus = array_unique(array_column($subscriptions, 'sku'));
+
+        return array_filter($sourceItems, fn($sourceItem) => in_array($sourceItem->getSku(), $subscribedSkus));
+    }
+
+    protected function filterDisabledProducts(array $sourceItems): array
+    {
+        $skus = array_unique(array_map(fn($sourceItem) => $sourceItem->getSku(), $sourceItems));
+        $disabledSkus = $this->getDisabledProductSkus->execute($skus, (int)$this->storeManager->getStore()->getId());
+
+        return array_filter($sourceItems, fn($sourceItem) => !in_array($sourceItem->getSku(), $disabledSkus));
     }
 }

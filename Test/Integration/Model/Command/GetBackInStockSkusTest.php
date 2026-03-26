@@ -46,9 +46,10 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoDbIsolation enabled
-     * @magentoDataFixture MageSuite_BackInStock::Test/_files/product_out_of_stock.php
+     * @magentoDataFixture productOutOfStock
+     * @magentoDataFixture subscriptionOfOutOfStockProduct
      */
-    public function testItAddsSkuToQueueIfProductIsOutOfStock(): void
+    public function testItAddsSkuToQueueIfProductBecomesInStock(): void
     {
         $productSku = 'product_out_of_stock';
         $newQty = 100;
@@ -73,6 +74,28 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(\Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_OUT_OF_STOCK, $items[$productSku]['source_items'][self::SOURCE_CODE_DEFAULT]['old_status']);
     }
 
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture productOutOfStock
+     */
+    public function testItDoesntAddUnsubscribedProductToQueue(): void
+    {
+        $productSku = 'product_out_of_stock';
+        $newQty = 100;
+
+        $statuses = [
+            $productSku => [
+                self::STOCK_DEFAULT_ID => false
+            ]
+        ];
+
+        $this->getSalableStatusesStub->method('execute')->willReturn($statuses);
+        $sourceItem = $this->prepareSourceItem($productSku, $newQty, \Magento\InventoryApi\Api\Data\SourceItemInterface::STATUS_IN_STOCK);
+        $items = $this->getBackInStockItems->execute([$sourceItem]);
+
+        $this->assertEmpty($items);
+    }
+
     protected function prepareSourceItem(string $productSku, int $quantity, int $status): \Magento\InventoryApi\Api\Data\SourceItemInterface
     {
         return $this->sourceItemFactory->create(
@@ -85,5 +108,25 @@ class GetBackInStockSkusTest extends \PHPUnit\Framework\TestCase
                 ]
             ]
         );
+    }
+
+    public static function productOutOfStock(): void
+    {
+        include __DIR__ . '/../../../_files/product_out_of_stock.php';
+    }
+
+    public static function productOutOfStockRollback(): void
+    {
+        include __DIR__ . '/../../../_files/product_out_of_stock_rollback.php';
+    }
+
+    public static function subscriptionOfOutOfStockProduct(): void
+    {
+        include __DIR__ . '/../../../_files/subscription_product_out_of_stock.php';
+    }
+
+    public static function subscriptionOfOutOfStockProductRollback(): void
+    {
+        include __DIR__ . '/../../../_files/subscription_product_out_of_stock_rollback.php';
     }
 }
