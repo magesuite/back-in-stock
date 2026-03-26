@@ -33,17 +33,19 @@ class GetDisabledProductSkus
         $attribute = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, 'status');
         $attributeId = (int)$attribute->getAttributeId();
 
+        $disabledStatus = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
+
         $select = $this->connection
             ->select()
             ->from(['cpe' => $this->connection->getTableName('catalog_product_entity')], ['cpe.sku'])
-            ->joinLeft(
+            ->join(
                 ['cpei_default' => $attribute->getBackendTable()],
                 sprintf(
                     'cpei_default.%1$s = cpe.%1$s AND cpei_default.attribute_id = %2$d AND cpei_default.store_id = 0',
                     $linkField, $attributeId
                 ), []
             )
-            ->joinLeft(
+            ->join(
                 ['cpei_store' => $attribute->getBackendTable()],
                 sprintf(
                     'cpei_store.%1$s = cpe.%1$s AND cpei_store.attribute_id = %2$d AND cpei_store.store_id = %3$d',
@@ -51,9 +53,41 @@ class GetDisabledProductSkus
                 ), []
             )
             ->where('cpe.sku IN (?)', $skus)
-            ->where(sprintf('COALESCE(cpei_store.value, cpei_default.value) = %d', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED));
+            ->where(sprintf('COALESCE(cpei_store.value, cpei_default.value) = %d', $disabledStatus));
 
-        $this->disabledProductSkus[$storeId] = $this->connection->fetchCol($select);
+        $selectParentDisabled = $this->connection
+            ->select()
+            ->from(['cpe' => $this->connection->getTableName('catalog_product_entity')], ['cpe.sku'])
+            ->join(
+                ['cpsl' => $this->connection->getTableName('catalog_product_super_link')],
+                'cpsl.product_id = cpe.entity_id',
+                []
+            )
+            ->join(
+                ['cpe_parent' => $this->connection->getTableName('catalog_product_entity')],
+                sprintf('cpe_parent.%s = cpsl.parent_id', $linkField),
+                []
+            )
+            ->join(
+                ['cpei_parent_default' => $attribute->getBackendTable()],
+                sprintf(
+                    'cpei_parent_default.%1$s = cpe_parent.%1$s AND cpei_parent_default.attribute_id = %2$d AND cpei_parent_default.store_id = 0',
+                    $linkField, $attributeId
+                ), []
+            )
+            ->join(
+                ['cpei_parent_store' => $attribute->getBackendTable()],
+                sprintf(
+                    'cpei_parent_store.%1$s = cpe_parent.%1$s AND cpei_parent_store.attribute_id = %2$d AND cpei_parent_store.store_id = %3$d',
+                    $linkField, $attributeId, (int)$storeId
+                ), []
+            )
+            ->where('cpe.sku IN (?)', $skus)
+            ->where(sprintf('COALESCE(cpei_parent_store.value, cpei_parent_default.value) = %d', $disabledStatus));
+
+        $unionSelect = $this->connection->select()->union([$select, $selectParentDisabled]);
+
+        $this->disabledProductSkus[$storeId] = $this->connection->fetchCol($unionSelect);
 
         return $this->disabledProductSkus[$storeId];
     }
@@ -68,5 +102,10 @@ class GetDisabledProductSkus
         $this->isStatusAttributeGlobal = (int)$attribute->getIsGlobal() === \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL;
 
         return $this->isStatusAttributeGlobal;
+    }
+
+    public function flushDisabledSkusCache(): void
+    {
+        unset($this->disabledProductSkus);
     }
 }
