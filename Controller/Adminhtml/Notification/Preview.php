@@ -1,36 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Notification;
 
-class Preview extends \Magento\Backend\App\Action
+class Preview extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $resultJsonFactory;
-    /**
-     * @var \MageSuite\BackInStock\Service\PreviewNotificationSender
-     */
-    protected $previewNotificationSender;
+    public const ADMIN_RESOURCE = 'MageSuite_BackInStock::config_backinstock';
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \MageSuite\BackInStock\Service\PreviewNotificationSender $previewNotificationSender
+        protected \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+        protected \MageSuite\BackInStock\Service\PreviewNotificationSender $previewNotificationSender
     ) {
         parent::__construct($context);
-
-        $this->resultJsonFactory = $resultJsonFactory;
-        $this->previewNotificationSender = $previewNotificationSender;
     }
-
     /**
      * @return \Magento\Framework\Controller\Result\Json
      */
-    public function execute()
+    public function execute(): \Magento\Framework\Controller\Result\Json
     {
         $data = $this->getRequest()->getPostValue();
-
         /** @var \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();
 
@@ -51,7 +41,6 @@ class Preview extends \Magento\Backend\App\Action
                 'successMessage' => __('Preview emails has been sent to provided email address.')
             ]);
         } catch (\Exception $e) {
-
             $result->setData([
                 'success' => false,
                 'errorMessage' => __('Error occured while sending notifications.', $e->getMessage())
@@ -59,10 +48,5 @@ class Preview extends \Magento\Backend\App\Action
         }
 
         return $result;
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 }

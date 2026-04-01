@@ -1,37 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Controller\Adminhtml\Notification;
 
-class Manual extends \Magento\Backend\App\Action
+class Manual extends \Magento\Backend\App\Action implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $resultJsonFactory;
-
-    /**
-     * @var \MageSuite\BackInStock\Service\NotificationQueueCreator
-     */
-    protected $notificationQueueCreator;
+    public const ADMIN_RESOURCE = 'MageSuite_BackInStock::config_backinstock';
 
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \MageSuite\BackInStock\Service\NotificationQueueCreator $notificationQueueCreator
+        protected \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+        protected \MageSuite\BackInStock\Service\NotificationQueueCreator $notificationQueueCreator
     ) {
         parent::__construct($context);
-
-        $this->resultJsonFactory = $resultJsonFactory;
-        $this->notificationQueueCreator = $notificationQueueCreator;
     }
 
     /**
      * @return \Magento\Framework\Controller\Result\Json
      */
-    public function execute()
+    public function execute(): \Magento\Framework\Controller\Result\Json
     {
         $data = $this->getRequest()->getPostValue();
-
         /** @var \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();
 
@@ -48,10 +38,8 @@ class Manual extends \Magento\Backend\App\Action
             }
 
             $this->messageManager->addSuccessMessage(__('Customers have been notified.'));
-
             $result->setData(['success' => true]);
         } catch (\Exception $e) {
-
             $result->setData([
                 'success' => false,
                 'errorMessage' => __('Error occured while sending notifications.', $e->getMessage())
@@ -59,10 +47,5 @@ class Manual extends \Magento\Backend\App\Action
         }
 
         return $result;
-    }
-
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed(self::ADMIN_RESOURCE);
     }
 }
