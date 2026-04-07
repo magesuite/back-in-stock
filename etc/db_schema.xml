@@ -44,6 +44,9 @@
         <constraint xsi:type="foreign" referenceId="BIS_SUBSCRIPTION_ENTITY_PRODUCT_ID_CATALOG_PRODUCT_ENTITY_ENTITY_ID"
                     table="back_in_stock_subscription_entity" column="product_id"
                     referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="BIS_SUBSCRIPTION_ENTITY_PARENT_PRODUCT_ID_CATALOG_PRODUCT_ENTITY_ENTITY_ID"
+                    table="back_in_stock_subscription_entity" column="parent_product_id"
+                    referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
         <constraint xsi:type="foreign" referenceId="BIS_SUBSCRIPTION_ENTITY_STORE_ID_STORE_STORE_ID"
                     table="back_in_stock_subscription_entity" column="store_id"
                     referenceTable="store" referenceColumn="store_id" onDelete="CASCADE"/>
