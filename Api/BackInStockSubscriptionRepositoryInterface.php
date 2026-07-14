@@ -19,9 +19,9 @@ interface BackInStockSubscriptionRepositoryInterface
      * @return \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
      */
     public function get( //phpcs:ignore
-        int $productId, 
+        int $productId,
         string $identifyByField,
-        string $identifyByValue, 
+        string $identifyByValue,
         int $storeId
     ): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 
@@ -47,7 +47,7 @@ interface BackInStockSubscriptionRepositoryInterface
      * @return ?\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
      */
     public function unsubscribe(
-        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription, 
+        \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription,
         bool $isHistoricalDataKept = false
     ): ?\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 

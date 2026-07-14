@@ -83,8 +83,8 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/product_out_of_stock.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/reset_subscriptions.php
-     * @dataProvider provideResetSubscriptions
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideResetSubscriptions')]
     public function testItResetSubscriptionCorrectly(string $email, bool $expectedResult): void
     {
         $product = $this->productRepository->get('product_out_of_stock');
@@ -113,8 +113,8 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
      * @magentoAppIsolation enabled
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/removed_subscriptions.php
-     * @dataProvider provideRemovedSubscriptions
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideRemovedSubscriptions')]
     public function testItCreateNewSubscriptionCorrectlyWhenPreviousIsRemoved(string $email): void
     {
         $product = $this->productRepository->get('simple');

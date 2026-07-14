@@ -28,9 +28,7 @@ class AreProductsSalableTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     public function testItReturnsCorrectInformationData(array $stockInfo, array $expectedData): void
     {
         $statuses = [

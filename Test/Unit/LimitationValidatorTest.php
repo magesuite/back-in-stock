@@ -37,9 +37,7 @@ class LimitationValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @dataProvider getMinTimeDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getMinTimeDataProvider')]
     public function testMinTimeValid(?string $sendDate, int $sendCount, ?int $minTime, string $currentTime, bool $expected): void
     {
         /**
@@ -52,9 +50,7 @@ class LimitationValidatorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $this->limitationValidator->isMinTimeValid($subscriptionMock));
     }
 
-    /**
-     * @dataProvider getDailyLimitDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getDailyLimitDataProvider')]
     public function testDailyLimitExceeded(?string $sendDate, int $sendDailyCount, ?int $dailyLimit, string $currentTime, bool $expected): void
     {
         /**

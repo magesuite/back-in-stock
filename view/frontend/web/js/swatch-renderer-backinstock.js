@@ -123,7 +123,7 @@ define([
              */
             _resetBiSFormOnOptionChange: function () {
                 var $widget = this;
-                
+
                 var handleOptionChange = function (e) {
                     if ($(e.target).hasClass('disabled')) {
                         return;
@@ -136,7 +136,7 @@ define([
                 };
 
                 this.element.on('click change', '.' + this.options.classes.optionClass, handleOptionChange);
-                
+
                 this.element.on('keydown', '.' + this.options.classes.optionClass, function (e) {
                     if (e.keyCode === 13) {
                         handleOptionChange.call(this, e);
@@ -175,7 +175,7 @@ define([
                 };
 
                 this.$outOfStockOptions.on('click', handleBackInStockEvent);
-                
+
                 this.$outOfStockOptions.on('keydown', function (e) {
                     if (e.keyCode === 13) {
                         handleBackInStockEvent.call(this, e);
