@@ -55,6 +55,8 @@ class ConfirmationUpdater
             $this->backInStockSubscriptionRepository->save($subscription);
 
             $this->messageManager->addSuccessMessage(__('Back in stock subscription has been confirmed.'));
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         } catch (\Exception $e) {
             $this->messageManager->addExceptionMessage($e);
         }
