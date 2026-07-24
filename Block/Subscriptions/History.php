@@ -1,14 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Block\Subscriptions;
 
 class History extends \Magento\Framework\View\Element\Template
 {
-    protected $subscriptions;
-    /**
-     * @var \Magento\Customer\Model\Session
-     */
-    protected $customerSession;
     /**
      * @var \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory
      */
@@ -30,13 +27,11 @@ class History extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Customer\Model\Session $customerSession,
         \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
         \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku $getSalableQuantityDataBySku
     ) {
-        $this->customerSession = $customerSession;
         parent::__construct($context);
         $this->subscriptionCollectionFactory = $subscriptionCollectionFactory;
         $this->productRepository = $productRepository;

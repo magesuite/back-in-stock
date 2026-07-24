@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\ViewModel\Subscriptions;
 
 class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
@@ -14,16 +16,11 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
         protected \Magento\InventorySales\Model\StockResolver $stockResolver,
         protected \Magento\InventorySales\Model\GetProductSalableQty $getProductSalableQty,
         protected \Psr\Log\LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
-    public function getSubscriptions()
+    public function getSubscriptions(): \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\Collection
     {
-        $customerId = $this->customerSession->getCustomerId();
-
-        if (empty($customerId)) {
-            return [];
-        }
+        $customerId = (int)$this->customerSession->getCustomerId();
 
         return $this->subscriptionCollectionFactory
             ->create()
