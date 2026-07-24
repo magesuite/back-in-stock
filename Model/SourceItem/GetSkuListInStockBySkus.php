@@ -54,9 +54,10 @@ class GetSkuListInStockBySkus
         $skuListInStockList = [];
         foreach ($items as $stockId => $skuList) {
             /** @var \Magento\InventoryIndexer\Indexer\SourceItem\SkuListInStock $skuListInStock */
-            $skuListInStock = $this->skuListInStockFactory->create();
-            $skuListInStock->setStockId((int)$stockId);
-            $skuListInStock->setSkuList($skuList);
+            $skuListInStock = $this->skuListInStockFactory->create([
+                'stockId' => (int) $stockId,
+                'skuList' => $skuList
+            ]);
             $skuListInStockList[] = $skuListInStock;
         }
         return $skuListInStockList;
