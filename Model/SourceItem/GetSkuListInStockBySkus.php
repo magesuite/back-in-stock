@@ -58,6 +58,7 @@ class GetSkuListInStockBySkus
                 'stockId' => (int) $stockId,
                 'skuList' => $skuList
             ]);
+            // Backward compatibility
             $skuListInStock->setStockId((int) $stockId);
             $skuListInStock->setSkuList($skuList);
             $skuListInStockList[] = $skuListInStock;
