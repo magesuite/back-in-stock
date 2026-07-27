@@ -58,6 +58,8 @@ class GetSkuListInStockBySkus
                 'stockId' => (int) $stockId,
                 'skuList' => $skuList
             ]);
+            $skuListInStock->setStockId((int) $stockId);
+            $skuListInStock->setSkuList($skuList);
             $skuListInStockList[] = $skuListInStock;
         }
         return $skuListInStockList;
