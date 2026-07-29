@@ -13,10 +13,11 @@ class Configurable extends NotificationProductDataResolver implements Notificati
 
     public function getProductData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription): array
     {
-        $product = $this->getProduct(
-            (int)$subscription->getParentProductId(),
-            (int)$subscription->getStoreId()
-        );
+        $product = $subscription->getParentProduct();
+
+        if (empty($product)) {
+            return [];
+        }
 
         return [
             'name' => $product->getName(),

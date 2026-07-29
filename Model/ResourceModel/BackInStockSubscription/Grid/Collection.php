@@ -31,6 +31,9 @@ class Collection
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\Catalog\Model\Product\Visibility $productVisibility,
+        \MageSuite\BackInStock\Model\Config $config,
         protected \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         $mainTable,
         $eventPrefix,
@@ -45,6 +48,9 @@ class Collection
             $logger,
             $fetchStrategy,
             $eventManager,
+            $productCollectionFactory,
+            $productVisibility,
+            $config,
             $connection,
             $resource
         );

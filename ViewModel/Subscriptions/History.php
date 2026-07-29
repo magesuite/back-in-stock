@@ -10,11 +10,7 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
         protected \Magento\Customer\Model\Session $customerSession,
         protected \MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription\CollectionFactory $subscriptionCollectionFactory,
         protected \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
-        protected \MageSuite\BackInStock\Model\ResourceModel\Product $productResource,
         protected \Magento\Framework\UrlInterface $url,
-        protected \Magento\Store\Model\StoreManager $storeManager,
-        protected \Magento\InventorySales\Model\StockResolver $stockResolver,
-        protected \Magento\InventorySales\Model\GetProductSalableQty $getProductSalableQty,
         protected \Psr\Log\LoggerInterface $logger
     ) {}
 
@@ -29,7 +25,8 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
             ->addFieldToFilter('customer_unsubscribed', ['eq' => 0])
             ->addFieldToFilter('customer_id', ['eq' => $customerId])
             ->addFieldToFilter('is_removed', ['eq' => 0])
-            ->setOrder('add_date', 'desc');
+            ->setOrder('add_date', 'desc')
+            ->addProductsToCollection();
     }
 
     public function getProductData(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription): \Magento\Framework\DataObject
@@ -39,24 +36,13 @@ class History implements \Magento\Framework\View\Element\Block\ArgumentInterface
 
     public function isProductSaleable(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription): bool
     {
-        $sku = $this->productResource->getSkuByProductId($subscription->getProductId());
+        $product = $subscription->getProduct();
 
-        if (!$sku) {
+        if (!$product) {
             return false;
         }
 
-        $websiteCode = $this->storeManager->getWebsite()->getCode();
-        $stockId = $this->stockResolver->execute(\Magento\InventorySalesApi\Api\Data\SalesChannelInterface::TYPE_WEBSITE, $websiteCode)->getStockId();
-
-        try {
-            $qty = $this->getProductSalableQty->execute($sku, $stockId);
-            return $qty > 0;
-        } catch (\Exception $e) {
-            $this->logger->critical(
-                __('Error checking product salable status for SKU %1: %2', $sku, $e->getMessage())
-            );
-            return false;
-        }
+        return $product->isSaleable();
     }
 
     public function getUnsubscribeUrl(\MageSuite\BackInStock\Model\BackInStockSubscription $notification): string
