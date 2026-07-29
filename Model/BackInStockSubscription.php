@@ -1,39 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Model;
 
 class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel implements \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
 {
     public const SUBSCRIPTION_CONFIRMATION_AWAITING_TIME_IN_HOURS = 24;
 
-    /**
-     * @var \MageSuite\BackInStock\Helper\Subscription
-     */
-    protected $subscriptionHelper;
-
-    /**
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
-     * @param \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
-     * @param array $data
-     */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
+        protected \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
+        protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
         ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-        $this->subscriptionHelper = $subscriptionHelper;
+
     }
 
     protected function _construct()
     {
         $this->_init(\MageSuite\BackInStock\Model\ResourceModel\BackInStockSubscription::class);
+    }
+
+    public function getId()
+    {
+        return $this->_getData('id');
     }
 
     public function setId($id)
@@ -43,264 +39,141 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         return $this;
     }
 
-    public function getId()
-    {
-        return $this->getData('id');
-    }
-
-    /**
-     * @return int
-     */
     public function getCustomerId()
     {
-        return $this->getData('customer_id');
+        return $this->_getData('customer_id');
     }
 
-    /**
-     * @param int $customerId
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setCustomerId($customerId)
     {
-        $this->setData('customer_id', $customerId);
-
-        return $this;
+        return $this->setData('customer_id', $customerId);
     }
 
-    /**
-     * @return int
-     */
     public function getCustomerEmail()
     {
-        return $this->getData('customer_email');
+        return $this->_getData('customer_email');
     }
 
-    /**
-     * @param int $customerEmail
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setCustomerEmail($customerEmail)
     {
-        $this->setData('customer_email', $customerEmail);
-
-        return $this;
+        return $this->setData('customer_email', $customerEmail);
     }
 
-    /**
-     * @return string
-     */
     public function getProductId()
     {
-        return $this->getData('product_id');
+        return $this->_getData('product_id');
     }
 
-    /**
-     * @param string $productId
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setProductId($productId)
     {
-        $this->setData('product_id', $productId);
-
-        return $this;
+        return $this->setData('product_id', $productId);
     }
 
-    /**
-     * @return string
-     */
     public function getParentProductId()
     {
-        return $this->getData('parent_product_id');
+        return $this->_getData('parent_product_id');
     }
 
-    /**
-     * @param string $parentProductId
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setParentProductId($parentProductId)
     {
-        $this->setData('parent_product_id', $parentProductId);
-
-        return $this;
+        return $this->setData('parent_product_id', $parentProductId);
     }
 
-    /**
-     * @return string
-     */
     public function getStoreId()
     {
-        return $this->getData('store_id');
+        return $this->_getData('store_id');
     }
 
-    /**
-     * @param string $storeId
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setStoreId($storeId)
     {
-        $this->setData('store_id', $storeId);
-
-        return $this;
+        return $this->setData('store_id', $storeId);
     }
 
-    /**
-     * @return string
-     */
     public function getAddDate()
     {
-        return $this->getData('add_date');
+        return $this->_getData('add_date');
     }
 
-    /**
-     * @param string $addDate
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setAddDate($addDate)
     {
-        $this->setData('add_date', $addDate);
-
-        return $this;
+        return $this->setData('add_date', $addDate);
     }
 
-    /**
-     * @return int
-     */
     public function getSendDate()
     {
-        return $this->getData('send_date');
+        return $this->_getData('send_date');
     }
 
-    /**
-     * @param int $sendDate
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setSendDate($sendDate)
     {
-        $this->setData('send_date', $sendDate);
-
-        return $this;
+        return $this->setData('send_date', $sendDate);
     }
 
-    /**
-     * @return int
-     */
     public function getSendCount()
     {
-        return $this->getData('send_count');
+        return $this->_getData('send_count');
     }
 
-    /**
-     * @param int $sendCount
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setSendCount($sendCount)
     {
-        $this->setData('send_count', $sendCount);
-
-        return $this;
+        return $this->setData('send_count', $sendCount);
     }
 
-    /**
-     * @return string
-     */
     public function getSendNotificationStatus()
     {
-        return $this->getData('send_notification_status');
+        return $this->_getData('send_notification_status');
     }
 
-    /**
-     * @param string $sendNotificationStatus
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setSendNotificationStatus($sendNotificationStatus)
     {
-        $this->setData('send_notification_status', $sendNotificationStatus);
-
-        return $this;
+        return $this->setData('send_notification_status', $sendNotificationStatus);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isCustomerConfirmed(): bool
     {
-        return $this->getData('customer_confirmed');
+        return (bool)$this->_getData('customer_confirmed');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setCustomerConfirmed(bool $confirmed)
     {
-        $this->setData('customer_confirmed', $confirmed);
-
-        return $this;
+        return $this->setData('customer_confirmed', $confirmed);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isCustomerUnsubscribed(): bool
     {
-        return $this->getData('customer_unsubscribed');
+        return (bool)$this->_getData('customer_unsubscribed');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setCustomerUnsubscribed(bool $unsubscribed)
     {
-        $this->setData('customer_unsubscribed', $unsubscribed);
-
-        return $this;
+        return $this->setData('customer_unsubscribed', $unsubscribed);
     }
 
-    /**
-     * @return int
-     */
     public function getToken()
     {
-        return $this->getData('token');
+        return $this->_getData('token');
     }
 
-    /**
-     * @param int $token
-     * @return \MageSuite\BackInStock\Model\BackInStockSubscription
-     */
     public function setToken($token)
     {
-        $this->setData('token', $token);
-
-        return $this;
+        return $this->setData('token', $token);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getNotificationChannel()
     {
-        return $this->getData('notification_channel');
+        return $this->_getData('notification_channel');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setNotificationChannel($channel)
     {
         return $this->setData('notification_channel', $channel);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isRemoved(): bool
     {
-        return $this->getData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::IS_REMOVED);
+        return (bool)$this->getData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::IS_REMOVED);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function setIsRemoved(bool $isRemoved)
     {
         return $this->setData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface::IS_REMOVED, $isRemoved);
@@ -313,11 +186,43 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
 
     public function getSendCountDaily(): int
     {
-        return (int)$this->getData(self::SEND_COUNT_DAILY);
+        return (int)$this->_getData(self::SEND_COUNT_DAILY);
     }
 
     public function setSendCountDaily(int $sendCountDaily): \MageSuite\BackInStock\Model\BackInStockSubscription
     {
         return $this->setData(self::SEND_COUNT_DAILY, $sendCountDaily);
+    }
+
+    public function getProduct(): ?\Magento\Catalog\Api\Data\ProductInterface
+    {
+        if ($this->hasData('product')) {
+            return $this->getData('product');
+        }
+
+        try {
+            $product = $this->productRepository->getById($this->getProductId(), false, $this->storeManager->getStore()->getId());
+            $this->setProduct($product);
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
+            return null;
+        }
+
+        return $this->getData('product');
+    }
+
+    public function getParentProduct(): ?\Magento\Catalog\Api\Data\ProductInterface
+    {
+        if ($this->hasData('parent_product') || !$this->getParentProductId()) {
+            return $this->getData('parent_product');
+        }
+
+        try {
+            $product = $this->productRepository->getById($this->getParentProductId(), false, $this->storeManager->getStore()->getId());
+            $this->setParentProduct($product);
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
+            return null;
+        }
+
+        return $this->getData('parent_product');
     }
 }

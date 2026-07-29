@@ -13,10 +13,7 @@ class Simple extends NotificationProductDataResolver implements NotificationProd
 
     public function getProductData(\MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $subscription): array
     {
-        $product = $this->getProduct(
-            (int)$subscription->getProductId(),
-            (int)$subscription->getStoreId()
-        );
+        $product = $subscription->getProduct();
 
         if (empty($product)) {
             return [];

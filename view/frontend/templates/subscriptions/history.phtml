@@ -4,7 +4,7 @@
 $viewModel = $block->getViewModel();
 $subscriptions = $viewModel->getSubscriptions();
 
-if (count($subscriptions)) : ?>
+if ($subscriptions->count()) : ?>
     <div class="table-wrapper orders-history">
         <table class="data table table-order-items history" id="my-orders-table">
             <caption class="table-caption"><?= /* @noEscape */ __('Notification requests') ?></caption>
