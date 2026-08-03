@@ -75,7 +75,7 @@ class EmailSender
     public function sendMail($receiverEmail, $emailTemplateVariables, $templateConfigPath, $storeId, $customerId = 0) //phpcs:ignore
     {
         if ($customerId) {
-            $this->addCustomerNameToVariables($emailTemplateVariables, $customerId);
+            $emailTemplateVariables = $this->addCustomerNameToVariables($emailTemplateVariables, $customerId);
         }
 
         try {
@@ -102,15 +102,16 @@ class EmailSender
         return self::STATUS_SENT;
     }
 
-    protected function addCustomerNameToVariables(&$emailTemplateVariables, $customerId)
+    public function addCustomerNameToVariables(array $emailTemplateVariables, int $customerId): array
     {
         try {
             $customer = $this->customerRepository->getById($customerId);
+
+            $emailTemplateVariables['customerName'] = sprintf('%s %s', $customer->getFirstname(), $customer->getLastname());
         } catch (\Exception $e) {
             $emailTemplateVariables['customerName'] = null;
-            return;
         }
 
-        $emailTemplateVariables['customerName'] = sprintf('%s %s', $customer->getFirstname(), $customer->getLastname());
+        return $emailTemplateVariables;
     }
 }
