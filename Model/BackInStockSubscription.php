@@ -13,7 +13,6 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         \Magento\Framework\Registry $registry,
         protected \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
         protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
         ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -201,7 +200,7 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         }
 
         try {
-            $product = $this->productRepository->getById($this->getProductId(), false, $this->storeManager->getStore()->getId());
+            $product = $this->productRepository->getById($this->getProductId(), false, (int)$this->getStoreId());
             $this->setProduct($product);
         } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
             return null;
@@ -217,7 +216,7 @@ class BackInStockSubscription extends \Magento\Framework\Model\AbstractModel imp
         }
 
         try {
-            $product = $this->productRepository->getById($this->getParentProductId(), false, $this->storeManager->getStore()->getId());
+            $product = $this->productRepository->getById($this->getParentProductId(), false, (int)$this->getStoreId());
             $this->setParentProduct($product);
         } catch (\Magento\Framework\Exception\NoSuchEntityException $exception) {
             return null;
