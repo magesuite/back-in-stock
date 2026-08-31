@@ -74,7 +74,10 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation', 'mage/
                 const customer = customerData.get('customer')();
 
                 if (customer.hasOwnProperty('email')) {
-                    $widget.element.find('.cs-product-stock-subscription__input').val(customer.email);
+                    $widget.element.find('.cs-product-stock-subscription__input')
+                        .val(customer.email)
+                        .trigger('input')
+                        .trigger('blur');
                 }
             })
         },
