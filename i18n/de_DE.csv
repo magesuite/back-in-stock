@@ -37,13 +37,12 @@
 "This option is currently out of stock. You can subscribe for stock alert below to get notified once it's back in our shop.","Wir haben dieses Produkt derzeit leider nicht an Lager. Melde dich unten für den Bestandsalarm an, um benachrichtigt zu werden, sobald es wieder in unserem Shop verfügbar ist."
 "Time for subscription confirmation passed", "Zeit für Abonnementbestätigung abgelaufen."
 "This subscription does not exist","Dieses Abonnement existiert nicht"
-"to back-in-stock notifications.","Back-in-Stock-Benachrichtigungen abonniert."
 "You have already subscribed for a back-to-stock notification for this product.","Sie haben sich bereits für Benachrichtigungen für diesen Artikel angemeldet."
 "You have been already unsubscribed from back in stock notification.", "Sie wurden bereits von der Zurück in der Lagerbenachrichtigung abgemeldet."
 "You have been unsubscribed from back in stock notification.", "Sie wurden von der Benachrichtigung über den Lagerbestand abgemeldet."
 "You have no back in stock subscriptions yet.","Sie haben sich noch für keine Benachrichtigungen angemeldet."
-"You have subscribed with your e-mail address","Sie haben mit Ihrer E-Mail-Adresse"
-"to back-in-stock notifications.","für das Verfügbarkeitsabonnement eingeschrieben"
+"You have subscribed with your e-mail address","Sie haben sich mit Ihrer E-Mailadresse"
+"to back-in-stock notifications.","für die Benachrichtigung zur Verfügbarkeit eines Produktes angemeldet."
 Action,Aktion
 Actions,Aktionen
 Delete,Löschen
@@ -63,3 +62,6 @@ Unsubscribe,Abbestellen
 "Notification channel has not been specified.","Der Benachrichtigungskanal wurde nicht angegeben."
 "Subscribe for stock alert","Für Verfügbarkeitsbenachrichtigung anmelden"
 "This subscription request has been already confirmed.","Diese Abonnementanfrage wurde bereits bestätigt."
+"Selected product combination is not available.","Diese Kombination ist leider nicht verfügbar."
+"Something went wrong. Please try again later.","Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+"Back in stock notifications are not available.","Die Benachrichtigung zur Verfügbarkeit ist derzeit nicht aktiv."

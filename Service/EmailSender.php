@@ -1,60 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Service;
 
 class EmailSender
 {
-    const STATUS_SENT = 'sent';
+    public const STATUS_SENT = 'sent';
 
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var \Magento\Framework\Translate\Inline\StateInterface
-     */
-    protected $inlineTranslation;
-
-    /**
-     * @var \Magento\Framework\Mail\Template\TransportBuilder
-     */
-    protected $transportBuilder;
-
-    /**
-     * @var string
-     */
-    protected $templateId;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var \MageSuite\BackInStock\Helper\Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var \Magento\Customer\Api\CustomerRepositoryInterface
-     */
-    protected $customerRepository;
+    protected ?string $templateId = null;
 
     public function __construct(
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation,
-        \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
-        \Psr\Log\LoggerInterface $logger,
-        \MageSuite\BackInStock\Helper\Configuration $configuration,
-        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
+        protected \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation,
+        protected \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
+        protected \Psr\Log\LoggerInterface $logger,
+        protected \MageSuite\BackInStock\Helper\Configuration $configuration,
+        protected \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
     ) {
-        $this->storeManager = $storeManager;
-        $this->inlineTranslation = $inlineTranslation;
-        $this->transportBuilder = $transportBuilder;
-        $this->logger = $logger;
-        $this->configuration = $configuration;
-        $this->customerRepository = $customerRepository;
     }
 
     public function generateTemplate($emailTemplateVariables, $senderInfo, $receiverInfo, $storeId) //phpcs:ignore
@@ -75,11 +38,17 @@ class EmailSender
     public function sendMail($receiverEmail, $emailTemplateVariables, $templateConfigPath, $storeId, $customerId = 0) //phpcs:ignore
     {
         if ($customerId) {
-            $emailTemplateVariables = $this->addCustomerNameToVariables($emailTemplateVariables, $customerId);
+            $emailTemplateVariables = $this->addCustomerNameToVariables(
+                $emailTemplateVariables,
+                (int)$customerId,
+                (string)$receiverEmail
+            );
         }
 
         try {
-            $this->templateId = $this->configuration->getEmailTemplateId($templateConfigPath, $storeId);
+            $templateId = $this->configuration->getEmailTemplateId($templateConfigPath, $storeId);
+
+            $this->templateId = $templateId === null ? null : (string)$templateId;
 
             $this->inlineTranslation->suspend();
 
@@ -102,16 +71,34 @@ class EmailSender
         return self::STATUS_SENT;
     }
 
-    public function addCustomerNameToVariables(array $emailTemplateVariables, int $customerId): array
-    {
+    public function addCustomerNameToVariables(
+        array $emailTemplateVariables,
+        int $customerId,
+        string $receiverEmail
+    ): array {
+        $emailTemplateVariables['customerName'] = null;
+
         try {
             $customer = $this->customerRepository->getById($customerId);
-
-            $emailTemplateVariables['customerName'] = sprintf('%s %s', $customer->getFirstname(), $customer->getLastname());
         } catch (\Exception $e) {
-            $emailTemplateVariables['customerName'] = null;
+            $this->logger->error($e);
+
+            return $emailTemplateVariables;
         }
 
+        if (!$this->isCustomerOwnAddress($customer, $receiverEmail)) {
+            return $emailTemplateVariables;
+        }
+
+        $emailTemplateVariables['customerName'] = sprintf('%s %s', $customer->getFirstname(), $customer->getLastname());
+
         return $emailTemplateVariables;
+    }
+
+    protected function isCustomerOwnAddress(
+        \Magento\Customer\Api\Data\CustomerInterface $customer,
+        string $receiverEmail
+    ): bool {
+        return strcasecmp((string)$customer->getEmail(), trim($receiverEmail)) === 0;
     }
 }
