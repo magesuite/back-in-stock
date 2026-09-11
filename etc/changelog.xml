@@ -155,6 +155,13 @@
                     <ticket_id>P2G-2738</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.14.24" date="2026-09-10">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Fix Back in Stock subscription flow: block non-existing product variants, restrict the public route to POST and to stores where the module is enabled, stop leaking the customer name into confirmation emails, and correct the German confirmation email wording.</overview>
+                    <ticket_id>FR-753</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

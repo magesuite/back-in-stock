@@ -12,8 +12,7 @@
     <tr class="email-summary">
         <td>
             <p class="greeting">{{trans "Hello, %name" name=$customerName}}</p>
-            <p>{{trans "You have subscribed with your e-mail address" }}</p>
-            <p>{{var email|raw}} {{trans "to back-in-stock notifications."}}</p>
+            <p>{{trans "You have subscribed with your e-mail address"}} {{var email|raw}} {{trans "to back-in-stock notifications."}}</p>
             <p>
                 {{trans "Please click following link to confirm your subscription:"}}
                 <a href="{{var confirm_url|raw}}">{{trans "Subscribe"}}</a>

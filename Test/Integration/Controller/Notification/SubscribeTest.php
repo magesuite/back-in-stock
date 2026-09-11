@@ -27,6 +27,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
+     * @magentoConfigFixture default_store back_in_stock/general/enabled 1
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
     public function testItSubscribeCorrectly(): void
@@ -34,13 +35,11 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
         $email = 'subscribe_test@test.com';
 
         $product = $this->productRepository->get('simple');
-        $this->getRequest()->setParams([
+        $this->dispatchSubscribe([
             'notification_channel' => 'email',
             'product' => $product->getId(),
             'email' => $email
         ]);
-
-        $this->dispatch('backinstock/notification/subscribe');
 
         $this->assertTrue(
             $this->subscriptionRepository->subscriptionExist(
@@ -58,6 +57,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
+     * @magentoConfigFixture default_store back_in_stock/general/enabled 1
      * @magentoConfigFixture admin_store back_in_stock/general/is_confirmation_required 0
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
@@ -66,13 +66,11 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
         $email = 'subscribe2_test@test.com';
 
         $product = $this->productRepository->get('simple');
-        $this->getRequest()->setParams([
+        $this->dispatchSubscribe([
             'notification_channel' => 'email',
             'product' => $product->getId(),
             'email' => $email
         ]);
-
-        $this->dispatch('backinstock/notification/subscribe');
 
         $subscription = $this->getSubscriptionByProductIdAndEmail((int)$product->getId(), $email);
         $this->assertTrue($subscription->isCustomerConfirmed());
@@ -81,6 +79,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
+     * @magentoConfigFixture default_store back_in_stock/general/enabled 1
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/product_out_of_stock.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/reset_subscriptions.php
      */
@@ -96,13 +95,11 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
             1
         );
 
-        $this->getRequest()->setParams([
+        $this->dispatchSubscribe([
             'notification_channel' => 'email',
             'product' => $subscription->getProductId(),
             'email' => $subscription->getCustomerEmail()
         ]);
-
-        $this->dispatch('backinstock/notification/subscribe');
 
         $resetedSubscription = $this->subscriptionRepository->getById((int)$subscription->getId());
         $this->assertEquals($expectedResult, $subscription->getToken() !== $resetedSubscription->getToken());
@@ -111,6 +108,7 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     /**
      * @magentoDbIsolation enabled
      * @magentoAppIsolation enabled
+     * @magentoConfigFixture default_store back_in_stock/general/enabled 1
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture MageSuite_BackInStock::Test/_files/removed_subscriptions.php
      */
@@ -119,6 +117,41 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
     {
         $product = $this->productRepository->get('simple');
 
+        $this->dispatchSubscribe([
+            'notification_channel' => 'email',
+            'product' => $product->getId(),
+            'email' => $email
+        ]);
+
+        $newSubscription = $this->getSubscriptionByProductIdAndEmail((int) $product->getId(), $email);
+        $this->assertEquals(false, $newSubscription->isRemoved());
+    }
+
+    protected function dispatchSubscribe(array $params): void
+    {
+        $formKey = $this->objectManager->get(\Magento\Framework\Data\Form\FormKey::class);
+
+        $params['form_key'] = $formKey->getFormKey();
+
+        $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_POST);
+        $this->getRequest()->setParams($params);
+
+        $this->dispatch('backinstock/notification/subscribe');
+    }
+
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture default_store back_in_stock/general/enabled 1
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     */
+    public function testItDoesNotSubscribeOnGetRequest(): void
+    {
+        $email = 'subscribe_get_test@test.com';
+
+        $product = $this->productRepository->get('simple');
+
+        $this->getRequest()->setMethod(\Magento\Framework\App\Request\Http::METHOD_GET);
         $this->getRequest()->setParams([
             'notification_channel' => 'email',
             'product' => $product->getId(),
@@ -127,8 +160,42 @@ class SubscribeTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->dispatch('backinstock/notification/subscribe');
 
-        $newSubscription = $this->getSubscriptionByProductIdAndEmail((int) $product->getId(), $email);
-        $this->assertEquals(false, $newSubscription->isRemoved());
+        $this->assertFalse(
+            $this->subscriptionRepository->subscriptionExist(
+                (int) $product->getId(),
+                'customer_email',
+                $email,
+                1
+            )
+        );
+    }
+
+    /**
+     * @magentoDbIsolation enabled
+     * @magentoAppIsolation enabled
+     * @magentoConfigFixture default_store back_in_stock/general/enabled 0
+     * @magentoDataFixture Magento/Catalog/_files/product_simple.php
+     */
+    public function testItDoesNotSubscribeWhenModuleIsDisabled(): void
+    {
+        $email = 'subscribe_disabled_test@test.com';
+
+        $product = $this->productRepository->get('simple');
+
+        $this->dispatchSubscribe([
+            'notification_channel' => 'email',
+            'product' => $product->getId(),
+            'email' => $email
+        ]);
+
+        $this->assertFalse(
+            $this->subscriptionRepository->subscriptionExist(
+                (int) $product->getId(),
+                'customer_email',
+                $email,
+                1
+            )
+        );
     }
 
     private function getSubscriptionByProductIdAndEmail(int $productId, string $email): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface

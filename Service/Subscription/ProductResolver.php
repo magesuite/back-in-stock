@@ -1,33 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Service\Subscription;
 
 class ProductResolver
 {
-    /**
-     * @var \MageSuite\BackInStock\Model\ResourceModel\Product
-     */
-    protected $productResource;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
     public function __construct(
-        \MageSuite\BackInStock\Model\ResourceModel\Product $productResource,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+        protected \MageSuite\BackInStock\Model\ResourceModel\Product $productResource,
+        protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     ) {
-        $this->productResource = $productResource;
-        $this->productRepository = $productRepository;
     }
 
-    public function resolve($params)
+    public function resolve(array $params): \Magento\Catalog\Api\Data\ProductInterface
     {
         $typeId = $this->productResource->getTypeIdByProductId($params['product']);
 
         if ($typeId == \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
-            $product = $this->getChildProduct($params, $params['product']);
+            $product = $this->getChildProduct($params, (int)$params['product']);
             $product->setParentProductId($params['product']);
 
             return $product;
@@ -43,15 +33,10 @@ class ProductResolver
         return $this->productRepository->getById($params['product']);
     }
 
-    /**
-     * @param array $params
-     * @param int $productId
-     * @return mixed
-     */
-    protected function getChildProduct($params, $productId)
+    protected function getChildProduct(array $params, int $productId): \Magento\Catalog\Api\Data\ProductInterface
     {
         $product = $this->productRepository->getById($productId);
-        $superAttributes = $params["super_attribute"];
+        $superAttributes = $params['super_attribute'];
 
         $productCollection = $product->getTypeInstance()
             ->getUsedProductCollection($product)
@@ -62,8 +47,14 @@ class ProductResolver
         foreach ($superAttributes as $attributeId => $attributeValue) {
             $productCollection->addAttributeToFilter($attributeId, $attributeValue);
         }
-        /** @var \Magento\Catalog\Model\Product $productObject */
+
         $childProduct = $productCollection->getFirstItem();
+
+        if (!$childProduct->getId()) {
+            throw new \Magento\Framework\Exception\NoSuchEntityException(
+                __('Selected product combination is not available.')
+            );
+        }
 
         return $childProduct;
     }
