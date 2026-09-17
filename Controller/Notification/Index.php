@@ -2,7 +2,7 @@
 
 namespace MageSuite\BackInStock\Controller\Notification;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Index extends \Magento\Framework\App\Action\Action implements \Magento\Framework\App\Action\HttpGetActionInterface
 {
     /**
      * @var \Magento\Framework\View\Result\PageFactory
@@ -23,18 +23,14 @@ class Index extends \Magento\Framework\App\Action\Action
         $this->customerSession = $customerSession;
     }
 
-    /**
-     * Index action
-     *
-     * @return \Magento\Framework\View\Result\Page
-     */
     public function execute()
     {
         if (!$this->customerSession->getCustomerId()) {
             $this->messageManager->addNoticeMessage(__('Your session expired, please login again.'));
-            $this->_redirect('customer/account/login');
+
+            return $this->resultRedirectFactory->create()->setPath('customer/account/login');
         }
-        /** @var $resultPage \Magento\Framework\View\Result\Page */
+
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->set(__('My Back In Stock Notifications'));
 
