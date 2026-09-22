@@ -72,9 +72,10 @@ define(['jquery', 'Magento_Customer/js/customer-data', 'mage/validation', 'mage/
             customerData.getInitCustomerData().done(function() {
 
                 const customer = customerData.get('customer')();
+                const $input = $widget.element.find('.cs-product-stock-subscription__input');
 
-                if (customer.hasOwnProperty('email')) {
-                    $widget.element.find('.cs-product-stock-subscription__input')
+                if (customer.hasOwnProperty('email') && !$input.val()) {
+                    $input
                         .val(customer.email)
                         .trigger('input')
                         .trigger('blur');

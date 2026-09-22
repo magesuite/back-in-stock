@@ -109,9 +109,10 @@ define([
 
                 customerData.getInitCustomerData().done(function() {
                     const customer = customerData.get('customer')();
+                    const $input = $widget.$subscriptionForm.find(`.${$widget.options.subscriptionFormClass}__input`);
 
-                    if (customer.hasOwnProperty('email')) {
-                        $widget.$subscriptionForm.find(`.${$widget.options.subscriptionFormClass}__input`).val(customer.email);
+                    if (customer.hasOwnProperty('email') && !$input.val()) {
+                        $input.val(customer.email);
                     }
                 })
             },
