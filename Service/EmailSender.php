@@ -37,45 +37,40 @@ class EmailSender
 
     public function sendMail($receiverEmail, $emailTemplateVariables, $templateConfigPath, $storeId, $customerId = 0) //phpcs:ignore
     {
+        $receiverName = $receiverEmail;
+
         if ($customerId) {
-            $emailTemplateVariables = $this->addCustomerNameToVariables(
-                $emailTemplateVariables,
-                (int)$customerId,
-                (string)$receiverEmail
-            );
+            $emailTemplateVariables = $this->addCustomerNameToVariables($emailTemplateVariables, (int)$customerId, (string)$receiverEmail);
+            $receiverName = $emailTemplateVariables['customerName'] ?? $receiverEmail;
         }
+
+        $this->inlineTranslation->suspend();
 
         try {
             $templateId = $this->configuration->getEmailTemplateId($templateConfigPath, $storeId);
-
             $this->templateId = $templateId === null ? null : (string)$templateId;
-
-            $this->inlineTranslation->suspend();
 
             $this->generateTemplate(
                 $emailTemplateVariables,
                 $this->configuration->getEmailSenderData($storeId),
-                ['email' => $receiverEmail, 'name' => 'customer'],
+                ['email' => $receiverEmail, 'name' => $receiverName],
                 $storeId
             );
             $transport = $this->transportBuilder->getTransport();
-
             $transport->sendMessage();
-
-            $this->inlineTranslation->resume();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
+
             return $e->getMessage();
+        } finally {
+            $this->inlineTranslation->resume();
         }
 
         return self::STATUS_SENT;
     }
 
-    public function addCustomerNameToVariables(
-        array $emailTemplateVariables,
-        int $customerId,
-        string $receiverEmail
-    ): array {
+    public function addCustomerNameToVariables(array $emailTemplateVariables, int $customerId, string $receiverEmail): array
+    {
         $emailTemplateVariables['customerName'] = null;
 
         try {
@@ -95,10 +90,8 @@ class EmailSender
         return $emailTemplateVariables;
     }
 
-    protected function isCustomerOwnAddress(
-        \Magento\Customer\Api\Data\CustomerInterface $customer,
-        string $receiverEmail
-    ): bool {
+    protected function isCustomerOwnAddress(\Magento\Customer\Api\Data\CustomerInterface $customer, string $receiverEmail): bool
+    {
         return strcasecmp((string)$customer->getEmail(), trim($receiverEmail)) === 0;
     }
 }
