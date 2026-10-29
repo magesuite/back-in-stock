@@ -16,6 +16,8 @@ class Configuration
     public const SENDER_NAME_CONFIG_PATH = 'trans_email/ident_%s/name';
     public const SENDER_EMAIL_CONFIG_PATH = 'trans_email/ident_%s/email';
     public const CONFIRMATION_EMAIL_CONFIG_PATH = 'back_in_stock/email_configuration/confirmation_email_template';
+    public const IS_ACTIVATION_EMAIL_ENABLED_CONFIG_PATH = 'back_in_stock/email_configuration/is_activation_email_enabled';
+    public const ACTIVATION_EMAIL_CONFIG_PATH = 'back_in_stock/email_configuration/activation_email_template';
     public const NOTIFICATION_LIMITS_MIN_TIME_CONFIG_PATH = 'back_in_stock/limits/min_time';
     public const NOTIFICATION_LIMITS_DAILY_LIMIT_CONFIG_PATH = 'back_in_stock/limits/daily_limit';
     public const NOTIFICATION_LIMITS_MAX_AGE_LIMIT_CONFIG_PATH = 'back_in_stock/limits/max_age';
@@ -51,6 +53,11 @@ class Configuration
     public function isConfirmationRequired(): bool
     {
         return (bool)$this->getConfigValue(self::IS_CONFIRMATION_REQUIRED_CONFIG_PATH);
+    }
+
+    public function isActivationEmailEnabled(int $storeId): bool
+    {
+        return (bool)$this->getConfigValue(self::IS_ACTIVATION_EMAIL_ENABLED_CONFIG_PATH, $storeId);
     }
 
     public function getSuccessSubscribeMessage($storeId = null)

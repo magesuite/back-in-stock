@@ -13,6 +13,8 @@
             <email_configuration>
                 <sender_email>general</sender_email>
                 <confirmation_email_template>back_in_stock_email_configuration_confirmation_email_template</confirmation_email_template>
+                <is_activation_email_enabled>0</is_activation_email_enabled>
+                <activation_email_template>back_in_stock_email_configuration_activation_email_template</activation_email_template>
                 <automatic_notification_email_template>back_in_stock_email_configuration_automatic_notification_email_template</automatic_notification_email_template>
                 <manual_notification_email_template>back_in_stock_email_configuration_manual_notification_email_template</manual_notification_email_template>
             </email_configuration>

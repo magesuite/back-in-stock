@@ -53,6 +53,19 @@
                     <label>Confirmation Email Template</label>
                     <source_model>\Magento\Config\Model\Config\Source\Email\Template</source_model>
                 </field>
+                <field id="is_activation_email_enabled" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send Activation Email</label>
+                    <source_model>\Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Used only when "Is confirmation required" is set to "No". If enabled, customer receives e-mail informing that the subscription is active, right after subscribing.</comment>
+                </field>
+                <field id="activation_email_template" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Activation Email Template</label>
+                    <source_model>\Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <comment>Used only when "Is confirmation required" is set to "No". When confirmation is required, the Confirmation Email Template is sent instead.</comment>
+                    <depends>
+                        <field id="is_activation_email_enabled">1</field>
+                    </depends>
+                </field>
                 <field id="automatic_notification_email_template" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Automatic Notification Email Template</label>
                     <source_model>\Magento\Config\Model\Config\Source\Email\Template</source_model>

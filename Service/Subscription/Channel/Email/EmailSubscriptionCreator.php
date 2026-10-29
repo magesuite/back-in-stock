@@ -21,7 +21,8 @@ class EmailSubscriptionCreator
         protected \MageSuite\BackInStock\Service\Subscription\ProductResolver $productResolver,
         protected \MageSuite\BackInStock\Helper\Configuration $configuration,
         protected \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper,
-        protected \Laminas\Validator\EmailAddress $emailAddressValidator
+        protected \Laminas\Validator\EmailAddress $emailAddressValidator,
+        protected \MageSuite\BackInStock\Service\Subscription\Channel\Email\ActivationEmailSender $activationEmailSender
     ) {
     }
 
@@ -221,6 +222,8 @@ class EmailSubscriptionCreator
         int $customerId
     ): void {
         if (!$this->configuration->isConfirmationRequired()) {
+            $this->activationEmailSender->send($subscription);
+
             return;
         }
 
