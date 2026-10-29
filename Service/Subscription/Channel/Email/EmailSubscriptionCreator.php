@@ -48,12 +48,7 @@ class EmailSubscriptionCreator
             return;
         }
 
-        //update subscription when customer subscribes second time as logged-in user
-        if ($customerId && $guestSubscriptionExists) {
-            $subscription = $this->updateSubscriptionCustomerId($productId, $customerId, $email, $storeId);
-        } else {
-            $subscription = $this->getExistingSubscription($productId, $customerId, $email, $storeId);
-        }
+        $subscription = $this->resolveExistingSubscription($productId, $customerId, $email, $storeId, $guestSubscriptionExists);
 
         if (!$this->canSubscriptionBeReset($subscription)) {
             return;
@@ -61,6 +56,15 @@ class EmailSubscriptionCreator
 
         $subscription = $this->resetExistingSubscription($subscription, $customerId, $email);
         $this->sendConfirmationEmail($subscription, $params, $storeId, $customerId);
+    }
+
+    public function resolveExistingSubscription(int $productId, int $customerId, string $email, int $storeId, bool $guestSubscriptionExists): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
+        if ($customerId && $guestSubscriptionExists) {
+            return $this->updateSubscriptionCustomerId($productId, $customerId, $email, $storeId);
+        }
+
+        return $this->getExistingSubscription($productId, $customerId, $email, $storeId);
     }
 
     public function sendConfirmationRequest( //phpcs:ignore

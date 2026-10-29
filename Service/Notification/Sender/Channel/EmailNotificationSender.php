@@ -98,7 +98,7 @@ class EmailNotificationSender
             'product_url' => $productData->getProductUrl()
         ];
 
-        if (!$this->configuration->isRemoveSubscriptionAfterSendNotification()) {
+        if (!$this->configuration->isSubscriptionRemovedAfterNotification()) {
             $params['unsubscribe_url'] = $this->subscriptionHelper->getUnsubscribeUrl($subscription);
         }
 

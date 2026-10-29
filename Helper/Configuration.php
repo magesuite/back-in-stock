@@ -26,7 +26,7 @@ class Configuration
     {
     }
 
-    public function getConfigValue($path, $storeId = \Magento\Store\Model\Store::DEFAULT_STORE_ID)
+    public function getConfigValue(string $path, int|string|null $storeId = \Magento\Store\Model\Store::DEFAULT_STORE_ID): mixed
     {
         return $this->scopeConfig->getValue(
             $path,
@@ -40,7 +40,7 @@ class Configuration
         return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH);
     }
 
-    public function isRemoveSubscriptionAfterSendNotification(): bool
+    public function isSubscriptionRemovedAfterNotification(): bool
     {
         return (bool)$this->getConfigValue(self::AUTOMATIC_REMOVE_SUBSCRIPTION_CONFIG_PATH);
     }
@@ -60,7 +60,7 @@ class Configuration
         return (bool)$this->getConfigValue(self::IS_ACTIVATION_EMAIL_ENABLED_CONFIG_PATH, $storeId);
     }
 
-    public function getSuccessSubscribeMessage($storeId = null)
+    public function getSuccessSubscribeMessage(int|string|null $storeId = null): ?string
     {
         if ($this->isConfirmationRequired()) {
             return $this->getSuccessWithConfirmationMessage($storeId);
@@ -69,27 +69,29 @@ class Configuration
         return $this->getSuccessWithoutConfirmationMessage($storeId);
     }
 
-    public function getSuccessWithConfirmationMessage($storeId = null)
+    public function getSuccessWithConfirmationMessage(int|string|null $storeId = null): ?string
     {
         return $this->getConfigValue(self::SUCCESS_WITH_CONFIRMATION_MESSAGE_CONFIG_PATH, $storeId);
     }
 
-    public function getSuccessWithoutConfirmationMessage($storeId = null)
+    public function getSuccessWithoutConfirmationMessage(int|string|null $storeId = null): ?string
     {
         return $this->getConfigValue(self::SUCCESS_WITHOUT_CONFIRMATION_MESSAGE_CONFIG_PATH, $storeId);
     }
 
-    public function canDisplaySubscriptionForm($storeId): bool
+    public function canDisplaySubscriptionForm(int|string|null $storeId): bool
     {
         return (bool)$this->getConfigValue(self::MODULE_ENABLED_CONFIG_PATH, $storeId);
     }
 
-    public function getEmailTemplateId($templateConfigPath, $storeId)
+    public function getEmailTemplateId(string $templateConfigPath, int|string|null $storeId): ?string
     {
-        return $this->getConfigValue($templateConfigPath, $storeId);
+        $templateId = $this->getConfigValue($templateConfigPath, $storeId);
+
+        return $templateId === null ? null : (string)$templateId;
     }
 
-    public function getEmailSenderData($storeId): array
+    public function getEmailSenderData(int|string|null $storeId): array
     {
         $emailSenderValue = $this->getConfigValue(self::SENDER_TYPE_CONFIG_PATH, $storeId);
 
