@@ -1,8 +1,8 @@
 <!--@subject {{trans "%store_name - back in stock notification activated" store_name=$store.frontend_name}} @-->
 <!--@vars {
+"var customerName":"Customer Name",
 "var product_name":"Product Name",
-"var product_url":"Product URL",
-"var product_image_url":"Product Image URL",
+"var product_url|raw":"Product URL",
 "var unsubscribe_url|raw":"Unsubscribe URL",
 "template config_path=\"design\/email\/footer_template\"":"Email Footer Template",
 "template config_path=\"design\/email\/header_template\"":"Email Header Template"
@@ -10,44 +10,22 @@
 
 {{template config_path="design/email/header_template"}}
 
-<div class="hero">
-    <table>
-        <tr>
-            <td>
-                <h1>{{trans "Back in stock notification activated"}}</h1>
-            </td>
-        </tr>
-    </table>
-</div>
-<p>{{trans "Thank you! We will notify you by e-mail as soon as the following product is back in stock:"}}</p>
 <table>
-    <tr class="email-information">
+    <tr class="email-summary">
         <td>
-            <table class="email-items">
-                <thead>
-                    <tr>
-                        <th class="item-info" colspan="2" style="text-align: left">{{trans "Product"}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="item-img" style="width: 60px; padding-right: 10px;">
-                            {{depend product_image_url}}
-                            <img src="{{var product_image_url}}" alt="{{var product_name}}" style="max-width: 50px; max-height: 50px;"/>
-                            {{/depend}}
-                        </td>
-                        <td class="item-info">
-                            <a href="{{var product_url}}">{{var product_name}}</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <p class="greeting">{{trans "Hello, %name" name=$customerName}}</p>
+            <p>
+                {{trans "Thank you! We will notify you by e-mail as soon as the following product is back in stock:"}}
+            </p>
+            <p>
+                <a href="{{var product_url|raw}}">{{var product_name}}</a>
+            </p>
+            <p>
+                {{trans "If you no longer wish to be notified, you can unsubscribe here:"}}
+                <a href="{{var unsubscribe_url|raw}}">{{trans "Unsubscribe"}}</a>
+            </p>
         </td>
     </tr>
 </table>
-<p>
-    {{trans "If you no longer wish to be notified, you can unsubscribe here:"}}
-    <a href="{{var unsubscribe_url|raw}}">{{trans "Unsubscribe"}}</a>
-</p>
 
 {{template config_path="design/email/footer_template"}}
