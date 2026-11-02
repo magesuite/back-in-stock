@@ -37,6 +37,7 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         $collection->addFieldToFilter('store_id', ['eq' => $storeId]);
         $collection->addFieldToFilter($identifyByField, ['eq' => $identifyByValue]);
         $collection->addFieldToFilter('is_removed', ['eq' => 0]);
+        $collection->setPageSize(1);
 
         return $collection->getFirstItem();
     }
@@ -50,6 +51,7 @@ class BackInStockSubscriptionRepository implements \MageSuite\BackInStock\Api\Ba
         $collection->addFieldToFilter('customer_id', ['eq' => 0]);
         $collection->addFieldToFilter('customer_email', ['eq' => $email]);
         $collection->addFieldToFilter('is_removed', ['eq' => 0]);
+        $collection->setPageSize(1);
 
         return $collection->getFirstItem();
     }
