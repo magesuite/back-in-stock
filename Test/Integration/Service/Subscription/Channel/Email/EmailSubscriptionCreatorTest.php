@@ -19,6 +19,11 @@ class EmailSubscriptionCreatorTest extends \PHPUnit\Framework\TestCase
         $this->transportBuilder->clean();
     }
 
+    protected function tearDown(): void
+    {
+        $this->objectManager->get(\Magento\Customer\Model\Session::class)->setCustomerId(null);
+    }
+
     #[\Magento\TestFramework\Fixture\Config('back_in_stock/general/is_confirmation_required', 0, 'store', 'admin')]
     #[\Magento\TestFramework\Fixture\Config('back_in_stock/email_configuration/is_activation_email_enabled', 1, 'store', 'default')]
     #[\Magento\TestFramework\Fixture\DataFixture(\Magento\Catalog\Test\Fixture\Product::class, ['name' => 'Gold Bar 100g'], 'product')]
@@ -80,6 +85,56 @@ class EmailSubscriptionCreatorTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Coin Parent', $body);
         $this->assertStringContainsString('coin-parent', $body);
         $this->assertStringNotContainsString('coin-child', $body);
+    }
+
+    #[\Magento\TestFramework\Fixture\Config('back_in_stock/general/is_confirmation_required', 0, 'store', 'admin')]
+    #[\Magento\TestFramework\Fixture\DataFixture(\Magento\Catalog\Test\Fixture\Product::class, as: 'product')]
+    #[\Magento\TestFramework\Fixture\DataFixture(\Magento\Customer\Test\Fixture\Customer::class, ['email' => self::SUBSCRIBER_EMAIL], 'victim')]
+    #[\Magento\TestFramework\Fixture\DataFixture(\Magento\Customer\Test\Fixture\Customer::class, ['email' => 'attacker@example.com'], 'attacker')]
+    public function testSubscribeDoesNotTakeOverSubscriptionOfAnotherCustomerByEmail(): void
+    {
+        $fixtures = \Magento\TestFramework\Fixture\DataFixtureStorageManager::getStorage();
+        $productId = (int)$fixtures->get('product')->getId();
+        $victimId = (int)$fixtures->get('victim')->getId();
+        $this->createConfirmedSubscription($productId, $victimId);
+
+        $this->objectManager->get(\Magento\Customer\Model\Session::class)->loginById($fixtures->get('attacker')->getId());
+        $this->subscribe($productId);
+
+        $subscription = $this->getSubscription($productId);
+
+        $this->assertSame($victimId, (int)$subscription->getCustomerId());
+        $this->assertSame('victimtk', $subscription->getToken());
+    }
+
+    #[\Magento\TestFramework\Fixture\Config('back_in_stock/general/is_confirmation_required', 0, 'store', 'admin')]
+    #[\Magento\TestFramework\Fixture\DataFixture(\Magento\Catalog\Test\Fixture\Product::class, as: 'product')]
+    #[\Magento\TestFramework\Fixture\DataFixture(\Magento\Customer\Test\Fixture\Customer::class, ['email' => self::SUBSCRIBER_EMAIL], 'customer')]
+    public function testSubscribeAssignsGuestSubscriptionToCustomerWithTheSameEmail(): void
+    {
+        $fixtures = \Magento\TestFramework\Fixture\DataFixtureStorageManager::getStorage();
+        $productId = (int)$fixtures->get('product')->getId();
+        $customerId = (int)$fixtures->get('customer')->getId();
+        $this->createConfirmedSubscription($productId, 0);
+
+        $this->objectManager->get(\Magento\Customer\Model\Session::class)->loginById($customerId);
+        $this->subscribe($productId);
+
+        $this->assertSame($customerId, (int)$this->getSubscription($productId)->getCustomerId());
+    }
+
+    protected function createConfirmedSubscription(int $productId, int $customerId): void
+    {
+        $subscription = $this->objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class);
+        $subscription->setProductId($productId);
+        $subscription->setCustomerId($customerId);
+        $subscription->setCustomerEmail(self::SUBSCRIBER_EMAIL);
+        $subscription->setCustomerConfirmed(true);
+        $subscription->setStoreId(1);
+        $subscription->setNotificationChannel('email');
+        $subscription->setToken('victimtk');
+
+        $this->objectManager->get(\MageSuite\BackInStock\Api\BackInStockSubscriptionRepositoryInterface::class)->save($subscription);
     }
 
     protected function subscribe(int $productId): void

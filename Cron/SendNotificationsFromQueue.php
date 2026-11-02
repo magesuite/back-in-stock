@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Cron;
 
 class SendNotificationsFromQueue
@@ -9,7 +11,7 @@ class SendNotificationsFromQueue
         protected \MageSuite\BackInStock\Helper\Configuration $configuration,
     ) {}
 
-    public function execute()
+    public function execute(): void
     {
         if (!$this->configuration->isModuleEnabled()) {
             return;

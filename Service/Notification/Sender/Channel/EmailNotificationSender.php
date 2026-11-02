@@ -1,68 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Service\Notification\Sender\Channel;
 
 class EmailNotificationSender
 {
-    protected $notificationTypeMap = [
+    protected array $notificationTypeMap = [
         \MageSuite\BackInStock\Service\NotificationQueueSender::MANUAL_NOTIFICATION => \MageSuite\BackInStock\Api\Data\NotificationInterface::MANUAL_NOTIFICATION_TEMPLATE,
         \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION => \MageSuite\BackInStock\Api\Data\NotificationInterface::AUTOMATIC_NOTIFICATION_TEMPLATE,
     ];
 
-    /**
-     * @var \MageSuite\BackInStock\Service\EmailSender
-     */
-    protected $emailSender;
-
-    /**
-     * @var \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface
-     */
-    protected $notificationProductDataResolver;
-
-    /**
-     * @var \MageSuite\BackInStock\Helper\Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var \MageSuite\BackInStock\Helper\Subscription
-     */
-    protected $subscriptionHelper;
-
     public function __construct(
-        \MageSuite\BackInStock\Service\EmailSender $emailSender,
-        \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
-        \MageSuite\BackInStock\Helper\Configuration $configuration,
-        \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
+        protected \MageSuite\BackInStock\Service\EmailSender $emailSender,
+        protected \MageSuite\BackInStock\Api\NotificationProductDataResolverInterface $notificationProductDataResolver,
+        protected \MageSuite\BackInStock\Helper\Configuration $configuration,
+        protected \MageSuite\BackInStock\Helper\Subscription $subscriptionHelper
     ) {
-        $this->emailSender = $emailSender;
-        $this->notificationProductDataResolver = $notificationProductDataResolver;
-        $this->configuration = $configuration;
-        $this->subscriptionHelper = $subscriptionHelper;
     }
 
-    public function send($notification, $subscription)
+    public function send(\MageSuite\BackInStock\Model\Notification $notification, \MageSuite\BackInStock\Model\BackInStockSubscription $subscription): string
     {
-        return $this->emailSender->sendMail(
-            $subscription->getCustomerEmail(),
-            $this->getTemplateParams($notification, $subscription),
-            $this->getEmailTemplateId($notification->getNotificationType()),
-            $subscription->getStoreId(),
-            $subscription->getCustomerId()
-        );
+        $templateParams = $this->getTemplateParams($notification, $subscription);
+        $templateConfigPath = $this->getEmailTemplateId((string)$notification->getNotificationType());
+
+        return $this->emailSender->sendMail($subscription->getCustomerEmail(), $templateParams, $templateConfigPath, $subscription->getStoreId(), $subscription->getCustomerId());
     }
 
-    public function getEmailTemplateId($notificationType)
+    public function getEmailTemplateId(string $notificationType): string
     {
-        $notificationTypeMap = $this->notificationTypeMap;
-
-        return $notificationTypeMap[$notificationType];
+        return $this->notificationTypeMap[$notificationType];
     }
 
-    public function getTemplateParams($notification, $subscription)
+    public function getTemplateParams(\MageSuite\BackInStock\Model\Notification $notification, \MageSuite\BackInStock\Model\BackInStockSubscription $subscription): array
     {
         if ($notification->getNotificationType() == \MageSuite\BackInStock\Service\NotificationQueueSender::MANUAL_NOTIFICATION) {
-            return $this->getManualNotificationParams($notification, $subscription);
+            return $this->getManualNotificationParams($notification);
         }
 
         if ($notification->getNotificationType() == \MageSuite\BackInStock\Service\NotificationQueueSender::AUTOMATIC_NOTIFICATION) {
@@ -72,23 +45,14 @@ class EmailNotificationSender
         return [];
     }
 
-    /**
-     * @param $notification \MageSuite\BackInStock\Model\Notification
-     * @return array
-     */
-    public function getManualNotificationParams($notification)
+    public function getManualNotificationParams(\MageSuite\BackInStock\Model\Notification $notification): array
     {
         return [
             'notification_message' => $notification->getMessage()
         ];
     }
 
-    /**
-     * @param $notification \MageSuite\BackInStock\Model\Notification
-     * @param $subscription \MageSuite\BackInStock\Model\BackInStockSubscription
-     * @return array
-     */
-    public function getAutomaticNotificationParams($notification, $subscription)
+    public function getAutomaticNotificationParams(\MageSuite\BackInStock\Model\Notification $notification, \MageSuite\BackInStock\Model\BackInStockSubscription $subscription): array
     {
         $productData = $this->notificationProductDataResolver->getProductData($subscription);
 

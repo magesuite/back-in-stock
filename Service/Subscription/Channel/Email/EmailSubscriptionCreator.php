@@ -39,16 +39,16 @@ class EmailSubscriptionCreator
             throw new \Exception('Invalid email address.'); //phpcs:ignore
         }
 
-        $guestSubscriptionExists = $this->subscriptionExist($productId, 0, $email, $storeId);
+        $emailSubscriptionExists = $this->subscriptionExist($productId, 0, $email, $storeId);
         $customerSubscriptionExists = $customerId && $this->subscriptionExist($productId, $customerId, $email, $storeId);
 
-        if (!$guestSubscriptionExists && !$customerSubscriptionExists) {
+        if (!$emailSubscriptionExists && !$customerSubscriptionExists) {
             $subscription = $this->createNewSubscription($product, $customerId, $email, $storeId);
             $this->sendConfirmationEmail($subscription, $params, $storeId, $customerId);
             return;
         }
 
-        $subscription = $this->resolveExistingSubscription($productId, $customerId, $email, $storeId, $guestSubscriptionExists);
+        $subscription = $this->resolveExistingSubscription($productId, $email, $storeId);
 
         if (!$this->canSubscriptionBeReset($subscription)) {
             return;
@@ -58,13 +58,28 @@ class EmailSubscriptionCreator
         $this->sendConfirmationEmail($subscription, $params, $storeId, $customerId);
     }
 
-    public function resolveExistingSubscription(int $productId, int $customerId, string $email, int $storeId, bool $guestSubscriptionExists): \MageSuite\BackInStock\Model\BackInStockSubscription
+    protected function resolveExistingSubscription(int $productId, string $email, int $storeId): \MageSuite\BackInStock\Model\BackInStockSubscription
     {
-        if ($customerId && $guestSubscriptionExists) {
-            return $this->updateSubscriptionCustomerId($productId, $customerId, $email, $storeId);
+        $customerSession = $this->customerSession->create();
+        $customerId = (int)$customerSession->getCustomerId();
+        $guestSubscription = $customerId && $this->isCustomerEmail($customerSession, $email) ? $this->backInStockSubscriptionRepository->getGuestSubscription($productId, $email, $storeId) : null;
+
+        if ($guestSubscription?->getId()) {
+            return $this->assignSubscriptionToCustomer($guestSubscription, $customerId);
         }
 
-        return $this->getExistingSubscription($productId, $customerId, $email, $storeId);
+        $customerSubscription = $this->getExistingSubscription($productId, $customerId, $email, $storeId);
+
+        if ($customerSubscription->getId()) {
+            return $customerSubscription;
+        }
+
+        return $this->getExistingSubscription($productId, 0, $email, $storeId);
+    }
+
+    protected function isCustomerEmail(\Magento\Customer\Model\Session $customerSession, string $email): bool
+    {
+        return strcasecmp(trim($email), (string)$customerSession->getCustomer()->getEmail()) === 0;
     }
 
     public function sendConfirmationRequest( //phpcs:ignore
@@ -187,13 +202,8 @@ class EmailSubscriptionCreator
         return $subscription;
     }
 
-    public function updateSubscriptionCustomerId( //phpcs:ignore
-        int $productId,
-        int $customerId,
-        string $email,
-        int $storeId
-    ): \MageSuite\BackInStock\Model\BackInStockSubscription {
-        $subscription = $this->getExistingSubscription($productId, 0, $email, $storeId);
+    protected function assignSubscriptionToCustomer(\MageSuite\BackInStock\Model\BackInStockSubscription $subscription, int $customerId): \MageSuite\BackInStock\Model\BackInStockSubscription
+    {
         $subscription->setCustomerId($customerId);
 
         return $this->backInStockSubscriptionRepository->save($subscription);

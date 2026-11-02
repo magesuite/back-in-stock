@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\BackInStock\Api;
 
 interface BackInStockSubscriptionRepositoryInterface
@@ -24,6 +26,14 @@ interface BackInStockSubscriptionRepositoryInterface
         string $identifyByValue,
         int $storeId
     ): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
+
+    /**
+     * @param int $productId
+     * @param string $email
+     * @param int $storeId
+     * @return \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface
+     */
+    public function getGuestSubscription(int $productId, string $email, int $storeId): \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface;
 
     /**
      * @param \MageSuite\BackInStock\Api\Data\BackInStockSubscriptionInterface $backInStockSubscription
