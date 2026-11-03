@@ -78,7 +78,7 @@ class EmailSubscriptionCreatorTest extends \PHPUnit\Framework\TestCase
         $subscription->setCustomerEmail(self::SUBSCRIBER_EMAIL);
         $subscription->setStoreId(1);
 
-        $this->objectManager->create(\MageSuite\BackInStock\Service\Subscription\Channel\Email\ActivationEmailSender::class)->send($subscription);
+        $this->createActivationEmailSender()->send($subscription);
 
         $body = quoted_printable_decode($this->transportBuilder->getSentMessage()->getBody()->bodyToString());
 
@@ -141,9 +141,21 @@ class EmailSubscriptionCreatorTest extends \PHPUnit\Framework\TestCase
     {
         $emailSubscriptionCreator = $this->objectManager->create(\MageSuite\BackInStock\Service\Subscription\Channel\Email\EmailSubscriptionCreator::class, [
             'backInStockSubscription' => $this->objectManager->create(\MageSuite\BackInStock\Model\BackInStockSubscription::class),
+            'emailSender' => $this->createEmailSender(),
+            'activationEmailSender' => $this->createActivationEmailSender(),
         ]);
 
         $emailSubscriptionCreator->subscribe(['notification_channel' => 'email', 'product' => $productId, 'email' => self::SUBSCRIBER_EMAIL]);
+    }
+
+    protected function createActivationEmailSender(): \MageSuite\BackInStock\Service\Subscription\Channel\Email\ActivationEmailSender
+    {
+        return $this->objectManager->create(\MageSuite\BackInStock\Service\Subscription\Channel\Email\ActivationEmailSender::class, ['emailSender' => $this->createEmailSender()]);
+    }
+
+    protected function createEmailSender(): \MageSuite\BackInStock\Service\EmailSender
+    {
+        return $this->objectManager->create(\MageSuite\BackInStock\Service\EmailSender::class, ['transportBuilder' => $this->transportBuilder]);
     }
 
     protected function getSubscription(int $productId): \MageSuite\BackInStock\Model\BackInStockSubscription
