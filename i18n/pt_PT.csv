@@ -24,3 +24,10 @@ Product,Produto
 Status,Estado
 "Please, select all product attributes.","Seleccione todos os atributos do produto."
 "Notification channel has not been specified.","O canal de notificação não foi especificado."
+"%store_name - back in stock notification activated","%store_name - alerta de disponibilidade ativado"
+"Thank you! We will notify you by e-mail as soon as the following product is back in stock:","Obrigado! Iremos avisá-lo por e-mail assim que o seguinte produto estiver novamente disponível:"
+"If you no longer wish to be notified, you can unsubscribe here:","Se já não pretende ser avisado, pode cancelar a subscrição aqui:"
+"Send Activation Email","Enviar E-mail de Ativação"
+"Activation Email Template","Template do E-mail de Ativação"
+"Used only when ""Is confirmation required"" is set to ""No"". If enabled, customer receives e-mail informing that the subscription is active, right after subscribing.","Usado apenas quando ""Is confirmation required"" está definido como ""Não"". Se ativado, o cliente recebe logo após a subscrição um e-mail a informar que o alerta está ativo."
+"Used only when ""Is confirmation required"" is set to ""No"". When confirmation is required, the Confirmation Email Template is sent instead.","Usado apenas quando ""Is confirmation required"" está definido como ""Não"". Quando é necessária confirmação, é enviado em vez disso o Template do E-mail de Confirmação."

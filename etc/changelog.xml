@@ -162,6 +162,14 @@
                     <ticket_id>FR-753</ticket_id>
                 </entry>
             </tag>
+            <tag version="1.15.0" date="2026-10-29">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Add optional activation email sent right after subscribing when confirmation is not required.</overview>
+                    <description>New "Send Activation Email" and "Activation Email Template" options in Back In Stock Subscriptions / Email Configuration. Disabled by default.</description>
+                    <ticket_id>PROS-420</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

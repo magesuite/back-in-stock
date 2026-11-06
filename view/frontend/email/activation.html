@@ -1,0 +1,31 @@
+<!--@subject {{trans "%store_name - back in stock notification activated" store_name=$store.frontend_name}} @-->
+<!--@vars {
+"var customerName":"Customer Name",
+"var product_name":"Product Name",
+"var product_url|raw":"Product URL",
+"var unsubscribe_url|raw":"Unsubscribe URL",
+"template config_path=\"design\/email\/footer_template\"":"Email Footer Template",
+"template config_path=\"design\/email\/header_template\"":"Email Header Template"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<table>
+    <tr class="email-summary">
+        <td>
+            <p class="greeting">{{trans "Hello, %name" name=$customerName}}</p>
+            <p>
+                {{trans "Thank you! We will notify you by e-mail as soon as the following product is back in stock:"}}
+            </p>
+            <p>
+                <a href="{{var product_url|raw}}">{{var product_name}}</a>
+            </p>
+            <p>
+                {{trans "If you no longer wish to be notified, you can unsubscribe here:"}}
+                <a href="{{var unsubscribe_url|raw}}">{{trans "Unsubscribe"}}</a>
+            </p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer_template"}}
