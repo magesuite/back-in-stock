@@ -24,13 +24,24 @@ class ProductResolver
         }
 
         if ($typeId == \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE) {
-            $product = $this->productRepository->getById($params['simple_id']);
+            $product = $this->productRepository->getById($this->getSimpleProductId($params));
             $product->setParentProductId($params['product']);
 
             return $product;
         }
 
         return $this->productRepository->getById($params['product']);
+    }
+
+    protected function getSimpleProductId(array $params): int
+    {
+        $simpleProductId = $params['simple_id'] ?? null;
+
+        if (!is_scalar($simpleProductId) || !ctype_digit((string)$simpleProductId) || (int)$simpleProductId === 0) {
+            throw new \Magento\Framework\Exception\NoSuchEntityException(__('Selected product combination is not available.'));
+        }
+
+        return (int)$simpleProductId;
     }
 
     protected function getChildProduct(array $params, int $productId): \Magento\Catalog\Api\Data\ProductInterface
@@ -51,9 +62,7 @@ class ProductResolver
         $childProduct = $productCollection->getFirstItem();
 
         if (!$childProduct->getId()) {
-            throw new \Magento\Framework\Exception\NoSuchEntityException(
-                __('Selected product combination is not available.')
-            );
+            throw new \Magento\Framework\Exception\NoSuchEntityException(__('Selected product combination is not available.'));
         }
 
         return $childProduct;
